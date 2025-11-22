@@ -1,18 +1,14 @@
-import { base } from "viem/chains";
-import { RootPublicClients } from "./root-clients.base";
-import { Injectable } from "@nestjs/common";
-import { ChainPublicClient } from "./chain-public-client.decorator";
+import { Injectable } from '@nestjs/common';
+import { base } from 'viem/chains';
+import { ChainPublicClient } from './chain-public-client.decorator';
+import { RootPublicClients } from './root-clients.base';
 
 @Injectable()
 @ChainPublicClient()
-export class BaseChainPublicClientsImpl extends RootPublicClients{
+export class BaseChainPublicClientsImpl extends RootPublicClients {
   constructor() {
-    let httpUrls = [
-      {chain: base, httpUrl: "https://base.llamarpc.com"},
-    ]
-    let wssUrls = [
-      {chain: base, wssUrl: "wss://base-rpc.publicnode.com"}
-    ]
-    super(httpUrls, wssUrls)
+    const httpUrls = [{ chain: base, httpUrl: 'https://base.llamarpc.com' }];
+    const wssUrls = [{ chain: base, wssUrl: 'wss://base-rpc.publicnode.com' }];
+    super(httpUrls, wssUrls);
   }
 }

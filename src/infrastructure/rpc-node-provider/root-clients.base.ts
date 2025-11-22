@@ -1,40 +1,49 @@
-import { Chain, createPublicClient, http, HttpTransport, PublicClient, Transport, webSocket, WebSocketTransport } from "viem"
-import { ChainPublicClients } from "./chain-public-clients.interface"
+import {
+  Chain,
+  createPublicClient,
+  http,
+  HttpTransport,
+  PublicClient,
+  Transport,
+  webSocket,
+  WebSocketTransport,
+} from 'viem';
+import { ChainPublicClients } from './chain-public-clients.interface';
 
 export class RootPublicClients implements ChainPublicClients {
-    readonly clients: PublicClient<Transport, Chain>[];
-    
-    protected httpUrls: {chain: Chain, httpUrl: string}[]
-    protected wssUrls: {chain: Chain, wssUrl: string}[]
-    
-    constructor(
-        httpUrls: {chain: Chain, httpUrl: string}[],
-        wssUrls: {chain: Chain, wssUrl: string}[],
-    ) {
-        this.httpUrls = httpUrls
-        this.wssUrls = wssUrls
+  readonly clients: PublicClient<Transport, Chain>[];
 
-        this.clients = [
-          ...this.createHttpPublicClients(),
-          ...this.createWssPublicClients(),
-        ];
-    }
+  protected httpUrls: { chain: Chain; httpUrl: string }[];
+  protected wssUrls: { chain: Chain; wssUrl: string }[];
 
-    createHttpPublicClients(): PublicClient<HttpTransport, Chain>[] {
-        return this.httpUrls.map((value) => {
-            return createPublicClient({
-                chain: value.chain,
-                transport: http(value.httpUrl)
-            })
-        })
-    }
+  constructor(
+    httpUrls: { chain: Chain; httpUrl: string }[],
+    wssUrls: { chain: Chain; wssUrl: string }[],
+  ) {
+    this.httpUrls = httpUrls;
+    this.wssUrls = wssUrls;
 
-    createWssPublicClients(): PublicClient<WebSocketTransport, Chain>[] {
-        return this.wssUrls.map((value) => {
-            return createPublicClient({
-                chain: value.chain,
-                transport: webSocket(value.wssUrl)
-            })
-        })
-    }
+    this.clients = [
+      ...this.createHttpPublicClients(),
+      ...this.createWssPublicClients(),
+    ];
+  }
+
+  createHttpPublicClients(): PublicClient<HttpTransport, Chain>[] {
+    return this.httpUrls.map((value) => {
+      return createPublicClient({
+        chain: value.chain,
+        transport: http(value.httpUrl),
+      });
+    });
+  }
+
+  createWssPublicClients(): PublicClient<WebSocketTransport, Chain>[] {
+    return this.wssUrls.map((value) => {
+      return createPublicClient({
+        chain: value.chain,
+        transport: webSocket(value.wssUrl),
+      });
+    });
+  }
 }

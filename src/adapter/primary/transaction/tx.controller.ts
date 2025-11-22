@@ -1,7 +1,14 @@
-import { BadRequestException, Controller, Get, Inject, ParseIntPipe, Query } from '@nestjs/common';
+import {
+  BadRequestException,
+  Controller,
+  Get,
+  Inject,
+  ParseIntPipe,
+  Query,
+} from '@nestjs/common';
 // interface는 런타임에 존재하지 않으므로 import type을 사용해야함.
 import type { TxService } from 'src/application/transaction/provided_port/tx.interface';
-import { Hash, TransactionReceipt } from "viem";
+import { Hash, TransactionReceipt } from 'viem';
 
 @Controller('tx')
 export class TxController {

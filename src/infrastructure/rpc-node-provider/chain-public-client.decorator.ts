@@ -7,8 +7,8 @@ export const chainPublicClientClasses: any[] = [];
 
 // 데코레이터: 클래스를 등록
 export function ChainPublicClient(): ClassDecorator {
-    return (target) => {
-        chainPublicClientClasses.push(target);
-        SetMetadata(CHAIN_PUBLIC_CLIENT_KEY, true)(target);
-    };
+  return (target) => {
+    chainPublicClientClasses.push(target);
+    SetMetadata(CHAIN_PUBLIC_CLIENT_KEY, true)(target);
+  };
 }
