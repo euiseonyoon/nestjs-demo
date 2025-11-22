@@ -1,7 +1,7 @@
 import { base } from "viem/chains";
-import { RootPublicClients } from "./rootClients.base";
+import { RootPublicClients } from "./root-clients.base";
 import { Injectable } from "@nestjs/common";
-import { ChainPublicClient } from "./chainPublicClient.decorator";
+import { ChainPublicClient } from "./chain-public-client.decorator";
 
 @Injectable()
 @ChainPublicClient()

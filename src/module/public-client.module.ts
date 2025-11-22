@@ -1,9 +1,10 @@
 import { Module } from "@nestjs/common";
-import { RpcClientManagerImpl } from "src/infrastructure/manager/rpcClientManager.implement";
-import { BaseChainPublicClientsImpl } from "src/infrastructure/rpcNodeProvider/base.PublicClients";
-import { chainPublicClientClasses } from "src/infrastructure/rpcNodeProvider/chainPublicClient.decorator";
-import { ChainPublicClients } from "src/infrastructure/rpcNodeProvider/chainPublicClients.iterface";
-import { EthereumChainPublicClientsImpl } from "src/infrastructure/rpcNodeProvider/ethereum.PublicClients";
+import { RpcClientManagerImpl } from "src/infrastructure/manager/rpc-client-manager.impl";
+import { chainPublicClientClasses } from "src/infrastructure/rpc-node-provider/chain-public-client.decorator";
+import { ChainPublicClients } from "src/infrastructure/rpc-node-provider/chain-public-clients.interface";
+// 아래는 EthereumChainPublicClientsImpl, BaseChainPublicClientsImpl 에서 @ChainPublicClient 데코레이터가 실행되야 해서 필요함
+import "src/infrastructure/rpc-node-provider/base.public-clients";
+import "src/infrastructure/rpc-node-provider/ethereum.public-clients";
 
 /***
  * 

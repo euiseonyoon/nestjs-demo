@@ -1,5 +1,5 @@
 import { Chain, createPublicClient, http, HttpTransport, PublicClient, Transport, webSocket, WebSocketTransport } from "viem"
-import { ChainPublicClients } from "./chainPublicClients.iterface"
+import { ChainPublicClients } from "./chain-public-clients.interface"
 
 export class RootPublicClients implements ChainPublicClients {
     readonly clients: PublicClient<Transport, Chain>[];

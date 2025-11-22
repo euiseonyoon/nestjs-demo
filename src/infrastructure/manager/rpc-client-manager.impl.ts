@@ -1,7 +1,7 @@
 import { Chain } from "viem";
 import type { PublicClient } from "viem";
 import { Inject, Injectable } from "@nestjs/common";
-import type { ChainPublicClients } from "../rpcNodeProvider/chainPublicClients.iterface";
+import type { ChainPublicClients } from "../rpc-node-provider/chain-public-clients.interface";
 
 export interface RpcClientManager {
     getRpcClient(chain: Chain): PublicClient

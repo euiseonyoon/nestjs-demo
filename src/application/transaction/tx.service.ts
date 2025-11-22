@@ -2,7 +2,7 @@ import { HttpException, Inject, Injectable } from "@nestjs/common";
 import { TxService } from "./provided_port/tx.interface";
 import { Hash, TransactionReceipt } from "viem";
 import * as chains from 'viem/chains';
-import type { RpcClientManager } from "src/infrastructure/manager/rpcClientManager.implement";
+import type { RpcClientManager } from "src/infrastructure/manager/rpc-client-manager.impl";
 
 @Injectable()
 export class TxServiceImpl implements TxService {
