@@ -1,5 +1,5 @@
-import { TxHash } from "src/domain/transaction/domain.txHash";
+import { Hash, TransactionReceipt } from "viem";
 
 export interface TxService {
-    getTxReceipt(txHash: TxHash): void;
+    getTxReceipt(txHash: Hash, chainId: number): Promise<TransactionReceipt>;
 }
