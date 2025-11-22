@@ -1,4 +1,4 @@
-import { HttpException, Inject, Injectable } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import { TxService } from "./provided_port/tx.interface";
 import { Hash, TransactionReceipt } from "viem";
 import * as chains from 'viem/chains';
@@ -20,7 +20,7 @@ export class TxServiceImpl implements TxService {
         const chain = this.getChainById(chainId);
 
         if (chain === undefined) {
-            throw new HttpException("지원하지 않는 체인입니다", 400);
+            throw new BadRequestException("지원하지 않는 체인입니다.")
         }
 
         const client = this.rpcClientManager.getRpcClient(chain);
