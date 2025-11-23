@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { TxModule } from './module/tx.module';
+import { TxModule } from './tx.module';
 
 @Module({
     imports: [TxModule],

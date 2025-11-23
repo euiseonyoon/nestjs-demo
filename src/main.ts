@@ -1,6 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { ResponseBigIntToStringInterceptor } from './adapter/common/interceptor/response-big-int-to-string/response-big-int-to-string.interceptor';
-import { AppModule } from './app.module';
+import { AppModule } from './module/app.module';
 
 async function bootstrap(): Promise<void> {
     const app = await NestFactory.create(AppModule);
