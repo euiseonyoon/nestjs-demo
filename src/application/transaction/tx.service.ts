@@ -6,28 +6,28 @@ import { TxService } from './provided_port/tx.interface';
 
 @Injectable()
 export class TxServiceImpl implements TxService {
-  constructor(
-    @Inject('RpcClientManager')
-    private readonly rpcClientManager: RpcClientManager,
-  ) {}
+    constructor(
+        @Inject('RpcClientManager')
+        private readonly rpcClientManager: RpcClientManager,
+    ) {}
 
-  private getChainById(id: number): chains.Chain | undefined {
-    return Object.values(chains).find((chain) => chain.id === id);
-  }
-
-  async getTxReceipt(
-    txHash: Hash,
-    chainId: number,
-  ): Promise<TransactionReceipt> {
-    const chain = this.getChainById(chainId);
-
-    if (chain === undefined) {
-      throw new BadRequestException('지원하지 않는 체인입니다.');
+    private getChainById(id: number): chains.Chain | undefined {
+        return Object.values(chains).find((chain) => chain.id === id);
     }
 
-    const client = this.rpcClientManager.getRpcClient(chain);
-    const receipt = await client.getTransactionReceipt({ hash: txHash });
+    async getTxReceipt(
+        txHash: Hash,
+        chainId: number,
+    ): Promise<TransactionReceipt> {
+        const chain = this.getChainById(chainId);
 
-    return receipt;
-  }
+        if (chain === undefined) {
+            throw new BadRequestException('지원하지 않는 체인입니다.');
+        }
+
+        const client = this.rpcClientManager.getRpcClient(chain);
+        const receipt = await client.getTransactionReceipt({ hash: txHash });
+
+        return receipt;
+    }
 }

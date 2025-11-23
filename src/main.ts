@@ -3,10 +3,10 @@ import { ResponseBigIntToStringInterceptor } from './adapter/common/interceptor/
 import { AppModule } from './app.module';
 
 async function bootstrap(): Promise<void> {
-  const app = await NestFactory.create(AppModule);
+    const app = await NestFactory.create(AppModule);
 
-  app.useGlobalInterceptors(new ResponseBigIntToStringInterceptor());
+    app.useGlobalInterceptors(new ResponseBigIntToStringInterceptor());
 
-  await app.listen(process.env.PORT ?? 3000);
+    await app.listen(process.env.PORT ?? 3000);
 }
 void bootstrap();

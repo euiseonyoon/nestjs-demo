@@ -22,15 +22,15 @@ import 'src/infrastructure/rpc-node-provider/ethereum.public-clients';
   }
  */
 @Module({
-  providers: [
-    ...chainPublicClientClasses, // 자동으로 모든 구현체 등록, 1) 먼저 provider로 등록
-    {
-      provide: 'AllChainPublicClients',
-      inject: chainPublicClientClasses, // 2) 그래야 여기서 주입 가능
-      useFactory: (...clients: ChainPublicClients[]) => clients, // clients는 imports에서 입력한것들
-    },
-    { provide: 'RpcClientManager', useClass: RpcClientManagerImpl },
-  ],
-  exports: ['RpcClientManager'],
+    providers: [
+        ...chainPublicClientClasses, // 자동으로 모든 구현체 등록, 1) 먼저 provider로 등록
+        {
+            provide: 'AllChainPublicClients',
+            inject: chainPublicClientClasses, // 2) 그래야 여기서 주입 가능
+            useFactory: (...clients: ChainPublicClients[]) => clients, // clients는 imports에서 입력한것들
+        },
+        { provide: 'RpcClientManager', useClass: RpcClientManagerImpl },
+    ],
+    exports: ['RpcClientManager'],
 })
 export class PublicClientModule {}

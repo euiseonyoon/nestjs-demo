@@ -9,32 +9,32 @@ export const chainPublicClientClasses: Type<ChainPublicClients>[] = [];
 // ChainPublicClients 인터페이스 구현 여부 검증
 
 function isChainPublicClientsImpl(
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-  target: Function,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+    target: Function,
 ): target is Type<ChainPublicClients> {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const proto = target.prototype;
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return (
-    proto &&
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    typeof proto.createHttpPublicClients === 'function' &&
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-    typeof proto.createWssPublicClients === 'function'
-  );
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const proto = target.prototype;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return (
+        proto &&
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        typeof proto.createHttpPublicClients === 'function' &&
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        typeof proto.createWssPublicClients === 'function'
+    );
 }
 
 // 데코레이터: 클래스를 등록
 export function ChainPublicClient(): ClassDecorator {
-  return (target) => {
-    if (!isChainPublicClientsImpl(target)) {
-      throw new Error(
-        `@ChainPublicClient() can only be applied to classes implementing ChainPublicClients. ` +
-          `Class "${target.name}" does not implement required methods.`,
-      );
-    }
+    return (target) => {
+        if (!isChainPublicClientsImpl(target)) {
+            throw new Error(
+                `@ChainPublicClient() can only be applied to classes implementing ChainPublicClients. ` +
+                    `Class "${target.name}" does not implement required methods.`,
+            );
+        }
 
-    chainPublicClientClasses.push(target);
-    SetMetadata(CHAIN_PUBLIC_CLIENT_KEY, true)(target);
-  };
+        chainPublicClientClasses.push(target);
+        SetMetadata(CHAIN_PUBLIC_CLIENT_KEY, true)(target);
+    };
 }
