@@ -7,36 +7,38 @@ export interface HttpRequestConfig {
     timeout?: number;
 }
 
-export interface HttpResponse<T = any> {
+export interface HttpResponse<T = any, E = any> {
     data: T;
+    error?: E;
     status: number;
     statusText: string;
     headers: Record<string, string>;
+    isError: boolean;
 }
 
 export interface HttpClient {
-    request<T = any>(config: HttpRequestConfig): Promise<HttpResponse<T>>;
-    get<T = any>(
+    request<T = any, E = any>(config: HttpRequestConfig): Promise<HttpResponse<T, E>>;
+    get<T = any, E = any>(
         url: string,
         config?: Omit<HttpRequestConfig, 'url' | 'method'>,
-    ): Promise<HttpResponse<T>>;
-    post<T = any>(
+    ): Promise<HttpResponse<T, E>>;
+    post<T = any, E = any>(
         url: string,
         data?: any,
         config?: Omit<HttpRequestConfig, 'url' | 'method' | 'data'>,
-    ): Promise<HttpResponse<T>>;
-    put<T = any>(
+    ): Promise<HttpResponse<T, E>>;
+    put<T = any, E = any>(
         url: string,
         data?: any,
         config?: Omit<HttpRequestConfig, 'url' | 'method' | 'data'>,
-    ): Promise<HttpResponse<T>>;
-    delete<T = any>(
+    ): Promise<HttpResponse<T, E>>;
+    delete<T = any, E = any>(
         url: string,
         config?: Omit<HttpRequestConfig, 'url' | 'method'>,
-    ): Promise<HttpResponse<T>>;
-    patch<T = any>(
+    ): Promise<HttpResponse<T, E>>;
+    patch<T = any, E = any>(
         url: string,
         data?: any,
         config?: Omit<HttpRequestConfig, 'url' | 'method' | 'data'>,
-    ): Promise<HttpResponse<T>>;
+    ): Promise<HttpResponse<T, E>>;
 }

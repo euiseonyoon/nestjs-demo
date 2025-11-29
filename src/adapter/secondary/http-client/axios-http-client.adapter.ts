@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import type {
     HttpClient,
     HttpRequestConfig,
@@ -53,16 +53,6 @@ export class AxiosHttpClientAdapter implements HttpClient {
         );
     }
 
-    private mapAxiosResponse<T>(
-        axiosResponse: AxiosResponse<T>,
-    ): HttpResponse<T> {
-        return {
-            data: axiosResponse.data,
-            status: axiosResponse.status,
-            statusText: axiosResponse.statusText,
-            headers: axiosResponse.headers as Record<string, string>,
-        };
-    }
 
     private mapRequestConfig(config: HttpRequestConfig): AxiosRequestConfig {
         return {
@@ -75,31 +65,57 @@ export class AxiosHttpClientAdapter implements HttpClient {
         };
     }
 
-    async request<T = any>(
+    async request<T = any, E = any>(
         config: HttpRequestConfig,
-    ): Promise<HttpResponse<T>> {
-        const axiosConfig = this.mapRequestConfig(config);
-        const response = await this.axiosInstance.request<T>(axiosConfig);
-        return this.mapAxiosResponse(response);
+    ): Promise<HttpResponse<T, E>> {
+        try {
+            const axiosConfig = this.mapRequestConfig(config);
+            const response = await this.axiosInstance.request<T>(axiosConfig);
+
+            // 성공 응답
+            return {
+                data: response.data,
+                status: response.status,
+                statusText: response.statusText,
+                headers: response.headers as Record<string, string>,
+                isError: false,
+            };
+        } catch (error) {
+            // Axios 에러 처리
+            if (axios.isAxiosError(error) && error.response) {
+                // 4XX, 5XX 응답을 받았지만 예외로 처리된 경우
+                return {
+                    data: {} as T,
+                    error: error.response.data as E,
+                    status: error.response.status,
+                    statusText: error.response.statusText,
+                    headers: error.response.headers as Record<string, string>,
+                    isError: true,
+                };
+            }
+
+            // 네트워크 에러 등 다른 종류의 에러
+            throw error;
+        }
     }
 
-    async get<T = any>(
+    async get<T = any, E = any>(
         url: string,
         config?: Omit<HttpRequestConfig, 'url' | 'method'>,
-    ): Promise<HttpResponse<T>> {
-        return this.request<T>({
+    ): Promise<HttpResponse<T, E>> {
+        return this.request<T, E>({
             ...config,
             url,
             method: 'GET',
         });
     }
 
-    async post<T = any>(
+    async post<T = any, E = any>(
         url: string,
         data?: any,
         config?: Omit<HttpRequestConfig, 'url' | 'method' | 'data'>,
-    ): Promise<HttpResponse<T>> {
-        return this.request<T>({
+    ): Promise<HttpResponse<T, E>> {
+        return this.request<T, E>({
             ...config,
             url,
             method: 'POST',
@@ -107,12 +123,12 @@ export class AxiosHttpClientAdapter implements HttpClient {
         });
     }
 
-    async put<T = any>(
+    async put<T = any, E = any>(
         url: string,
         data?: any,
         config?: Omit<HttpRequestConfig, 'url' | 'method' | 'data'>,
-    ): Promise<HttpResponse<T>> {
-        return this.request<T>({
+    ): Promise<HttpResponse<T, E>> {
+        return this.request<T, E>({
             ...config,
             url,
             method: 'PUT',
@@ -120,23 +136,23 @@ export class AxiosHttpClientAdapter implements HttpClient {
         });
     }
 
-    async delete<T = any>(
+    async delete<T = any, E = any>(
         url: string,
         config?: Omit<HttpRequestConfig, 'url' | 'method'>,
-    ): Promise<HttpResponse<T>> {
-        return this.request<T>({
+    ): Promise<HttpResponse<T, E>> {
+        return this.request<T, E>({
             ...config,
             url,
             method: 'DELETE',
         });
     }
 
-    async patch<T = any>(
+    async patch<T = any, E = any>(
         url: string,
         data?: any,
         config?: Omit<HttpRequestConfig, 'url' | 'method' | 'data'>,
-    ): Promise<HttpResponse<T>> {
-        return this.request<T>({
+    ): Promise<HttpResponse<T, E>> {
+        return this.request<T, E>({
             ...config,
             url,
             method: 'PATCH',
