@@ -1,0 +1,182 @@
+1. Ethereum (ETH) - Stargate bridge -> Base (Eth)
+
+from: 0xe80A0a301D4aFfc9527d9093C645c6920fFeAe1D
+https://etherscan.io/tx/0x76980a275dfcca189434a5fc76615c2223b50276a407eed69f27416aa2f7fdbd
+https://basescan.org/tx/0x64cb2954a54c3e218216c7ce81b96b3111f78646219f3b5b4b882b73766eb862
+
+약 2 eth를 bridge 
+
+https://layerzeroscan.com/tx/0x76980a275dfcca189434a5fc76615c2223b50276a407eed69f27416aa2f7fdbd
+https://scan.layerzero-api.com/v1/messages/tx/0x76980a275dfcca189434a5fc76615c2223b50276a407eed69f27416aa2f7fdbd
+
+{
+   "data":[
+      {
+         "pathway":{
+            "srcEid":30101,
+            "dstEid":30184,
+            "sender":{
+               "address":"0x6d6620efa72948c5f68a3c8646d58c00d3f4a980",
+               "id":"stargate",
+               "name":"Stargate",
+               "chain":"ethereum"
+            },
+            "receiver":{
+               "address":"0x5634c4a5fed09819e3c46d86a965dd9447d86e47",
+               "id":"stargate",
+               "name":"Stargate",
+               "chain":"base"
+            },
+            "id":"30101-30184-0x6d6620efa72948c5f68a3c8646d58c00d3f4a980-0x5634c4a5fed09819e3c46d86a965dd9447d86e47",
+            "nonce":94189
+         },
+         "source":{
+            "status":"SUCCEEDED",
+            "tx":{
+               "txHash":"0x76980a275dfcca189434a5fc76615c2223b50276a407eed69f27416aa2f7fdbd",
+               "blockHash":"0x635dc7e66b0c53ac2170c5451773c65deedb378616d6f56448743cd87e575d81",
+               "blockNumber":"23921626",
+               "blockTimestamp":1764628247,
+               "from":"0xe80a0a301d4affc9527d9093c645c6920ffeae1d",
+               "payload":"0x01000d000000000000000000000000e80a0a301d4affc9527d9093c645c6920ffeae1d00000000001ea710",
+               "readinessTimestamp":1764628427,
+               "options":{
+                  "lzReceive":{
+                     "gas":"150000",
+                     "value":"0"
+                  },
+                  "ordered":false
+               }
+            }
+         },
+         "destination":{
+            "nativeDrop":{
+               "status":"N/A"
+            },
+            "lzCompose":{
+               "status":"N/A"
+            },
+            "tx":{
+               "txHash":"0x64cb2954a54c3e218216c7ce81b96b3111f78646219f3b5b4b882b73766eb862",
+               "blockHash":"0x7cb3d758acec9c020c5204ab913f99375e1c64f5291ba676f35274daf3ed57a7",
+               "blockNumber":38919547,
+               "blockTimestamp":1764628441
+            },
+            "status":"SUCCEEDED"
+         },
+         "verification":{
+            "dvn":{
+               "dvns":{
+                  "0xcd37ca043f8479064e10635020c65ffc005d36f6":{
+                     "txHash":"0xf0040409241cda80f0c4041ab72c933636b3980e22c3d54efd33811b4583a34f",
+                     "blockHash":"0xb7be65c50ef39032d5231814b29d4b800695cb95868f28af3627baf46d93a8a5",
+                     "blockNumber":38919543,
+                     "blockTimestamp":1764628433,
+                     "proof":{
+                        "packetHeader":"0x010000000000016fed000075950000000000000000000000006d6620efa72948c5f68a3c8646d58c00d3f4a980000075e80000000000000000000000005634c4a5fed09819e3c46d86a965dd9447d86e47",
+                        "payloadHash":"0xbe59a7cf2096dc3c61afc9c4db935e6d7988bbfb5b10c9e176f07bacac4f149a"
+                     },
+                     "optional":false,
+                     "status":"SUCCEEDED"
+                  },
+                  "0xcdf31d62140204c08853b547e64707110fbc6680":{
+                     "txHash":"0x09c7b9820a5f3b5eca6b39db0a4e86435a40a1c9f02fd5a04cd1b3d1e7ed033a",
+                     "blockHash":"0xb7be65c50ef39032d5231814b29d4b800695cb95868f28af3627baf46d93a8a5",
+                     "blockNumber":38919543,
+                     "blockTimestamp":1764628433,
+                     "proof":{
+                        "packetHeader":"0x010000000000016fed000075950000000000000000000000006d6620efa72948c5f68a3c8646d58c00d3f4a980000075e80000000000000000000000005634c4a5fed09819e3c46d86a965dd9447d86e47",
+                        "payloadHash":"0xbe59a7cf2096dc3c61afc9c4db935e6d7988bbfb5b10c9e176f07bacac4f149a"
+                     },
+                     "optional":false,
+                     "status":"SUCCEEDED"
+                  }
+               },
+               "status":"SUCCEEDED"
+            },
+            "sealer":{
+               "tx":{
+                  "txHash":"0x4715c4e2cf5708bb7be51e553a606963191f255cfe5d9757256501d8389326b2",
+                  "blockHash":"0xd257a3442388e8d9a46a894cfd7dd0f4e71e87a62602f687923eace1a578bc79",
+                  "blockNumber":38919545,
+                  "blockTimestamp":1764628437
+               },
+               "status":"SUCCEEDED"
+            }
+         },
+         "guid":"0xf368dc4779cbcecb590bb9b12c4d360a45c586a32ad7be90da009dcc8116c591",
+         "config":{
+            "error":false,
+            "receiveLibrary":"0xc70AB6f32772f59fBfc23889Caf4Ba3376C84bAf",
+            "sendLibrary":"0xbB2Ea70C9E858123480642Cf96acbcCE1372dCe1",
+            "inboundConfig":{
+               "confirmations":15,
+               "requiredDVNCount":2,
+               "optionalDVNCount":0,
+               "optionalDVNThreshold":0,
+               "requiredDVNs":[
+                  "0xcd37ca043f8479064e10635020c65ffc005d36f6",
+                  "0xcdf31d62140204c08853b547e64707110fbc6680"
+               ],
+               "requiredDVNNames":[
+                  "Nethermind",
+                  "Stargate"
+               ],
+               "optionalDVNs":[
+                  
+               ],
+               "optionalDVNNames":[
+                  
+               ]
+            },
+            "outboundConfig":{
+               "confirmations":15,
+               "requiredDVNCount":2,
+               "optionalDVNCount":0,
+               "optionalDVNThreshold":0,
+               "requiredDVNs":[
+                  "0x8fafae7dd957044088b3d0f67359c327c6200d18",
+                  "0xa59ba433ac34d2927232918ef5b2eaafcf130ba5"
+               ],
+               "requiredDVNNames":[
+                  "Stargate",
+                  "Nethermind"
+               ],
+               "optionalDVNs":[
+                  
+               ],
+               "optionalDVNNames":[
+                  
+               ],
+               "executor":"0x173272739Bd7Aa6e4e214714048a9fE699453059"
+            },
+            "ulnSendVersion":"V302",
+            "ulnReceiveVersion":"V302"
+         },
+         "status":{
+            "name":"DELIVERED",
+            "message":"Executor transaction confirmed"
+         },
+         "created":"2025-12-01T22:31:04.000Z",
+         "updated":"2025-12-01T22:34:13.000Z"
+      }
+   ]
+}
+
+bridge out amount:
+    base scan 에서 logs -> OFTReceived 이벤트를 보고 확인가능
+
+====================================================
+
+2. Ethereum (USDT) - Stargate bridge -> Bsc (USDT)
+from: 0xEa2b6A67AF4f4823966375FFd16BA052A6BADBCc
+https://etherscan.io/tx/0x0ec695b4b562763305161362a3321b860b273d7880ea0584cf51154ec951e774
+https://bscscan.com/tx/0x5137e6e3658d5b1a9391fbb02a4f1ec4a03bf37491259b8d0375a4b9d2026217
+
+약 150개의 USDT를 bridge
+
+https://layerzeroscan.com/tx/0x0ec695b4b562763305161362a3321b860b273d7880ea0584cf51154ec951e774
+https://scan.layerzero-api.com/v1/messages/tx/0x0ec695b4b562763305161362a3321b860b273d7880ea0584cf51154ec951e774
+
+bridge out amount:
+    bsc scan 에서 logs -> OFTReceived 이벤트를 보고 확인가능
