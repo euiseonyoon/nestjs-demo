@@ -1,10 +1,10 @@
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
-import type { RpcClientManager } from 'src/infrastructure/manager/rpc-client-manager.impl';
 import { Hash, TransactionReceipt } from 'viem';
 import * as chains from 'viem/chains';
 import { TxService } from './provided_port/tx.interface';
 import { EvmTxHash } from 'src/common/evm-tx-hash.class';
 import { RPC_CLIENT_MANAGER } from 'src/module/public-client.module';
+import { type RpcClientManager } from './required_port/tx.required-port';
 
 @Injectable()
 export class TxServiceImpl implements TxService {

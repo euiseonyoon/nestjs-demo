@@ -1,11 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Chain } from 'viem';
 import type { PublicClient } from 'viem';
 import type { ChainPublicClients } from '../rpc-node-provider/chain-public-clients.interface';
-
-export interface RpcClientManager {
-    getRpcClient(chainId: number): PublicClient | null;
-}
+import { RpcClientManager } from 'src/application/transaction/required_port/tx.required-port';
+import { ALL_CHAIN_PUBLIC_CLIENTS } from 'src/module/public-client.module';
 
 @Injectable()
 export class RpcClientManagerImpl implements RpcClientManager {
@@ -15,7 +12,7 @@ export class RpcClientManagerImpl implements RpcClientManager {
     >();
 
     constructor(
-        @Inject('AllChainPublicClients')
+        @Inject(ALL_CHAIN_PUBLIC_CLIENTS)
         private readonly chainPublicClients: ChainPublicClients[],
     ) {
         this.initializeChainMap(chainPublicClients);
