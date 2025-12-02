@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { TxServiceImpl } from 'src/application/transaction/tx.service';
+import { TxService } from 'src/application/transaction/tx.service';
 import { PublicClientModule } from './public-client.module';
 
-export const TX_SERVICE = 'TxService';
+export const TX_SERVICE = Symbol('TxService');
 
 @Module({
     imports: [PublicClientModule],
     controllers: [],
-    providers: [{ provide: TX_SERVICE, useClass: TxServiceImpl }],
+    providers: [{ provide: TX_SERVICE, useClass: TxService }],
     exports: [
         TX_SERVICE
     ]

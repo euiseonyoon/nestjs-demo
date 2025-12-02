@@ -1,5 +1,5 @@
 import { PublicClient } from "viem";
 
-export interface RpcClientManager {
+export interface IRpcClientManager {
     getRpcClient(chainId: number): PublicClient | null;
 }

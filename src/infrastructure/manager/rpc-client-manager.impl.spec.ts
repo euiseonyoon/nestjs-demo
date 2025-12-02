@@ -10,7 +10,7 @@ import {
 } from 'viem';
 import { mainnet, polygon } from 'viem/chains';
 import { ChainPublicClients } from '../rpc-node-provider/chain-public-clients.interface';
-import { RpcClientManagerImpl } from './rpc-client-manager.impl';
+import { RpcClientManager } from './rpc-client-manager.impl';
 
 describe('RpcClientManagerImplTest', () => {
     type TransportFactory = (url: string) => HttpTransport | WebSocketTransport;
@@ -52,7 +52,7 @@ describe('RpcClientManagerImplTest', () => {
                 ]),
                 [],
             );
-            const manager = new RpcClientManagerImpl([ethPublicClients]);
+            const manager = new RpcClientManager([ethPublicClients]);
             const targetChain = mainnet; // ethereum 메인넷
 
             // WHEN
@@ -90,7 +90,7 @@ describe('RpcClientManagerImplTest', () => {
                 makePublicClients(polygon, http, [polygonHttpUrl]),
                 makePublicClients(polygon, webSocket, [polygonWebsocketUrl]),
             );
-            const manager = new RpcClientManagerImpl([polygonPublicClients]);
+            const manager = new RpcClientManager([polygonPublicClients]);
             const targetChain = polygon; // polygon 메인넷
 
             // WHEN
@@ -114,7 +114,7 @@ describe('RpcClientManagerImplTest', () => {
         it('0개일떄 undefined를 반환하는지 확인한다', (doneCallback) => {
             // GIVEN
             const ethPublicClients = createMockChainPublicClients([], []);
-            const manager = new RpcClientManagerImpl([ethPublicClients]);
+            const manager = new RpcClientManager([ethPublicClients]);
             const targetChain = mainnet; // ethereum 메인넷
 
             // WHEN

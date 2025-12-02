@@ -16,7 +16,7 @@ export interface HttpResponse<T = any, E = any> {
     isError: boolean;
 }
 
-export interface HttpClient {
+export interface IHttpClient {
     request<T = any, E = any>(config: HttpRequestConfig): Promise<HttpResponse<T, E>>;
     get<T = any, E = any>(
         url: string,

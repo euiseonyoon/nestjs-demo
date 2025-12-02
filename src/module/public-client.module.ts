@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { RpcClientManagerImpl } from 'src/infrastructure/manager/rpc-client-manager.impl';
+import { RpcClientManager } from 'src/infrastructure/manager/rpc-client-manager.impl';
 import { chainPublicClientClasses } from 'src/infrastructure/rpc-node-provider/chain-public-client.decorator';
 import { ChainPublicClients } from 'src/infrastructure/rpc-node-provider/chain-public-clients.interface';
 // 아래는 EthereumChainPublicClientsImpl, BaseChainPublicClientsImpl 에서 @ChainPublicClient 데코레이터가 실행되야 해서 필요함
@@ -21,8 +21,8 @@ import 'src/infrastructure/rpc-node-provider/ethereum.public-clients';
     useValue: [new EthereumChainPublicClientsImpl(), new BaseChainPublicClientsImpl()],
   }
  */
-export const ALL_CHAIN_PUBLIC_CLIENTS = 'AllChainPublicClients'
-export const RPC_CLIENT_MANAGER = 'RpcClientManager'
+export const ALL_CHAIN_PUBLIC_CLIENTS = Symbol('AllChainPublicClients');
+export const RPC_CLIENT_MANAGER = Symbol('RpcClientManager');
 
 @Module({
     providers: [
@@ -32,7 +32,7 @@ export const RPC_CLIENT_MANAGER = 'RpcClientManager'
             inject: chainPublicClientClasses, // 2) 그래야 여기서 주입 가능
             useFactory: (...clients: ChainPublicClients[]) => clients, // clients는 imports에서 입력한것들
         },
-        { provide: RPC_CLIENT_MANAGER, useClass: RpcClientManagerImpl },
+        { provide: RPC_CLIENT_MANAGER, useClass: RpcClientManager },
     ],
     exports: [RPC_CLIENT_MANAGER],
 })

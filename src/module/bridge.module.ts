@@ -4,7 +4,7 @@ import { StargateService } from 'src/application/bridges/stargate/stargate.servi
 import { IBridgeService } from 'src/application/bridges/bridge.interface';
 import { TxModule } from './tx.module';
 
-export const BRIDGE_SERVICES = 'BridgeServices';
+export const BRIDGE_SERVICES = Symbol('BridgeServices');
 
 @Module({
     imports: [

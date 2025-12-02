@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 import type {
-    HttpClient,
+    IHttpClient,
     HttpRequestConfig,
     HttpResponse,
 } from '../../../application/common/required_port/http-client.interface';
 
 @Injectable()
-export class AxiosHttpClientAdapter implements HttpClient {
+export class AxiosHttpClientAdapter implements IHttpClient {
     private readonly axiosInstance: AxiosInstance;
 
     constructor() {

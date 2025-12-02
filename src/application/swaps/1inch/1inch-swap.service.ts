@@ -1,6 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import type { HttpClient, HttpResponse } from '../../common/required_port/http-client.interface';
+import type { IHttpClient, HttpResponse } from '../../common/required_port/http-client.interface';
 import { SwapService } from '../swap.service';
 import { ChainId } from 'src/common/chain-id.enum';
 import { Token } from 'src/common/token.class';
@@ -23,7 +23,7 @@ export class OneInchService extends SwapService implements ISwapService{
 
     constructor(
         @Inject(HTTP_CLIENT)
-        private readonly httpClient: HttpClient,
+        private readonly httpClient: IHttpClient,
         private readonly configService: ConfigService,
     ) {
         // TODO: https://api.1inch.com/token/v1.3/multi-chain/supported-chains + viem/chains의 chains를 섞어서 supportingChains를 만든다.

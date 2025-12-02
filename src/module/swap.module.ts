@@ -4,7 +4,7 @@ import { HttpClientModule } from './http-client.module';
 // import { SushiSwapService } from 'src/application/swaps/sushi/sushi-swap.service';
 import { ISwapService } from 'src/application/swaps/swap.interface';
 
-export const SWAP_SERVICES = 'SwapServices';
+export const SWAP_SERVICES = Symbol('SwapServices');
 
 @Module({
     imports: [HttpClientModule],

@@ -1,11 +1,11 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { type HttpClient } from "src/application/common/required_port/http-client.interface";
+import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { LayerZeroScanBridgeData, LayerZeroScanBridgeResponse, StargateChainResponse, StargateQuoteDetailResponse, StargateQuoteResponse } from "./stargate.response";
 import { Cron } from "@nestjs/schedule";
 import { IBridgeService } from "../bridge.interface";
 import { BridgeHistoryRequest, BridgeQuoteRequest } from "../request.type";
 import { BridgeOutAmountResponse, BridgeQuoteResponse } from "../response.type";
-import { type TxService } from "src/application/transaction/provided_port/tx.interface";
+import { type ITxService } from "src/application/transaction/provided_port/tx.provided-port";
 import { EvmTxHash } from "src/common/evm-tx-hash.class";
 import { TX_SERVICE } from "src/module/tx.module";
 import { HTTP_CLIENT } from "src/module/http-client.module";
@@ -20,9 +20,9 @@ export class StargateService implements IBridgeService {
 
     constructor(
         @Inject(HTTP_CLIENT)
-        private readonly httpClient: HttpClient,
+        private readonly httpClient: IHttpClient,
         @Inject(TX_SERVICE)
-        private readonly txService: TxService
+        private readonly txService: ITxService
     ) {
         this.refreshChainKeyMap()
         this.refreshLayerZeroMetadata()

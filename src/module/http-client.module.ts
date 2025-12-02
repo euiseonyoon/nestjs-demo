@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AxiosHttpClientAdapter } from '../adapter/secondary/http-client/axios-http-client.adapter';
 
-export const HTTP_CLIENT = "HttpClient"
+export const HTTP_CLIENT = Symbol('HttpClient');
 
 @Module({
     providers: [

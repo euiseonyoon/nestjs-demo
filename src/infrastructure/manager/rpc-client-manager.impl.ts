@@ -1,11 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import type { PublicClient } from 'viem';
 import type { ChainPublicClients } from '../rpc-node-provider/chain-public-clients.interface';
-import { RpcClientManager } from 'src/application/transaction/required_port/tx.required-port';
+import { IRpcClientManager } from 'src/application/transaction/required_port/tx.required-port';
 import { ALL_CHAIN_PUBLIC_CLIENTS } from 'src/module/public-client.module';
 
 @Injectable()
-export class RpcClientManagerImpl implements RpcClientManager {
+export class RpcClientManager implements IRpcClientManager {
     private readonly chainMap = new Map<
         number, // Chain ID를 Key로 사용
         { cursor: number; clients: PublicClient[] }
