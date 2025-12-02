@@ -1,5 +1,6 @@
 import { ChainInfo } from 'src/common/chain-info.type';
-import { Token } from 'src/common/token.type';
+import { Token } from 'src/common/token.class';
+import { SameChainSwapQuoteRequest } from './request.type';
 
 export abstract class SwapService {
     private supportingChains: ChainInfo[];
@@ -32,5 +33,24 @@ export abstract class SwapService {
 
     protected setSupportingTokens(tokens: Token[]): void {
         this.supportingTokens = tokens;
+    }
+
+    validateSimpleSwapRequest(request: SameChainSwapQuoteRequest): boolean {
+        const chainInfo = this.getChainInfo(request.chain.id)
+        if (chainInfo === undefined) {
+            return false
+        }
+
+        const srcToken = this.getTokenInfo(request.srcToken)
+        if (srcToken === undefined) {
+            return false
+        }
+
+        const dstToken = this.getTokenInfo(request.dstToken)
+        if (dstToken === undefined) {
+            return false
+        }
+
+        return true
     }
 }
