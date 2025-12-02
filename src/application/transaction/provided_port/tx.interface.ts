@@ -1,5 +1,6 @@
-import { Hash, TransactionReceipt } from 'viem';
+import { EvmTxHash } from 'src/common/evm-tx-hash.class';
+import { TransactionReceipt } from 'viem';
 
 export interface TxService {
-    getTxReceipt(txHash: Hash, chainId: number): Promise<TransactionReceipt>;
+    getTxReceipt(txHash: EvmTxHash, chainId: number): Promise<TransactionReceipt | null>;
 }

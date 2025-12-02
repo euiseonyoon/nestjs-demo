@@ -57,7 +57,7 @@ describe('RpcClientManagerImplTest', () => {
 
             // WHEN
             const firstPublicClient =
-                manager.findChainByRoundRobin(targetChain);
+                manager.findChainByRoundRobin(targetChain.id);
             // THEN
             expect(firstPublicClient).not.toBeUndefined();
             expect(firstPublicClient?.transport.type).toBe('http');
@@ -65,7 +65,7 @@ describe('RpcClientManagerImplTest', () => {
 
             // WHEN
             const secondPublicClient =
-                manager.findChainByRoundRobin(targetChain);
+                manager.findChainByRoundRobin(targetChain.id);
             // THEN
             expect(secondPublicClient).not.toBeUndefined();
             expect(secondPublicClient?.transport.type).toBe('http');
@@ -73,7 +73,7 @@ describe('RpcClientManagerImplTest', () => {
 
             // WHEN
             const thirdPublicClient =
-                manager.findChainByRoundRobin(targetChain);
+                manager.findChainByRoundRobin(targetChain.id);
             // THEN
             expect(thirdPublicClient).not.toBeUndefined();
             expect(thirdPublicClient?.transport.type).toBe('http');
@@ -95,7 +95,7 @@ describe('RpcClientManagerImplTest', () => {
 
             // WHEN
             const firstPublicClient =
-                manager.findChainByRoundRobin(targetChain);
+                manager.findChainByRoundRobin(targetChain.id);
             // THEN
             expect(firstPublicClient).not.toBeUndefined();
             expect(firstPublicClient?.transport.type).toBe('http');
@@ -103,7 +103,7 @@ describe('RpcClientManagerImplTest', () => {
 
             // WHEN
             const secondPublicClient =
-                manager.findChainByRoundRobin(targetChain);
+                manager.findChainByRoundRobin(targetChain.id);
             // THEN
             expect(secondPublicClient).not.toBeUndefined();
             expect(secondPublicClient?.transport.type).toBe('webSocket');
@@ -119,9 +119,9 @@ describe('RpcClientManagerImplTest', () => {
 
             // WHEN
             const firstPublicClient =
-                manager.findChainByRoundRobin(targetChain);
+                manager.findChainByRoundRobin(targetChain.id);
             // THEN
-            expect(firstPublicClient).toBeUndefined();
+            expect(firstPublicClient).toBeNull();
 
             doneCallback();
         });

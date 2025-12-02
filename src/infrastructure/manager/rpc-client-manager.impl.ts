@@ -4,7 +4,7 @@ import type { PublicClient } from 'viem';
 import type { ChainPublicClients } from '../rpc-node-provider/chain-public-clients.interface';
 
 export interface RpcClientManager {
-    getRpcClient(chain: Chain): PublicClient;
+    getRpcClient(chainId: number): PublicClient | null;
 }
 
 @Injectable()
@@ -40,10 +40,10 @@ export class RpcClientManagerImpl implements RpcClientManager {
         });
     }
 
-    findChainByRoundRobin(chain: Chain): PublicClient | undefined {
-        const info = this.chainMap.get(chain.id);
+    findChainByRoundRobin(chainId: number): PublicClient | null {
+        const info = this.chainMap.get(chainId);
         if (info == undefined) {
-            return undefined;
+            return null;
         }
 
         const publicCient = info.clients[info.cursor];
@@ -51,12 +51,10 @@ export class RpcClientManagerImpl implements RpcClientManager {
         return publicCient;
     }
 
-    getRpcClient(chain: Chain): PublicClient {
-        const result = this.findChainByRoundRobin(chain);
+    getRpcClient(chainId: number): PublicClient | null{
+        const result = this.findChainByRoundRobin(chainId);
         if (result == undefined) {
-            throw new Error(
-                `No client found for chain: ${chain.name} (id: ${chain.id})`,
-            );
+            return null
         }
 
         return result;

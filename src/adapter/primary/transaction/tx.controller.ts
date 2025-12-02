@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 // interface는 런타임에 존재하지 않으므로 import type을 사용해야함.
 import type { TxService } from 'src/application/transaction/provided_port/tx.interface';
+import { EvmTxHash } from 'src/common/evm-tx-hash.class';
 import { Hash, TransactionReceipt } from 'viem';
 
 @Controller('tx')
@@ -22,11 +23,11 @@ export class TxController {
     async getTxReceipt(
         @Query('txHash') txHash: string,
         @Query('chainId', ParseIntPipe) chainId: number, // ParseIntPipe: string -> number로 변경
-    ): Promise<TransactionReceipt> {
+    ): Promise<TransactionReceipt | null> {
         if (!txHash.startsWith('0x')) {
             throw new BadRequestException('Invalid tx hash format');
         }
 
-        return this.txService.getTxReceipt(txHash as Hash, chainId);
+        return this.txService.getTxReceipt(new EvmTxHash(txHash), chainId);
     }
 }
