@@ -2,6 +2,7 @@
 import Decimal from "decimal.js";
 import { ChainInfo } from "./chain-info.type"
 import { EvmAddress } from "./evm-address.class"
+import { OneInchTokenData } from "src/application/swaps/1inch/response.type";
 
 export class Token {
     constructor(
@@ -18,5 +19,16 @@ export class Token {
         const weiDecimal: Decimal = amountInDecimal.times(new Decimal(10).toPower(this.decimals));
         const weiString: string = weiDecimal.toFixed(0, Decimal.ROUND_DOWN);
         return BigInt(weiString);
+    }
+
+    static fromOneInchTokenData(tokenData: OneInchTokenData, chainInfo: ChainInfo): Token {
+        return new Token(
+            chainInfo,
+            new EvmAddress(tokenData.address),
+            tokenData.symbol,
+            tokenData.decimals,
+            tokenData.name,
+            tokenData.logoURI
+        )
     }
 }
