@@ -4,11 +4,12 @@ import { Hash, TransactionReceipt } from 'viem';
 import * as chains from 'viem/chains';
 import { TxService } from './provided_port/tx.interface';
 import { EvmTxHash } from 'src/common/evm-tx-hash.class';
+import { RPC_CLIENT_MANAGER } from 'src/module/public-client.module';
 
 @Injectable()
 export class TxServiceImpl implements TxService {
     constructor(
-        @Inject('RpcClientManager')
+        @Inject(RPC_CLIENT_MANAGER)
         private readonly rpcClientManager: RpcClientManager,
     ) {}
 
