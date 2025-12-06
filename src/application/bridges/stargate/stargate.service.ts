@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { LayerZeroScanBridgeData, LayerZeroScanBridgeResponse, StargateChainResponse, StargateQuoteDetailResponse, StargateQuoteResponse } from "./stargate.response";
 import { Cron } from "@nestjs/schedule";
-import { IBridgeService } from "../bridge.interface";
+import { IBridgeService } from "../provided_port/bridge.interface";
 import { BridgeHistoryRequest, BridgeQuoteRequest } from "../request.type";
 import { BridgeOutAmountResponse, BridgeQuoteResponse } from "../response.type";
 import { type ITxService } from "src/application/transaction/provided_port/tx.provided-port";

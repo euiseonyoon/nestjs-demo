@@ -5,11 +5,11 @@ import { SwapService } from '../swap.service';
 import { ChainId } from 'src/common/chain-id.enum';
 import { Token } from 'src/common/token.class';
 import { Cron } from '@nestjs/schedule';
-import { ClassicSwapQuoteResponse, OneInchHistoryResponseDto, OneInchTokenData, OneInchTokensResponse, TokenActionDto } from './response.type';
+import { ClassicSwapQuoteResponse, OneInchHistoryResponseDto, OneInchTokenData, OneInchTokensResponse, TokenActionDto } from './1inch-response.type';
 import { EvmTxHash } from 'src/common/evm-tx-hash.class';
 import { EvmAddress } from 'src/common/evm-address.class';
 import { SameChainSwapQuoteRequest, SwapOutAmountRequest, SwapQuoteRequest } from '../request.type';
-import { ISwapService } from '../swap.interface';
+import { ISwapService } from '../provided_port/swap.interface';
 import { SwapOutAmountResponse, SwapQuoteResponse } from '../response.type';
 import { HTTP_CLIENT } from 'src/module/http-client.module';
 
