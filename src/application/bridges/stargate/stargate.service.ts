@@ -6,7 +6,7 @@ import { IBridgeService } from "../provided_port/bridge.interface";
 import { BridgeHistoryRequest, BridgeQuoteRequest } from "../request.type";
 import { BridgeOutAmountResponse, BridgeQuoteResponse } from "../response.type";
 import { type ITxService } from "src/application/transaction/provided_port/tx.provided-port";
-import { EvmTxHash } from "src/common/evm-tx-hash.class";
+import { EvmTxHash } from "src/domain/evm-tx-hash.class";
 import { TX_SERVICE } from "src/module/tx.module";
 import { HTTP_CLIENT } from "src/module/http-client.module";
 import { TransactionReceipt } from "viem";

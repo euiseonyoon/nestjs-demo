@@ -1,7 +1,7 @@
-import { ChainInfo } from "src/common/chain-info.type"
-import { EvmAddress } from "src/common/evm-address.class"
-import { EvmTxHash } from "src/common/evm-tx-hash.class"
-import { Token } from "src/common/token.class"
+import { ChainInfo } from "src/domain/chain-info.type"
+import { EvmAddress } from "src/domain/evm-address.class"
+import { EvmTxHash } from "src/domain/evm-tx-hash.class"
+import { Token } from "src/domain/token.class"
 
 export type BridgeQuoteRequest = {
     srcToken: Token,

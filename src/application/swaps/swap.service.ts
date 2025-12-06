@@ -1,5 +1,5 @@
-import { ChainInfo } from 'src/common/chain-info.type';
-import { Token } from 'src/common/token.class';
+import { ChainInfo } from 'src/domain/chain-info.type';
+import { Token } from 'src/domain/token.class';
 import { SameChainSwapQuoteRequest } from './request.type';
 
 export abstract class SwapService {

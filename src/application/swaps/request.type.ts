@@ -1,8 +1,8 @@
-import { ChainInfo } from "src/common/chain-info.type";
-import { EvmAddress } from "src/common/evm-address.class";
-import { EvmTxHash } from "src/common/evm-tx-hash.class";
-import { Token } from "src/common/token.class";
-import { TokenAmount } from "../common/type/common-defi.type";
+import { ChainInfo } from "src/domain/chain-info.type";
+import { EvmAddress } from "src/domain/evm-address.class";
+import { EvmTxHash } from "src/domain/evm-tx-hash.class";
+import { Token } from "src/domain/token.class";
+import { TokenAmount } from "../../domain/common-defi.type";
 
 // Same-chain swap
 export type SameChainSwapQuoteRequest = {
