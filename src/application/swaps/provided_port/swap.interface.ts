@@ -4,5 +4,5 @@ import { SwapOutAmountResponse, SwapQuoteResponse } from "../response.type";
 export interface ISwapService {
     getQuote(quoteRequest: SwapQuoteRequest): Promise<SwapQuoteResponse | undefined>
 
-    getRecentSwapOutAmount(request: SwapOutAmountRequest): Promise<SwapOutAmountResponse | undefined>
+    getSwapOutAmount(request: SwapOutAmountRequest): Promise<SwapOutAmountResponse | undefined>
 }

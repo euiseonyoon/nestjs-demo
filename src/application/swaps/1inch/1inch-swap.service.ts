@@ -142,7 +142,7 @@ export class OneInchService extends SwapService implements ISwapService{
         }
     }
 
-    async getRecentSwapOutAmount(request: SwapOutAmountRequest): Promise<SwapOutAmountResponse | undefined> {
+    async getSwapOutAmount(request: SwapOutAmountRequest): Promise<SwapOutAmountResponse | undefined> {
         const response = await this.fetchFromOneInchHistoryApi(request.address, request.chainId)
         if (!response) return undefined
 
