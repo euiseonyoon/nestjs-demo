@@ -1,32 +1,28 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
-import { LayerZeroScanBridgeData, LayerZeroScanBridgeResponse, StargateChainResponse, StargateQuoteDetailResponse, StargateQuoteResponse } from "./stargate.response";
+import { StargateChainResponse, StargateQuoteDetailResponse, StargateQuoteResponse } from "./stargate.response";
 import { Cron } from "@nestjs/schedule";
 import { IBridgeService } from "../provided_port/bridge.interface";
 import { BridgeHistoryRequest, BridgeQuoteRequest } from "../request.type";
 import { BridgeOutAmountResponse, BridgeQuoteResponse } from "../response.type";
-import { type ITxService } from "src/application/transaction/provided_port/tx.provided-port";
 import { EvmTxHash } from "src/domain/evm-tx-hash.class";
-import { TX_SERVICE } from "src/module/tx.module";
 import { HTTP_CLIENT } from "src/module/http-client.module";
-import { TransactionReceipt } from "viem";
+import { LAYER_ZERO_SERVICE } from "src/module/bridge-sub.module";
+import { type ILayerZeroService } from "./required_port/layer-zero.interface";
 
 @Injectable()
 export class StargateService implements IBridgeService {
     // TODO: 하위의 정보들은 나중에 cache registry에 등록하던지 한다.
     private chainIdChainKeyMap = new Map<number, string>()
     private chainKeyChainIdMap = new Map<string, number>()
-    private eidToChainIdMap = new Map<number, number>()
 
     constructor(
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
-        @Inject(TX_SERVICE)
-        private readonly txService: ITxService
+        @Inject(LAYER_ZERO_SERVICE)
+        private readonly layerZeroService: ILayerZeroService
     ) {
         this.refreshChainKeyMap()
-        this.refreshLayerZeroMetadata()
-        const stop = 1
     }
 
     // 매일 새벽 3시에 한번씩 초기화
@@ -44,50 +40,17 @@ export class StargateService implements IBridgeService {
         })
     }
 
-    // LayerZero EID → Chain ID 매핑 초기화 (매일 새벽 4시)
-    @Cron('0 0 4 * * *')
-    async refreshLayerZeroMetadata() {
-        const url = 'https://metadata.layerzero-api.com/v1/metadata'
-        const response = await this.httpClient.get<Record<string, any>>(url)
-
-        if (!response || response.isError) {
-            console.error('Failed to fetch LayerZero metadata')
-            return
-        }
-
-        // 각 체인의 메타데이터를 순회하며 EID → Chain ID 매핑 구축
-        for (const [chainKey, chainData] of Object.entries(response.data)) {
-            // EVM 체인만 처리
-            if (chainData.chainDetails?.chainType === 'evm') {
-                // V2 deployment 찾기
-                const v2Deployment = chainData.deployments?.find(
-                    (d: any) => d.version === 2
-                )
-
-                if (v2Deployment?.eid && chainData.chainDetails?.nativeChainId) {
-                    this.eidToChainIdMap.set(
-                        v2Deployment.eid,
-                        chainData.chainDetails.nativeChainId
-                    )
-                }
-            }
-        }
-    }
-
-    async getBridgeOutAmount(request: BridgeHistoryRequest) : Promise<BridgeOutAmountResponse | null>{
-        const data = await this.fetchBridgeInfoFromLayerZero(request.srcTxHash)
+    async getBridgeOutAmount(request: BridgeHistoryRequest) : Promise<BridgeOutAmountResponse | null> {
+        const data = await this.layerZeroService.fetchBridgeInfo(request.srcTxHash)
         if (!data) return null
         if(data.status.name != 'DELIVERED') {
-            return { status: data.status.name, bridgeOutAmount: null}
+            return { status: data.status.name, bridgeOutAmount: null};
         }
-
-        const dstTxHash = data.destination.tx.txHash
-        const chainId = this.convertEidToChainId(data.pathway.dstEid)
-        if (!chainId) return null
-        const receipt = await this.txService.getTxReceipt(new EvmTxHash(dstTxHash), chainId)
+        
+        const receipt = await this.layerZeroService.getTxReceiptUsingDstInfo(data.pathway.dstEid, new EvmTxHash(data.destination.tx.txHash))
         if (!receipt) return null
         
-        const bridgeOutAmount = await this.getBridgeOutAmountFromReceipt(receipt)
+        const bridgeOutAmount = await this.layerZeroService.getBridgeOutAmountFromReceipt(receipt)
         if (!bridgeOutAmount) return null
 
         return {
@@ -98,45 +61,6 @@ export class StargateService implements IBridgeService {
             }
         }
     }
-
-    private async getBridgeOutAmountFromReceipt(receipt: TransactionReceipt): Promise<bigint | null> {
-        // 0xefed6d3500546b29533b128a29e3a94d70788727f0507505ac12eaf2e578fd9c
-        // OFTReceived (index_topic_1 bytes32 guid, uint32 srcEid, index_topic_2 address toAddress, uint256 amountReceivedLD)
-        const targetEvent = receipt.logs.find((log)=> {
-            log.topics[0] === "0xefed6d3500546b29533b128a29e3a94d70788727f0507505ac12eaf2e578fd9c"
-        })
-        if (!targetEvent) return null
-
-        // example
-        // 0x
-        // 0000000000000000000000000000000000000000000000000000000000007595. // srcEid
-        // 0000000000000000000000000000000000000000000000001be0dc9cd7c10000  // amountReceivedLD
-        return BigInt("0x" + targetEvent.data.slice(-64));
-    }
-
-    private async fetchBridgeInfoFromLayerZero(srcTxHash: EvmTxHash): Promise<LayerZeroScanBridgeData | null> {
-        const url = `https://scan.layerzero-api.com/v1/messages/tx/${srcTxHash.hash}`
-        const response = await this.httpClient.get<LayerZeroScanBridgeResponse>(url)
-        if(!response || response.isError) return null
-        if (response.data.data.length < 1) return null
-        
-        return response.data.data[0]
-    }
-
-    private convertEidToChainId(eid: number): number | null {
-        const chainId = this.eidToChainIdMap.get(eid)
-
-        if (chainId !== undefined) {
-            return chainId
-        }
-        // // 캐시 미스 시 비동기로 refresh 트리거 (블로킹하지 않음)
-        // this.refreshLayerZeroMetadata().catch(err =>
-        //     console.error('Failed to refresh LayerZero metadata:', err)
-        // )
-        return null
-    }
-
-    
 
     async getChains(): Promise<StargateChainResponse | undefined> {
         const response = await this.httpClient.get<StargateChainResponse>(

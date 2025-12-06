@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { HttpClientModule } from './http-client.module';
 import { StargateService } from 'src/application/bridges/stargate/stargate.service';
 import { IBridgeService } from 'src/application/bridges/provided_port/bridge.interface';
-import { TxModule } from './tx.module';
+import { BridgeSubModule } from './bridge-sub.module';
 
 export const BRIDGE_SERVICES = Symbol('BridgeServices');
 
 @Module({
     imports: [
         HttpClientModule,
-        TxModule,
+        BridgeSubModule,
     ],
     controllers: [],
     providers: [
