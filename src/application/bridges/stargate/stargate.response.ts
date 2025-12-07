@@ -1,26 +1,3 @@
-// stargate chain list 
-// https://stargate.finance/api/v1/chains
-export type StargateNativeCurrency = {
-    chainKey: string,
-    name: string,
-    symbol: string,
-    decimals: number,
-    address: string,
-}
-
-export type StargateChainDetail = {
-    chainKey: string,
-    chainType: string,
-    chainId: number,
-    shortName: string,
-    name: string,
-    nativeCurrency: StargateNativeCurrency
-}
-
-export type StargateChainResponse = {
-    chains: StargateChainDetail[]
-}
-
 // stargate quote 
 // https://stargate.finance/api/v1/quotes
 export type StargateQuoteFee = {

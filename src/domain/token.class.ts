@@ -2,7 +2,7 @@
 import Decimal from "decimal.js";
 import { ChainInfo } from "./chain-info.type"
 import { EvmAddress } from "./evm-address.class"
-import { OneInchTokenData } from "src/application/swaps/1inch/1inch-response.type";
+import { OneInchTokenData } from "src/application/defi.info-provider/swap/1inch/1inch-api.response";
 
 export class Token {
     constructor(

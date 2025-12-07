@@ -3,6 +3,7 @@ import { HttpClientModule } from './http-client.module';
 import { StargateService } from 'src/application/bridges/stargate/stargate.service';
 import { IBridgeService } from 'src/application/bridges/provided_port/bridge.interface';
 import { BridgeSubModule } from './bridge-sub.module';
+import { InfoProviderModule } from './info-provider.module';
 
 export const BRIDGE_SERVICES = Symbol('BridgeServices');
 
@@ -10,6 +11,7 @@ export const BRIDGE_SERVICES = Symbol('BridgeServices');
     imports: [
         HttpClientModule,
         BridgeSubModule,
+        InfoProviderModule,
     ],
     controllers: [],
     providers: [

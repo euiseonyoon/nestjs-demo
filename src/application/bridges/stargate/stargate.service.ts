@@ -1,7 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
-import { StargateChainResponse, StargateQuoteDetailResponse, StargateQuoteResponse } from "./stargate.response";
-import { Cron } from "@nestjs/schedule";
+import { StargateQuoteDetailResponse, StargateQuoteResponse } from "./stargate.response";
 import { IBridgeService } from "../provided_port/bridge.interface";
 import { BridgeHistoryRequest, BridgeQuoteRequest } from "../request.type";
 import { BridgeOutAmountResponse, BridgeQuoteResponse } from "../response.type";
@@ -9,36 +8,19 @@ import { EvmTxHash } from "src/domain/evm-tx-hash.class";
 import { HTTP_CLIENT } from "src/module/http-client.module";
 import { LAYER_ZERO_SERVICE } from "src/module/bridge-sub.module";
 import { type ILayerZeroService } from "./required_port/layer-zero.interface";
+import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/info-provider.module";
+import { type IStargateInfoProvider } from "./required_port/stargate.info-provider";
 
 @Injectable()
 export class StargateService implements IBridgeService {
-    // TODO: 하위의 정보들은 나중에 cache registry에 등록하던지 한다.
-    private chainIdChainKeyMap = new Map<number, string>()
-    private chainKeyChainIdMap = new Map<string, number>()
-
     constructor(
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
         @Inject(LAYER_ZERO_SERVICE)
-        private readonly layerZeroService: ILayerZeroService
-    ) {
-        this.refreshChainKeyMap()
-    }
-
-    // 매일 새벽 3시에 한번씩 초기화
-    @Cron('0 0 3 * * *')
-    async refreshChainKeyMap() {
-        const chainList = await this.getChains()
-        chainList?.chains.forEach((chainDetail)=> {
-            if (chainDetail.chainType === 'evm') {
-                const chainId = chainDetail.chainId
-                const chainKey = chainDetail.chainKey
-
-                this.chainIdChainKeyMap.set(chainId, chainKey)
-                this.chainKeyChainIdMap.set(chainKey, chainId)
-            }
-        })
-    }
+        private readonly layerZeroService: ILayerZeroService,
+        @Inject(STARGATE_BRIDGE_INFO_PROVIDER)
+        private readonly stargateInfoProvider: IStargateInfoProvider,
+    ) {}
 
     async getBridgeOutAmount(request: BridgeHistoryRequest) : Promise<BridgeOutAmountResponse | null> {
         const data = await this.layerZeroService.fetchBridgeInfo(request.srcTxHash)
@@ -60,16 +42,6 @@ export class StargateService implements IBridgeService {
                 token: request.dstToken
             }
         }
-    }
-
-    async getChains(): Promise<StargateChainResponse | undefined> {
-        const response = await this.httpClient.get<StargateChainResponse>(
-            "https://stargate.finance/api/v1/chains", 
-        )
-        if (!response) return undefined
-        if (response.isError) return undefined
-
-        return response.data
     }
     
     async getQuote(request: BridgeQuoteRequest): Promise<BridgeQuoteResponse | undefined> {
@@ -113,8 +85,8 @@ export class StargateService implements IBridgeService {
     }
 
     private async fetchQuotes(request: BridgeQuoteRequest): Promise<StargateQuoteResponse | undefined> {
-        const srcChainKey = this.chainIdChainKeyMap.get(request.srcToken.chain.id)
-        const dstChainKey = this.chainIdChainKeyMap.get(request.dstToken.chain.id)
+        const srcChainKey = this.stargateInfoProvider.convertChainIdToChainKey(request.srcToken.chain.id)
+        const dstChainKey = this.stargateInfoProvider.convertChainIdToChainKey(request.dstToken.chain.id)
         if (!srcChainKey || !dstChainKey) return undefined
 
         const response = await this.httpClient.get<StargateQuoteResponse>(
