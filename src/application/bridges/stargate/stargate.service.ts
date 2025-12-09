@@ -13,8 +13,7 @@ import { STARGATE_BRIDGE_AMOUNT_GETTER } from "src/module/bridge.amount-getter.m
 import { BridgeOutAmountResponse } from "src/application/amount-getter/bridge/request.bridge-amount";
 import { EvmAddress } from "src/domain/evm-address.class";
 import { Token } from "src/domain/token.class";
-
-type SupportedResult = { srcToken: Token, dstToken: Token }
+import { SupportedTokens } from "src/domain/supported.token";
 
 @Injectable()
 export class StargateService implements IBridgeService {
@@ -81,7 +80,7 @@ export class StargateService implements IBridgeService {
         dstChainId: number, 
         srcTokenAddr: EvmAddress, 
         dstTokenAddr: EvmAddress,
-    ): Promise<SupportedResult | null> {
+    ): Promise<SupportedTokens | null> {
         const [srcChain, dstChain, srcToken, dstToken] = await Promise.all([
             this.stargateInfoProvider.getSupportingChainInfo(srcChainId),
             this.stargateInfoProvider.getSupportingChainInfo(dstChainId),
