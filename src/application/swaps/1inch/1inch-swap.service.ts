@@ -1,7 +1,6 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { NaiveSameChainSwapQuoteRequest, NaiveSwapQuoteRequest, NaiveSwapOutAmountRequest } from '../request.type';
 import { ISwapService } from '../provided_port/swap.interface';
-import { SwapQuoteResponse } from '../response.type';
 import { ONE_INCH_SWAP_INFO_PROVIDER } from 'src/module/info-provider.module';
 import { ONE_INCH_SWAP_QUOTER } from 'src/module/swap.quoter.module';
 import { type ISwapQuoter } from 'src/application/quoter/swap/provided_port/swap.quoter';
@@ -24,7 +23,7 @@ export class OneInchService implements ISwapService{
         private readonly oneInchAmountGetter: ISwapAmountGetter
     ) {}
 
-    async getQuote(quoteRequest: NaiveSwapQuoteRequest): Promise<SwapQuoteResponse | null> {
+    async getQuote(quoteRequest: NaiveSwapQuoteRequest): Promise<TokenAmount | null> {
         const request = await this.convertRequest(quoteRequest)
         if (!request) return null
 
