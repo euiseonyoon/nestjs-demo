@@ -31,7 +31,8 @@
     "decimal.js": "^10.6.0",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1",
-    "viem": "^2.39.3"
+    "sushi": "^6.2.19",
+    "viem": "^2.41.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
