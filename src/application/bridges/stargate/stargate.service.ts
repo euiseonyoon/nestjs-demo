@@ -1,47 +1,52 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { IBridgeService } from "../provided_port/bridge.interface";
-import { BridgeHistoryRequest, NavieBridgeQuoteRequest } from "../request.type";
-import { BridgeOutAmountResponse } from "../response.type";
-import { EvmTxHash } from "src/domain/evm-tx-hash.class";
-import { LAYER_ZERO_SERVICE } from "src/module/bridge-sub.module";
-import { type ILayerZeroService } from "./required_port/layer-zero.interface";
+import { NaiveBridgeHistoryRequest, NavieBridgeQuoteRequest } from "../request.type";
 import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/info-provider.module";
 import { type IStargateInfoProvider } from "./required_port/stargate.info-provider";
 import { STARGATE_QUOTER } from "src/module/bridge.quoter.module";
 import { type IBridgeQuoter } from "src/application/quoter/bridge/provided_port/bridge.quoter";
 import { TokenAmount } from "src/domain/common-defi.type";
 import { BridgeQuoteRequest } from "src/application/quoter/bridge/request.type";
+import { type IBridgeAmountGetter } from "src/application/amount-getter/bridge/provided_port/bridge.amount-getter";
+import { BridgeHistoryRequest } from "src/application/amount-getter/bridge/response.bridge-amount";
+import { STARGATE_BRIDGE_AMOUNT_GETTER } from "src/module/bridge.amount-getter.module";
+import { BridgeOutAmountResponse } from "src/application/amount-getter/bridge/request.bridge-amount";
+import { EvmAddress } from "src/domain/evm-address.class";
+import { Token } from "src/domain/token.class";
+
+type SupportedResult = { srcToken: Token, dstToken: Token }
 
 @Injectable()
 export class StargateService implements IBridgeService {
     constructor(
-        @Inject(LAYER_ZERO_SERVICE)
-        private readonly layerZeroService: ILayerZeroService,
         @Inject(STARGATE_BRIDGE_INFO_PROVIDER)
         private readonly stargateInfoProvider: IStargateInfoProvider,
         @Inject(STARGATE_QUOTER)
         private readonly stargateQuoter: IBridgeQuoter,
+        @Inject(STARGATE_BRIDGE_AMOUNT_GETTER)
+        private readonly stargateAmountGetter: IBridgeAmountGetter,
     ) {}
 
-    async getBridgeOutAmount(request: BridgeHistoryRequest) : Promise<BridgeOutAmountResponse | null> {
-        const data = await this.layerZeroService.fetchBridgeInfo(request.srcTxHash)
-        if (!data) return null
-        if(data.status.name != 'DELIVERED') {
-            return { status: data.status.name, bridgeOutAmount: null};
-        }
-        
-        const receipt = await this.layerZeroService.getTxReceiptUsingDstInfo(data.pathway.dstEid, new EvmTxHash(data.destination.tx.txHash))
-        if (!receipt) return null
-        
-        const bridgeOutAmount = await this.layerZeroService.getBridgeOutAmountFromReceipt(receipt)
-        if (!bridgeOutAmount) return null
+    async getBridgeOutAmount(request: NaiveBridgeHistoryRequest) : Promise<BridgeOutAmountResponse | null> {
+        const convertedRequest = await this.convertAmountRquest(request)
+        if (!convertedRequest) return null
+
+        return this.stargateAmountGetter.getBridgeOutAmount(convertedRequest)
+    }
+
+    private async convertAmountRquest(naiveRequest: NaiveBridgeHistoryRequest) : Promise<BridgeHistoryRequest | null> {
+        const supportedResult = await this.checkChainsAndTokensSupported(
+            naiveRequest.srcChainId, 
+            naiveRequest.dstChainId, 
+            naiveRequest.srcTokenAddress, 
+            naiveRequest.dstTokenAddress,
+        )
+        if (!supportedResult) return null
 
         return {
-            status: data.status.name,
-            bridgeOutAmount: {
-                amount: bridgeOutAmount,
-                token: request.dstToken
-            }
+            srcToken : supportedResult.srcToken,
+            dstToken: supportedResult.dstToken,
+            srcTxHash: naiveRequest.srcTxHash
         }
     }
     
@@ -54,21 +59,40 @@ export class StargateService implements IBridgeService {
     }
 
     async convertQuoteRequest(request: NavieBridgeQuoteRequest): Promise<BridgeQuoteRequest | null> {
-        const [srcChain, dstChain, srcToken, dstToken] = await Promise.all([
-            this.stargateInfoProvider.getSupportingChainInfo(request.srcChainId),
-            this.stargateInfoProvider.getSupportingChainInfo(request.dstChainId),
-            this.stargateInfoProvider.getSupportingToken(request.srcChainId, request.srcTokenAddress),
-            this.stargateInfoProvider.getSupportingToken(request.dstChainId, request.dstTokenAddress),
-        ])
+        const supportedResult = await this.checkChainsAndTokensSupported(
+            request.srcChainId,
+            request.dstChainId,
+            request.srcTokenAddress,
+            request.dstTokenAddress,
+        )
+        if (!supportedResult) return null
 
+        return {
+            srcToken: supportedResult.srcToken,
+            dstToken: supportedResult.dstToken,
+            amount: request.bridgeInAmount,
+            receiverAddress: request.receiverAddress,
+            senderAddresss: request.senderAddresss,
+        }
+    }
+
+    private async checkChainsAndTokensSupported(
+        srcChainId: number, 
+        dstChainId: number, 
+        srcTokenAddr: EvmAddress, 
+        dstTokenAddr: EvmAddress,
+    ): Promise<SupportedResult | null> {
+        const [srcChain, dstChain, srcToken, dstToken] = await Promise.all([
+            this.stargateInfoProvider.getSupportingChainInfo(srcChainId),
+            this.stargateInfoProvider.getSupportingChainInfo(dstChainId),
+            this.stargateInfoProvider.getSupportingToken(srcChainId, srcTokenAddr),
+            this.stargateInfoProvider.getSupportingToken(dstChainId, dstTokenAddr),
+        ])
         if (!srcChain || !dstChain || !srcToken || !dstToken) return null
 
         return {
             srcToken: srcToken,
             dstToken: dstToken,
-            amount: request.bridgeInAmount,
-            receiverAddress: request.receiverAddress,
-            senderAddresss: request.senderAddresss,
         }
     }
 }

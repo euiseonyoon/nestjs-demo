@@ -1,7 +1,5 @@
-import { ChainInfo } from "src/domain/chain-info.type"
 import { EvmAddress } from "src/domain/evm-address.class"
 import { EvmTxHash } from "src/domain/evm-tx-hash.class"
-import { Token } from "src/domain/token.class"
 
 export type NavieBridgeQuoteRequest = {
     srcChainId: number,
@@ -13,8 +11,10 @@ export type NavieBridgeQuoteRequest = {
     senderAddresss: EvmAddress,
 }
 
-export type BridgeHistoryRequest = {
-    srcToken: Token,
-    dstToken: Token,
+export type NaiveBridgeHistoryRequest = {
+    srcChainId: number,
+    dstChainId: number,
+    srcTokenAddress: EvmAddress,
+    dstTokenAddress: EvmAddress,
     srcTxHash: EvmTxHash,
 }

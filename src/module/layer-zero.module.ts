@@ -10,12 +10,11 @@ export const LAYER_ZERO_SERVICE = Symbol('LayerZeroService');
         HttpClientModule,
         TxModule,
     ],
-    controllers: [],
     providers: [
-        { provide: LAYER_ZERO_SERVICE, useClass: LayerZeroService}
+        { provide: LAYER_ZERO_SERVICE, useClass: LayerZeroService},
     ],
     exports: [
         LAYER_ZERO_SERVICE
     ],
 })
-export class BridgeSubModule {}
+export class LayerZeroModule {}

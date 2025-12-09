@@ -1,6 +1,6 @@
-import { TokenAmount } from "../../domain/common-defi.type";
+import { TokenAmount } from "src/domain/common-defi.type";
 
 export type BridgeOutAmountResponse = {
-    status: string,
+    status?: string,
     bridgeOutAmount: TokenAmount | null
 }

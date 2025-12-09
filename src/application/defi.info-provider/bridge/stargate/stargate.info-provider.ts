@@ -1,8 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { HTTP_CLIENT } from "src/module/http-client.module";
-import { LAYER_ZERO_SERVICE } from "src/module/bridge-sub.module";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
-import { type ILayerZeroService } from "src/application/bridges/stargate/required_port/layer-zero.interface";
 import { ChainInfo } from "src/domain/chain-info.type";
 import { EvmAddress } from "src/domain/evm-address.class";
 import { Token } from "src/domain/token.class";
@@ -26,8 +24,6 @@ export class StargateInfoProvider implements IStargateInfoProvider {
     constructor(
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
-        @Inject(LAYER_ZERO_SERVICE)
-        private readonly layerZeroService: ILayerZeroService
     ) {
         this.refreshInfos()
     }
