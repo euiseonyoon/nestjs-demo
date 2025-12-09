@@ -13,6 +13,7 @@ import { Address, erc20Abi } from 'viem';
 
 @Injectable()
 export class SushiSwapInfoProvider implements IDefiProtocolInfoProvider{
+    // TODO: sushi swap sdk에서 SWAP_API_SUPPORTED_CHAIN_IDS를 활용할수 있을것 같다.
     private supportingChains = SUSHI_SUPPORTING_CHAINS
     private supportingTokens: Record<string, Token> = {}
 
