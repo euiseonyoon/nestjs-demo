@@ -4,24 +4,20 @@ import { HttpClientModule } from './http-client.module';
 import { InfoProviderModule } from './info-provider.module';
 // import { SushiSwapService } from 'src/application/swaps/sushi/sushi-swap.service';
 import { ISwapService } from 'src/application/swaps/provided_port/swap.interface';
-import { SwapQuoterModule } from './swap.quoter.module';
+import { OneInchQuoter } from 'src/application/quoter/swap/1inch/1inch.quoter';
 
-export const SWAP_SERVICES = Symbol('SwapServices');
+export const ONE_INCH_SWAP_QUOTER = Symbol('OneInchSwapQuoter');
 
 @Module({
-    imports: [HttpClientModule, InfoProviderModule, SwapQuoterModule],
+    imports: [HttpClientModule, InfoProviderModule],
     providers: [
-        OneInchService,
         {
-            provide: SWAP_SERVICES,
-            inject: [
-                OneInchService, 
-            ],
-            useFactory: (oneInchSwap): ISwapService[] => [oneInchSwap],
+            provide: ONE_INCH_SWAP_QUOTER,
+            useClass: OneInchQuoter
         }
     ],
     exports: [
-        SWAP_SERVICES
+        ONE_INCH_SWAP_QUOTER
     ],
 })
-export class SwapModule {}
+export class SwapQuoterModule {}

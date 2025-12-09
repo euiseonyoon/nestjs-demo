@@ -3,13 +3,16 @@ import { ConfigService } from '@nestjs/config';
 import type { IHttpClient } from '../../common/required_port/http-client.interface';
 import { EvmTxHash } from 'src/domain/evm-tx-hash.class';
 import { EvmAddress } from 'src/domain/evm-address.class';
-import { SameChainSwapQuoteRequest, SwapOutAmountRequest, SwapQuoteRequest } from '../request.type';
+import { NaiveSameChainSwapQuoteRequest, SwapOutAmountRequest, NaiveSwapQuoteRequest } from '../request.type';
 import { ISwapService } from '../provided_port/swap.interface';
 import { SwapOutAmountResponse, SwapQuoteResponse } from '../response.type';
 import { HTTP_CLIENT } from 'src/module/http-client.module';
 import { ONE_INCH_SWAP_INFO_PROVIDER } from 'src/module/info-provider.module';
 import * as defiInfoProviderInterface from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
-import { ClassicSwapQuoteResponse, OneInchHistoryResponseDto, TokenActionDto } from './1inch-response.type';
+import { OneInchHistoryResponseDto, TokenActionDto } from './1inch-response.type';
+import { ONE_INCH_SWAP_QUOTER } from 'src/module/swap.quoter.module';
+import { type ISwapQuoter } from 'src/application/quoter/swap/provided_port/swap.quoter';
+import { SimpleSwapQuoteRequest, type SwapQuoteRequest } from 'src/application/quoter/swap/request.type';
 
 @Injectable()
 export class OneInchService implements ISwapService{
@@ -17,64 +20,59 @@ export class OneInchService implements ISwapService{
     private apiKey: string | undefined
 
     constructor(
+        @Inject(ONE_INCH_SWAP_QUOTER)
+        private readonly oneInchSwapQuoter: ISwapQuoter,
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
         @Inject(ONE_INCH_SWAP_INFO_PROVIDER)
         private readonly oneInchInfoProvider: defiInfoProviderInterface.IDefiProtocolInfoProvider,
         private readonly configService: ConfigService,
-    ) {}
-
-    async onModuleInit(): Promise<void> {
+    ) {
         this.apiKey = this.configService.get<string>('ONE_INCH_API_KEY');
     }
 
-    private async validateSimpleSwapRequest(request: SameChainSwapQuoteRequest): Promise<boolean> {
-        
-        const chainInfo = await this.oneInchInfoProvider.getSupportingChainInfo(request.chain.id)
-        if (!chainInfo) return false
+    async getQuote(quoteRequest: NaiveSwapQuoteRequest): Promise<SwapQuoteResponse | null> {
+        const request = await this.convertRequest(quoteRequest)
+        if (!request) return null
 
-        const srcToken = await this.oneInchInfoProvider.getSupportingToken(request.chain.id, request.srcToken.address)
-        if (!srcToken) return false
+        return await this.oneInchSwapQuoter.getQuote(request)
+    }
 
-        const dstToken = await this.oneInchInfoProvider.getSupportingToken(request.chain.id, request.dstToken.address)
-        if (!dstToken) return false
+    private async convertRequest(quoteRequest: NaiveSwapQuoteRequest): Promise<SwapQuoteRequest | null> {
+        if (quoteRequest instanceof NaiveSameChainSwapQuoteRequest) {
+            return this.convertToSimpleSwapQuoteRequest(quoteRequest)
+        } else {
+            return null
+        }
+    }
+
+    private async validateSimpleSwapRequest(request: NaiveSameChainSwapQuoteRequest): Promise<boolean> {
+        const [chainInfo, srcToken, dstToken] = await Promise.all([
+            this.oneInchInfoProvider.getSupportingChainInfo(request.chainId),
+            this.oneInchInfoProvider.getSupportingToken(request.chainId, request.srcTokenAddress),
+            this.oneInchInfoProvider.getSupportingToken(request.chainId, request.dstTokenAddress)
+        ])
+        if (!chainInfo || !srcToken || !dstToken) return false
 
         return true
     }
 
-    async getQuote(quoteRequest: SwapQuoteRequest): Promise<SwapQuoteResponse | undefined> {
-        if (quoteRequest.type === 'cross-chain') {
-            throw new Error('Method not implemented.');
+    private async convertToSimpleSwapQuoteRequest(quoteRequest: NaiveSameChainSwapQuoteRequest): Promise<SimpleSwapQuoteRequest | null> {
+        if (!await this.validateSimpleSwapRequest(quoteRequest)) {
+            return null
         }
 
-        return this.getClassicSwapQuote(quoteRequest)
-    }
+        const [srcToken, dstToken] = await Promise.all([
+            this.oneInchInfoProvider.getSupportingToken(quoteRequest.chainId, quoteRequest.srcTokenAddress),
+            this.oneInchInfoProvider.getSupportingToken(quoteRequest.chainId, quoteRequest.dstTokenAddress)
+        ]);
 
-    private async getClassicSwapQuote(request: SameChainSwapQuoteRequest): Promise<SwapQuoteResponse | undefined> {
-        if (!await this.validateSimpleSwapRequest(request)) {
-            return undefined
+        if (!srcToken || !dstToken) {
+            return null
         }
-
-        const response = await this.httpClient.get<ClassicSwapQuoteResponse>(
-            `${this.oneInchBaseUrl}/swap/v6.1/${request.chain.id}/quote`,
-            {
-                headers: { Authorization: `Bearer ${this.apiKey}` },
-                params : {
-                    src: request.srcToken.address.getAddress(),
-                    dst: request.dstToken.address.getAddress(),
-                    amount: request.srcToken.convertToBigIntAmount(request.amount).toString(),
-                    includeTokensInfo: true,
-                    includeProtocols: true,
-                    includeGas: true,
-                }
-            },
-        );
-        if (!response || response.isError) return undefined
-
-        return {
-            amount: BigInt(response.data.dstAmount),
-            token: request.dstToken
-        }
+        return new SimpleSwapQuoteRequest(
+            srcToken, dstToken, quoteRequest.amount, quoteRequest.slippagePercentStr
+        )
     }
 
     async getSwapOutAmount(request: SwapOutAmountRequest): Promise<SwapOutAmountResponse | undefined> {
