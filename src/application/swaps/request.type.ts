@@ -40,9 +40,10 @@ export class NaiveCrossChainSwapQuoteRequest {
 // Union
 export type NaiveSwapQuoteRequest = NaiveSameChainSwapQuoteRequest | NaiveCrossChainSwapQuoteRequest;
 
-export type SwapOutAmountRequest = {
+export type NaiveSwapOutAmountRequest = {
     chainId: number,
-    address: EvmAddress
+    senderAddress: EvmAddress,
+    receiverAddress: EvmAddress
     txHash: EvmTxHash,
 }
 

@@ -1,8 +1,9 @@
-import { SwapOutAmountRequest, NaiveSwapQuoteRequest } from "../request.type";
-import { SwapOutAmountResponse, SwapQuoteResponse } from "../response.type";
+import { TokenAmount } from "src/domain/common-defi.type";
+import { NaiveSwapOutAmountRequest, NaiveSwapQuoteRequest } from "../request.type";
+import { SwapQuoteResponse } from "../response.type";
 
 export interface ISwapService {
     getQuote(quoteRequest: NaiveSwapQuoteRequest): Promise<SwapQuoteResponse | null>
 
-    getSwapOutAmount(request: SwapOutAmountRequest): Promise<SwapOutAmountResponse | undefined>
+    getSwapOutAmount(request: NaiveSwapOutAmountRequest): Promise<TokenAmount | null>
 }
