@@ -4,14 +4,15 @@ import { StargateService } from 'src/application/bridges/stargate/stargate.servi
 import { IBridgeService } from 'src/application/bridges/provided_port/bridge.interface';
 import { BridgeSubModule } from './bridge-sub.module';
 import { InfoProviderModule } from './info-provider.module';
+import { BridgeQuoteModule } from './bridge.quoter.module';
 
 export const BRIDGE_SERVICES = Symbol('BridgeServices');
 
 @Module({
     imports: [
-        HttpClientModule,
         BridgeSubModule,
         InfoProviderModule,
+        BridgeQuoteModule,
     ],
     controllers: [],
     providers: [

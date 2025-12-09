@@ -1,5 +1,4 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { IDefiProtocolInfoProvider } from "../../provided_port/defi-info-provider.interface";
 import { HTTP_CLIENT } from "src/module/http-client.module";
 import { LAYER_ZERO_SERVICE } from "src/module/bridge-sub.module";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
@@ -12,7 +11,7 @@ import { Cron } from "@nestjs/schedule";
 import { IStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider";
 
 @Injectable()
-export class StargateInfoProvider implements IDefiProtocolInfoProvider, IStargateInfoProvider {
+export class StargateInfoProvider implements IStargateInfoProvider {
     // value: chainKey(e.g. 'ethereum')
     private chainIdChainKeyMap = new Map<number, string>()
     // key: chainKey(e.g. 'ethereum')
