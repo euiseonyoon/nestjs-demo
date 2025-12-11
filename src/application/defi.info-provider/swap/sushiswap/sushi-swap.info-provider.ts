@@ -79,7 +79,7 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
             symbol,
             decimals,
             name,
-            undefined
+            null
         )
     }
 

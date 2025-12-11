@@ -11,7 +11,7 @@ export class Token {
         public readonly symbol: string,
         public readonly decimals: number,
         public readonly name: string,
-        public readonly logoUri: string | undefined
+        public readonly logoUri: string | null
     ) {}
 
     convertToBigIntAmount(amount: string): bigint {
