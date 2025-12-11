@@ -10,7 +10,8 @@ export class NaiveSameChainSwapQuoteRequest {
         readonly srcTokenAddress: EvmAddress,
         readonly dstTokenAddress: EvmAddress,
         readonly amount: string, // token의 deciamls가 반영되지 않은 값 (1.5 이더리움 swap이면, amount = 1.5)
-        readonly slippagePercentStr: string // "0.5"는 0.5% -> 0.005
+        readonly slippagePercentStr: string, // "0.5"는 0.5% -> 0.005
+        readonly maxPriceImpact: number | null,
     ) {
         if(srcTokenAddress.getAddress().toLocaleLowerCase() === dstTokenAddress.getAddress().toLocaleLowerCase()) {
             throw new Error("SrcToken and DstToken should be different tokens.");

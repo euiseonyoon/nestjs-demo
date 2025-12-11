@@ -26,7 +26,7 @@ export abstract class AbstractSwapService {
             return null
         }
         return new SimpleSwapQuoteRequest(
-            srcToken, dstToken, quoteRequest.amount, quoteRequest.slippagePercentStr
+            srcToken, dstToken, quoteRequest.amount, quoteRequest.slippagePercentStr, quoteRequest.maxPriceImpact
         )
     }
 
