@@ -42,7 +42,7 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider{
 
     async onModuleInit(): Promise<void> {
         this.apiKey = this.configService.get<string>('ONE_INCH_API_KEY');
-        this.setSupportingTokens()
+        await this.setSupportingTokens()
         this.setChainIdTokenMap()
     }
     
