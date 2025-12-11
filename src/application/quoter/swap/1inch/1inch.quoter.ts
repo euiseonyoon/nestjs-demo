@@ -5,8 +5,6 @@ import { Inject } from "@nestjs/common";
 import { HTTP_CLIENT } from "src/module/http-client.module";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { ConfigService } from "@nestjs/config";
-import { ONE_INCH_SWAP_INFO_PROVIDER } from "src/module/info-provider.module";
-import { type IDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
 import { ClassicSwapQuoteResponse } from "./1inch.quote.response";
 
 export class OneInchQuoter implements ISwapQuoter{
@@ -16,8 +14,6 @@ export class OneInchQuoter implements ISwapQuoter{
     constructor(
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
-        @Inject(ONE_INCH_SWAP_INFO_PROVIDER)
-        private readonly oneInchInfoProvider: IDefiProtocolInfoProvider,
         private readonly configService: ConfigService,
     ) {}
 
