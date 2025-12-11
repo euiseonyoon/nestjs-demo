@@ -1,18 +1,17 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { NaiveSameChainSwapQuoteRequest, NaiveSwapQuoteRequest, NaiveSwapOutAmountRequest } from '../request.type';
-import { ISwapService } from '../provided_port/swap.interface';
+import { AbstractSwapService } from '../provided_port/swap.interface';
 import { ONE_INCH_SWAP_INFO_PROVIDER } from 'src/module/info-provider.module';
 import { ONE_INCH_SWAP_QUOTER } from 'src/module/swap.quoter.module';
 import { type ISwapQuoter } from 'src/application/quoter/swap/provided_port/swap.quoter';
-import { SimpleSwapQuoteRequest, type SwapQuoteRequest } from 'src/application/quoter/swap/request.type';
+import { type SwapQuoteRequest } from 'src/application/quoter/swap/request.type';
 import { ONE_INCH_SWAP_AMOUNT_GETTER } from 'src/module/swap.amount-getter.module';
 import { type ISwapAmountGetter } from 'src/application/amount-getter/swap/provided_port/swap.amount-getter';
-import { SwapOutAmountRequest } from 'src/application/amount-getter/swap/request.swap-smount';
 import { TokenAmount } from 'src/domain/common-defi.type';
 import { AbstractDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
 
 @Injectable()
-export class OneInchService implements ISwapService{
+export class OneInchService extends AbstractSwapService{
     constructor(
         @Inject(ONE_INCH_SWAP_QUOTER)
         private readonly oneInchSwapQuoter: ISwapQuoter,
@@ -20,16 +19,18 @@ export class OneInchService implements ISwapService{
         private readonly oneInchInfoProvider: AbstractDefiProtocolInfoProvider,
         @Inject(ONE_INCH_SWAP_AMOUNT_GETTER)
         private readonly oneInchAmountGetter: ISwapAmountGetter
-    ) {}
+    ) {
+        super(oneInchInfoProvider)
+    }
 
     async getQuote(quoteRequest: NaiveSwapQuoteRequest): Promise<TokenAmount | null> {
-        const request = await this.convertRequest(quoteRequest)
+        const request = await this.convertQuoteRequest(quoteRequest)
         if (!request) return null
 
         return await this.oneInchSwapQuoter.getQuote(request)
     }
 
-    private async convertRequest(quoteRequest: NaiveSwapQuoteRequest): Promise<SwapQuoteRequest | null> {
+    private async convertQuoteRequest(quoteRequest: NaiveSwapQuoteRequest): Promise<SwapQuoteRequest | null> {
         if (quoteRequest instanceof NaiveSameChainSwapQuoteRequest) {
             return this.convertToSimpleSwapQuoteRequest(quoteRequest)
         } else {
@@ -37,40 +38,10 @@ export class OneInchService implements ISwapService{
         }
     }
 
-    private async convertToSimpleSwapQuoteRequest(quoteRequest: NaiveSameChainSwapQuoteRequest): Promise<SimpleSwapQuoteRequest | null> {
-        const supportedTokens = await this.oneInchInfoProvider.getSupprtedTokens(
-            quoteRequest.chainId,
-            quoteRequest.chainId,
-            quoteRequest.srcTokenAddress,
-            quoteRequest.dstTokenAddress,
-        )
-        if (!supportedTokens) return null
-        const srcToken = supportedTokens.srcToken
-        const dstToken = supportedTokens.dstToken
-        if (!srcToken || !dstToken) {
-            return null
-        }
-        return new SimpleSwapQuoteRequest(
-            srcToken, dstToken, quoteRequest.amount, quoteRequest.slippagePercentStr
-        )
-    }
-
     async getSwapOutAmount(request: NaiveSwapOutAmountRequest): Promise<TokenAmount | null> {
         const convertedRequest = await this.convertAmountOutRequest(request)
         if (!convertedRequest) return null
 
         return await this.oneInchAmountGetter.getSwapOutAmount(convertedRequest)
-    }
-    
-    private async convertAmountOutRequest(request: NaiveSwapOutAmountRequest): Promise<SwapOutAmountRequest | null> {
-        const chain = await this.oneInchInfoProvider.getSupportingChainInfo(request.chainId);
-        if (!chain) return null
-
-        return {
-            chain: chain,
-            senderAddress: request.senderAddress,
-            receiverAddress: request.receiverAddress,
-            txHash: request.txHash,
-        }
     }
 }
