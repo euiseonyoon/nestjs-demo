@@ -81,8 +81,7 @@ export class SushiSwapInfoProvider implements IDefiProtocolInfoProvider{
         )
     }
 
-    private async saveToken(token: Token) {
-        const key = this.makeTokenCacheKey(token.chain.id, token.address)
+    private async saveToken(key: string, token: Token) {
         this.supportingTokens[key] = token
     }
 
@@ -100,7 +99,7 @@ export class SushiSwapInfoProvider implements IDefiProtocolInfoProvider{
         const token = await this.getTokenDetailFromContract(targetChain, tokenAddress)
         if(!token) return null
 
-        this.saveToken(token)
+        this.saveToken(key, token)
         return token
     }
 
