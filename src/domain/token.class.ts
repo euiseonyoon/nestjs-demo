@@ -4,8 +4,8 @@ import { ChainInfo } from "./chain-info.type"
 import { EvmAddress } from "./evm-address.class"
 import { OneInchTokenData } from "src/application/defi.info-provider/swap/1inch/1inch-api.response";
 
-export const ZERO_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
-export const ZERO_ADDRESS_LOWER = ZERO_ADDRESS.toLowerCase()
+export const E_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
+export const E_ADDRESS_LOWER = E_ADDRESS.toLowerCase()
 
 export class Token {
     constructor(
@@ -18,8 +18,8 @@ export class Token {
         public readonly isNativeToken: boolean
     ) {
         if (isNativeToken) {
-            if (address.getAddress().toLowerCase() !== ZERO_ADDRESS_LOWER) {
-                throw Error(`Native token address should be ${ZERO_ADDRESS}`)
+            if (address.getAddress().toLowerCase() !== E_ADDRESS_LOWER) {
+                throw Error(`Native token address should be ${E_ADDRESS}`)
             }
         }
     }
@@ -44,6 +44,6 @@ export class Token {
     }
 
     static isNativeToken(tokenAddress: string): boolean {
-        return tokenAddress.toLowerCase() === ZERO_ADDRESS_LOWER
+        return tokenAddress.toLowerCase() === E_ADDRESS_LOWER
     }
 }
