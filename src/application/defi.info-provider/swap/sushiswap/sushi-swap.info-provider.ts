@@ -9,13 +9,24 @@ import { EvmAddress } from "src/domain/evm-address.class"
 import { PriceResponse } from "./sushi-swap.response"
 import { RPC_CLIENT_MANAGER } from "src/infrastructure/manager/rpc-client-manager.token"
 import { type IRpcClientManager } from "src/application/transaction/required_port/tx.required-port"
-import { Address, erc20Abi } from 'viem';
+import { Address, Chain, erc20Abi } from 'viem';
+import * as chains from "viem/chains";
 
 @Injectable()
 export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
     // TODO: sushi swap sdk에서 SWAP_API_SUPPORTED_CHAIN_IDS를 활용할수 있을것 같다.
     private supportingChains = SUSHI_SUPPORTING_CHAINS
     private supportingTokens: Record<string, Token> = {}
+
+    private readonly chainMap: Record<number, Chain> = Object.values(chains).reduce(
+        (acc, chain) => {
+            if (typeof chain === "object" && "id" in chain) {
+            acc[chain.id] = chain as Chain;
+            }
+            return acc;
+        },
+        {} as Record<number, Chain>
+    );
 
     constructor(
         @Inject(HTTP_CLIENT)
@@ -51,6 +62,30 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
     }
 
     private async getTokenDetailFromContract(chainInfo: ChainInfo, tokenAddress: EvmAddress): Promise<Token | null> {
+        // 여기서 native 토큰이면 다르게 해야함 
+        if (Token.isNativeToken(tokenAddress.getAddress())) {
+            return this.getNativeToken(chainInfo, tokenAddress)
+        } else {
+            return this.getToken(chainInfo, tokenAddress)
+        }
+    }
+
+    private async getNativeToken(chainInfo: ChainInfo, tokenAddress: EvmAddress): Promise<Token | null> {
+        const chain = this.chainMap[chainInfo.id];
+        if (!chain) return null
+
+        return new Token(
+            chainInfo,
+            tokenAddress,
+            chain.nativeCurrency.symbol,
+            chain.nativeCurrency.decimals,
+            chain.nativeCurrency.name,
+            null,
+            true,
+        )
+    }
+
+    private async getToken(chainInfo: ChainInfo, tokenAddress: EvmAddress): Promise<Token | null> {
         const client = this.prcClientManager.getRpcClient(chainInfo.id)
         if(!client) return null
 
@@ -79,7 +114,8 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
             symbol,
             decimals,
             name,
-            null
+            null,
+            Token.isNativeToken(tokenAddress.getAddress())
         )
     }
 

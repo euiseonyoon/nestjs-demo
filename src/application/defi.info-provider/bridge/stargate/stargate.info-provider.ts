@@ -92,7 +92,8 @@ export class StargateInfoProvider extends AbstractStargateInfoProvider {
                             token.symbol,
                             token.decimals,
                             token.name,
-                            undefined
+                            null,
+                            Token.isNativeToken(token.address)
                         ),
                         chainKey: token.chainKey
                     } : null;
