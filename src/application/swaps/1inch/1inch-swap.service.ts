@@ -10,7 +10,6 @@ import { type ISwapAmountGetter } from 'src/application/amount-getter/swap/provi
 import { SwapOutAmountRequest } from 'src/application/amount-getter/swap/request.swap-smount';
 import { TokenAmount } from 'src/domain/common-defi.type';
 import { type IDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
-import { SupportedTokens } from 'src/domain/supported.token';
 
 @Injectable()
 export class OneInchService implements ISwapService{
@@ -38,22 +37,13 @@ export class OneInchService implements ISwapService{
         }
     }
 
-    private async checkSupportedTokens(request: NaiveSameChainSwapQuoteRequest): Promise<SupportedTokens | null> {
-        const [chainInfo, srcToken, dstToken] = await Promise.all([
-            this.oneInchInfoProvider.getSupportingChainInfo(request.chainId),
-            this.oneInchInfoProvider.getSupportingToken(request.chainId, request.srcTokenAddress),
-            this.oneInchInfoProvider.getSupportingToken(request.chainId, request.dstTokenAddress)
-        ])
-        if (!chainInfo || !srcToken || !dstToken) return null
-
-        return {
-            srcToken: srcToken,
-            dstToken: dstToken,
-        }
-    }
-
     private async convertToSimpleSwapQuoteRequest(quoteRequest: NaiveSameChainSwapQuoteRequest): Promise<SimpleSwapQuoteRequest | null> {
-        const supportedTokens = await this.checkSupportedTokens(quoteRequest)
+        const supportedTokens = await this.oneInchInfoProvider.getSupprtedTokens(
+            quoteRequest.chainId,
+            quoteRequest.chainId,
+            quoteRequest.srcTokenAddress,
+            quoteRequest.dstTokenAddress,
+        )
         if (!supportedTokens) return null
         const srcToken = supportedTokens.srcToken
         const dstToken = supportedTokens.dstToken

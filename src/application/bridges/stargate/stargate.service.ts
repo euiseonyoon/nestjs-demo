@@ -11,9 +11,6 @@ import { type IBridgeAmountGetter } from "src/application/amount-getter/bridge/p
 import { BridgeHistoryRequest } from "src/application/amount-getter/bridge/response.bridge-amount";
 import { STARGATE_BRIDGE_AMOUNT_GETTER } from "src/module/bridge.amount-getter.module";
 import { BridgeOutAmountResponse } from "src/application/amount-getter/bridge/request.bridge-amount";
-import { EvmAddress } from "src/domain/evm-address.class";
-import { Token } from "src/domain/token.class";
-import { SupportedTokens } from "src/domain/supported.token";
 
 @Injectable()
 export class StargateService implements IBridgeService {
@@ -34,7 +31,7 @@ export class StargateService implements IBridgeService {
     }
 
     private async convertAmountRquest(naiveRequest: NaiveBridgeHistoryRequest) : Promise<BridgeHistoryRequest | null> {
-        const supportedResult = await this.checkChainsAndTokensSupported(
+        const supportedResult = await this.stargateInfoProvider.getSupprtedTokens(
             naiveRequest.srcChainId, 
             naiveRequest.dstChainId, 
             naiveRequest.srcTokenAddress, 
@@ -58,7 +55,7 @@ export class StargateService implements IBridgeService {
     }
 
     async convertQuoteRequest(request: NavieBridgeQuoteRequest): Promise<BridgeQuoteRequest | null> {
-        const supportedResult = await this.checkChainsAndTokensSupported(
+        const supportedResult = await this.stargateInfoProvider.getSupprtedTokens(
             request.srcChainId,
             request.dstChainId,
             request.srcTokenAddress,
@@ -72,26 +69,6 @@ export class StargateService implements IBridgeService {
             amount: request.bridgeInAmount,
             receiverAddress: request.receiverAddress,
             senderAddresss: request.senderAddresss,
-        }
-    }
-
-    private async checkChainsAndTokensSupported(
-        srcChainId: number, 
-        dstChainId: number, 
-        srcTokenAddr: EvmAddress, 
-        dstTokenAddr: EvmAddress,
-    ): Promise<SupportedTokens | null> {
-        const [srcChain, dstChain, srcToken, dstToken] = await Promise.all([
-            this.stargateInfoProvider.getSupportingChainInfo(srcChainId),
-            this.stargateInfoProvider.getSupportingChainInfo(dstChainId),
-            this.stargateInfoProvider.getSupportingToken(srcChainId, srcTokenAddr),
-            this.stargateInfoProvider.getSupportingToken(dstChainId, dstTokenAddr),
-        ])
-        if (!srcChain || !dstChain || !srcToken || !dstToken) return null
-
-        return {
-            srcToken: srcToken,
-            dstToken: dstToken,
         }
     }
 }
