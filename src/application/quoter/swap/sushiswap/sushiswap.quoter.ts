@@ -28,13 +28,15 @@ export class SushiSwapQuoter implements ISwapQuoter{
     private async getSimpleSwapQuote(request: SimpleSwapQuoteRequest): Promise<TokenAmount | null> {
         const supportedChain = await this.sushiswapInfoProvider.getSupportingChainInfo(request.srcToken.chain.id)
         if (!supportedChain) return null
+        const maxPriceImpactPercent = (request.maxPriceImpactPercent ?? 100)/100
         
         const response = await this.httpClient.get<SushiSwapQuoteResponse>(
             `https://api.sushi.com/quote/v7/${request.srcToken.chain.id}`,
             {
                 params : {
+                    amount: request.srcToken.convertToBigIntAmount(request.amount).toString(),
                     maxSlippage: Number(request.slippagePercentStr) / 100,
-                    maxPriceImpact: 0.002 // 2%
+                    maxPriceImpact: maxPriceImpactPercent,
                 }
             },
         );
