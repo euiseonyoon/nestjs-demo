@@ -6,7 +6,7 @@ import { HTTP_CLIENT } from "src/module/http-client.module"
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface"
 import { ChainInfo } from "src/domain/chain-info.type"
 import { EvmAddress } from "src/domain/evm-address.class"
-import { PriceResponse } from "./response.token-price"
+import { PriceResponse } from "./sushi-swap.response"
 import { RPC_CLIENT_MANAGER } from "src/infrastructure/manager/rpc-client-manager.token"
 import { type IRpcClientManager } from "src/application/transaction/required_port/tx.required-port"
 import { Address, erc20Abi } from 'viem';
