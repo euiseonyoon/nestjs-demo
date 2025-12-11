@@ -12,7 +12,7 @@ import { type IRpcClientManager } from "src/application/transaction/required_por
 import { Address, erc20Abi } from 'viem';
 
 @Injectable()
-export class SushiSwapInfoProvider implements IDefiProtocolInfoProvider{
+export class SushiSwapInfoProvider extends IDefiProtocolInfoProvider{
     // TODO: sushi swap sdk에서 SWAP_API_SUPPORTED_CHAIN_IDS를 활용할수 있을것 같다.
     private supportingChains = SUSHI_SUPPORTING_CHAINS
     private supportingTokens: Record<string, Token> = {}
@@ -22,7 +22,9 @@ export class SushiSwapInfoProvider implements IDefiProtocolInfoProvider{
         private readonly httpClient: IHttpClient,
         @Inject(RPC_CLIENT_MANAGER)
         private readonly prcClientManager: IRpcClientManager
-    ) {}
+    ) {
+        super()
+    }
 
     async getSupportingChains(): Promise<ChainInfo[]> {
         return this.supportingChains

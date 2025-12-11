@@ -11,7 +11,7 @@ import { type IHttpClient } from '../../../common/required_port/http-client.inte
 import { OneInchTokensResponse } from './1inch-api.response';
 
 @Injectable()
-export class OneInchInfoProvider implements IDefiProtocolInfoProvider{
+export class OneInchInfoProvider extends IDefiProtocolInfoProvider{
     readonly oneInchBaseUrl = 'https://api.1inch.com/swap/v6.1'
     private apiKey: string | undefined
     private tokenCache = new Map<string, Token>()
@@ -36,7 +36,9 @@ export class OneInchInfoProvider implements IDefiProtocolInfoProvider{
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
         private readonly configService: ConfigService,
-    ) {}
+    ) {
+        super()
+    }
 
     async onModuleInit(): Promise<void> {
         this.apiKey = this.configService.get<string>('ONE_INCH_API_KEY');

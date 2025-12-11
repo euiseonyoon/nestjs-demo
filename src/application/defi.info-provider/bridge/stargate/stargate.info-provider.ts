@@ -9,7 +9,7 @@ import { Cron } from "@nestjs/schedule";
 import { IStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider";
 
 @Injectable()
-export class StargateInfoProvider implements IStargateInfoProvider {
+export class StargateInfoProvider extends IStargateInfoProvider {
     // value: chainKey(e.g. 'ethereum')
     private chainIdChainKeyMap = new Map<number, string>()
     // key: chainKey(e.g. 'ethereum')
@@ -25,6 +25,7 @@ export class StargateInfoProvider implements IStargateInfoProvider {
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
     ) {
+        super()
         this.refreshInfos()
     }
 
