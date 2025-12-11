@@ -5,7 +5,7 @@ import { TokenAmount } from "src/domain/common-defi.type";
 import { TX_SERVICE } from "src/module/tx.module";
 import { type ITxService } from "src/application/transaction/provided_port/tx.provided-port";
 import { SUSHI_SWAP_INFO_PROVIDER } from "src/module/info-provider.module";
-import { type IDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
+import { AbstractDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
 import { EvmAddress } from "src/domain/evm-address.class";
 import { Log, TransactionReceipt } from "viem";
 
@@ -19,7 +19,7 @@ export class SushiSwapAmoutGetter implements ISwapAmountGetter{
         @Inject(TX_SERVICE)
         private readonly txService: ITxService,
         @Inject(SUSHI_SWAP_INFO_PROVIDER)
-        private readonly sushiSwapInfoProvider: IDefiProtocolInfoProvider,
+        private readonly sushiSwapInfoProvider: AbstractDefiProtocolInfoProvider,
     ) {}
 
     async getSwapOutAmount(request: SwapOutAmountRequest): Promise<TokenAmount | null> {

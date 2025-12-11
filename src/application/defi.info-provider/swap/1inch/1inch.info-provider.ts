@@ -5,13 +5,13 @@ import { Token } from 'src/domain/token.class';
 import { Cron } from '@nestjs/schedule';
 import { EvmAddress } from 'src/domain/evm-address.class';
 import { HTTP_CLIENT } from 'src/module/http-client.module';
-import { IDefiProtocolInfoProvider } from '../../provided_port/defi-info-provider.interface';
+import { AbstractDefiProtocolInfoProvider } from '../../provided_port/defi-info-provider.interface';
 import { ChainInfo } from 'src/domain/chain-info.type';
 import { type IHttpClient } from '../../../common/required_port/http-client.interface';
 import { OneInchTokensResponse } from './1inch-api.response';
 
 @Injectable()
-export class OneInchInfoProvider extends IDefiProtocolInfoProvider{
+export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider{
     readonly oneInchBaseUrl = 'https://api.1inch.com/swap/v6.1'
     private apiKey: string | undefined
     private tokenCache = new Map<string, Token>()

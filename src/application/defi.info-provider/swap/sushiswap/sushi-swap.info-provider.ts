@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common"
-import { IDefiProtocolInfoProvider } from "../../provided_port/defi-info-provider.interface"
+import { AbstractDefiProtocolInfoProvider } from "../../provided_port/defi-info-provider.interface"
 import { SUSHI_SUPPORTING_CHAINS } from "./constant.supporting-chain"
 import { Token } from "src/domain/token.class"
 import { HTTP_CLIENT } from "src/module/http-client.module"
@@ -12,7 +12,7 @@ import { type IRpcClientManager } from "src/application/transaction/required_por
 import { Address, erc20Abi } from 'viem';
 
 @Injectable()
-export class SushiSwapInfoProvider extends IDefiProtocolInfoProvider{
+export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
     // TODO: sushi swap sdk에서 SWAP_API_SUPPORTED_CHAIN_IDS를 활용할수 있을것 같다.
     private supportingChains = SUSHI_SUPPORTING_CHAINS
     private supportingTokens: Record<string, Token> = {}

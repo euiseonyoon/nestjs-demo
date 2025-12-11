@@ -5,7 +5,7 @@ import { Inject } from "@nestjs/common";
 import { HTTP_CLIENT } from "src/module/http-client.module";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { SUSHI_SWAP_INFO_PROVIDER } from "src/module/info-provider.module";
-import { type IDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
+import { AbstractDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
 import { SushiSwapQuoteResponse } from "./sushiswap.quote.response";
 import { RouteStatus } from "sushi/evm";
 
@@ -14,7 +14,7 @@ export class SushiSwapQuoter implements ISwapQuoter{
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
         @Inject(SUSHI_SWAP_INFO_PROVIDER)
-        private readonly sushiswapInfoProvider: IDefiProtocolInfoProvider,
+        private readonly sushiswapInfoProvider: AbstractDefiProtocolInfoProvider,
     ) {}
 
     async getQuote(quoteRequest: SwapQuoteRequest): Promise<TokenAmount | null> {

@@ -3,7 +3,7 @@ import { EvmAddress } from "src/domain/evm-address.class";
 import { SupportedTokens } from "src/domain/supported.token";
 import { Token } from "src/domain/token.class";
 
-export abstract class IDefiProtocolInfoProvider {
+export abstract class AbstractDefiProtocolInfoProvider {
     abstract getSupportingChains(): Promise<ChainInfo[]>
     abstract getSupportingTokens(): Promise<Token[]>
     abstract getSupportingChainInfo(chainId: number): Promise<ChainInfo | null>

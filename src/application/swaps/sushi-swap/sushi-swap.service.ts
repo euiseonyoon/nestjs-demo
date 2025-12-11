@@ -9,7 +9,7 @@ import { SUSHI_SWAP_AMOUNT_GETTER } from 'src/module/swap.amount-getter.module';
 import { type ISwapAmountGetter } from 'src/application/amount-getter/swap/provided_port/swap.amount-getter';
 import { SwapOutAmountRequest } from 'src/application/amount-getter/swap/request.swap-smount';
 import { TokenAmount } from 'src/domain/common-defi.type';
-import { type IDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
+import { AbstractDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
 
 @Injectable()
 export class SushiSwapService implements ISwapService{
@@ -17,7 +17,7 @@ export class SushiSwapService implements ISwapService{
         @Inject(SUSHI_SWAP_QUOTER)
         private readonly sushiSwapQuoter: ISwapQuoter,
         @Inject(SUSHI_SWAP_INFO_PROVIDER)
-        private readonly sushiSwapInfoProvider: IDefiProtocolInfoProvider,
+        private readonly sushiSwapInfoProvider: AbstractDefiProtocolInfoProvider,
         @Inject(SUSHI_SWAP_AMOUNT_GETTER)
         private readonly sushiSwapAmountGetter: ISwapAmountGetter
     ) {}

@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { IBridgeService } from "../provided_port/bridge.interface";
 import { NaiveBridgeHistoryRequest, NavieBridgeQuoteRequest } from "../request.type";
 import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/info-provider.module";
-import { type IStargateInfoProvider } from "./required_port/stargate.info-provider";
+import { AbstractStargateInfoProvider } from "./required_port/stargate.info-provider";
 import { STARGATE_QUOTER } from "src/module/bridge.quoter.module";
 import { type IBridgeQuoter } from "src/application/quoter/bridge/provided_port/bridge.quoter";
 import { TokenAmount } from "src/domain/common-defi.type";
@@ -16,7 +16,7 @@ import { BridgeOutAmountResponse } from "src/application/amount-getter/bridge/re
 export class StargateService implements IBridgeService {
     constructor(
         @Inject(STARGATE_BRIDGE_INFO_PROVIDER)
-        private readonly stargateInfoProvider: IStargateInfoProvider,
+        private readonly stargateInfoProvider: AbstractStargateInfoProvider,
         @Inject(STARGATE_QUOTER)
         private readonly stargateQuoter: IBridgeQuoter,
         @Inject(STARGATE_BRIDGE_AMOUNT_GETTER)

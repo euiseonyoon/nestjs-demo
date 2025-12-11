@@ -8,7 +8,7 @@ import { type IHttpClient } from 'src/application/common/required_port/http-clie
 import { EvmAddress } from 'src/domain/evm-address.class';
 import { OneInchHistoryResponseDto, TokenActionDto } from './1inch.history-api.response';
 import { ONE_INCH_SWAP_INFO_PROVIDER } from 'src/module/info-provider.module';
-import { type IDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
+import { AbstractDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
 import { EvmTxHash } from 'src/domain/evm-tx-hash.class';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class OneInchAmoutGetter implements ISwapAmountGetter{
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
         @Inject(ONE_INCH_SWAP_INFO_PROVIDER)
-        private readonly oneInchInfoProvider: IDefiProtocolInfoProvider,
+        private readonly oneInchInfoProvider: AbstractDefiProtocolInfoProvider,
         private readonly configService: ConfigService,
     ) {
         this.apiKey = this.configService.get<string>('ONE_INCH_API_KEY');

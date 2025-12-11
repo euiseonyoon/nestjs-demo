@@ -5,7 +5,7 @@ import { TokenAmount } from "src/domain/common-defi.type";
 import { StargateQuoteDetailResponse, StargateQuoteResponse } from "./stargate.response";
 import { HTTP_CLIENT } from "src/module/http-client.module";
 import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/info-provider.module";
-import { type IStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider";
+import { AbstractStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 
 @Injectable()
@@ -14,7 +14,7 @@ export class StargateQuoter implements IBridgeQuoter {
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
         @Inject(STARGATE_BRIDGE_INFO_PROVIDER)
-        private readonly stargateInfoProvider: IStargateInfoProvider,
+        private readonly stargateInfoProvider: AbstractStargateInfoProvider,
     ) {}
 
     async getQuote(request: BridgeQuoteRequest): Promise<TokenAmount | null> {
