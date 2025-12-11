@@ -8,7 +8,7 @@ import { type IBridgeQuoter } from "src/application/quoter/bridge/provided_port/
 import { TokenAmount } from "src/domain/common-defi.type";
 import { BridgeQuoteRequest } from "src/application/quoter/bridge/request.type";
 import { type IBridgeAmountGetter } from "src/application/amount-getter/bridge/provided_port/bridge.amount-getter";
-import { BridgeHistoryRequest } from "src/application/amount-getter/bridge/response.bridge-amount";
+import { BridgeAmountRequest } from "src/application/amount-getter/bridge/response.bridge-amount";
 import { STARGATE_BRIDGE_AMOUNT_GETTER } from "src/module/bridge.amount-getter.module";
 import { BridgeOutAmountResponse } from "src/application/amount-getter/bridge/request.bridge-amount";
 
@@ -30,7 +30,7 @@ export class StargateService implements IBridgeService {
         return this.stargateAmountGetter.getBridgeOutAmount(convertedRequest)
     }
 
-    private async convertAmountRquest(naiveRequest: NaiveBridgeHistoryRequest) : Promise<BridgeHistoryRequest | null> {
+    private async convertAmountRquest(naiveRequest: NaiveBridgeHistoryRequest) : Promise<BridgeAmountRequest | null> {
         const supportedResult = await this.stargateInfoProvider.getSupprtedTokens(
             naiveRequest.srcChainId, 
             naiveRequest.dstChainId, 

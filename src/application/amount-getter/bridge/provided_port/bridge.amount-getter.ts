@@ -1,6 +1,6 @@
 import { BridgeOutAmountResponse } from "../request.bridge-amount";
-import { BridgeHistoryRequest } from "../response.bridge-amount";
+import { BridgeAmountRequest } from "../response.bridge-amount";
 
 export interface IBridgeAmountGetter {
-    getBridgeOutAmount(request: BridgeHistoryRequest) : Promise<BridgeOutAmountResponse | null>
+    getBridgeOutAmount(request: BridgeAmountRequest) : Promise<BridgeOutAmountResponse | null>
 }
