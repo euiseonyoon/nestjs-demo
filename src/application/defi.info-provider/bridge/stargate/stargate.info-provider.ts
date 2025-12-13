@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { HTTP_CLIENT } from "src/module/http-client.module";
+import { HTTP_CLIENT } from "src/module/http-client.tokens";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { ChainInfo } from "src/domain/chain-info.type";
 import { EvmAddress } from "src/domain/evm-address.class";
@@ -50,8 +50,6 @@ export class StargateInfoProvider extends AbstractStargateInfoProvider {
         const response = await this.httpClient.get<StargateChainResponse>(
             "https://stargate.finance/api/v1/chains", 
         )
-        if (!response || response.isError) return null
-
         return response.data
     }
 
@@ -112,8 +110,6 @@ export class StargateInfoProvider extends AbstractStargateInfoProvider {
         const response = await this.httpClient.get<StargateTokenReponse>(
             "https://stargate.finance/api/v1/tokens", 
         )
-        if (!response || response.isError) return null
-
         return response.data
     }
 

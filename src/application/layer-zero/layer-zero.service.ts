@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common"
-import { HTTP_CLIENT } from "src/module/http-client.module"
+import { HTTP_CLIENT } from "src/module/http-client.tokens"
 import { TX_SERVICE } from "src/module/tx.module"
 import { type ITxService } from "../transaction/provided_port/tx.provided-port"
 import { type IHttpClient } from "../common/required_port/http-client.interface"
@@ -31,7 +31,7 @@ export class LayerZeroService implements ILayerZeroService {
         const url = 'https://metadata.layerzero-api.com/v1/metadata'
         const response = await this.httpClient.get<Record<string, any>>(url)
 
-        if (!response || response.isError) {
+        if (!response.data) {
             console.error('Failed to fetch LayerZero metadata')
             return
         }
@@ -68,9 +68,9 @@ export class LayerZeroService implements ILayerZeroService {
     async fetchBridgeInfo(srcTxHash: EvmTxHash): Promise<LayerZeroScanBridgeData | null> {
         const url = `https://scan.layerzero-api.com/v1/messages/tx/${srcTxHash.hash}`
         const response = await this.httpClient.get<LayerZeroScanBridgeResponse>(url)
-        if(!response || response.isError) return null
+        if(response.isErrorResponse || response.isNetworkError) return null
+
         if (response.data.data.length < 1) return null
-        
         return response.data.data[0]
     }
 

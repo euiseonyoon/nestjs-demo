@@ -1,27 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import type {
-    IHttpClient,
-    HttpRequestConfig,
-    HttpResponse,
+import {
+    type IHttpClient,
+    type HttpRequestConfig,
 } from '../../../application/common/required_port/http-client.interface';
+import { HttpResponse } from 'src/domain/http.response';
+import { AXIOS_ERROR_RESPONSE_HANDLER } from 'src/module/http-client.tokens';
+import { type IAxiosErrorResponseHanlder } from './required_port/axios.error-response-handler';
 
 @Injectable()
 export class AxiosHttpClientAdapter implements IHttpClient {
     private readonly axiosInstance: AxiosInstance;
+    readonly DEFAULT_TIMEOUT_MS = 10_000
 
-    constructor() {
+    constructor(
+        @Inject(AXIOS_ERROR_RESPONSE_HANDLER)
+        private readonly axiosErrorHandler: IAxiosErrorResponseHanlder
+    ) {
         this.axiosInstance = axios.create({
-            timeout: 30000,
+            timeout: this.DEFAULT_TIMEOUT_MS,
             headers: {
                 'Content-Type': 'application/json',
             },
         });
 
-        this.setupInterceptors();
+        this.setupLoggingInterceptors();
     }
 
-    private setupInterceptors(): void {
+    private setupLoggingInterceptors(): void {
         this.axiosInstance.interceptors.request.use(
             (config) => {
                 console.log(
@@ -53,7 +59,6 @@ export class AxiosHttpClientAdapter implements IHttpClient {
         );
     }
 
-
     private mapRequestConfig(config: HttpRequestConfig): AxiosRequestConfig {
         return {
             url: config.url,
@@ -65,38 +70,55 @@ export class AxiosHttpClientAdapter implements IHttpClient {
         };
     }
 
+
     async request<T = any, E = any>(
         config: HttpRequestConfig,
     ): Promise<HttpResponse<T, E>> {
-        try {
-            const axiosConfig = this.mapRequestConfig(config);
-            const response = await this.axiosInstance.request<T>(axiosConfig);
-
-            // 성공 응답
-            return {
-                data: response.data,
-                status: response.status,
-                statusText: response.statusText,
-                headers: response.headers as Record<string, string>,
-                isError: false,
-            };
-        } catch (error) {
-            // Axios 에러 처리
-            if (axios.isAxiosError(error) && error.response) {
-                // 4XX, 5XX 응답을 받았지만 예외로 처리된 경우
+        const axiosConfig = this.mapRequestConfig(config);
+        const maxRetries = config.retryConfig?.maxAttempts ?? 0;
+        
+        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+            try {
+                const response = await this.axiosInstance.request<T>(axiosConfig);
+                
                 return {
-                    data: {} as T,
-                    error: error.response.data as E,
-                    status: error.response.status,
-                    statusText: error.response.statusText,
-                    headers: error.response.headers as Record<string, string>,
-                    isError: true,
+                    data: response.data,
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: response.headers as Record<string, string>,
+                    isErrorResponse: false,
+                    isNetworkError: false,
                 };
-            }
 
-            // 네트워크 에러 등 다른 종류의 에러
-            throw error;
+            } catch (error) {
+                if (axios.isAxiosError(error)) {
+                    if (error.response !== undefined) {
+                        // 5XX에러나 4XX에러를 핸들링 한다.
+
+                        // result가 null이 아니면 재시도를 하지 않아야 된다고 판단, HttpBadResponse<E>를 반환한다
+                        // result가 null이면, 재시도가 가능하다고 판단, 이미 sleep을 했기때문에 continue한다.
+                        const result = await this.axiosErrorHandler.handleBadResponse<E>(error.response, config.retryConfig, attempt, maxRetries)
+                        if(result !== null) {
+                            return result;
+                        }
+                        continue;
+                    } else {
+                        // result가 null이 아니면 재시도를 하지 않아야 된다고 판단, HttpNetworkErrorResponse 반환한다
+                        // result가 null이면, 재시도가 가능하다고 판단, 이미 sleep을 했기때문에 continue한다.
+                        const result = await this.axiosErrorHandler.handleNoResponse(error, attempt, maxRetries, config.retryConfig)
+                        if(result !== null) {
+                            return result;
+                        }
+                        continue;
+                    }
+                }
+
+                console.error('Unexpected error in HTTP client:', error);
+                throw error;
+            }
         }
+        
+        throw new Error('Max retries exceeded');
     }
 
     async get<T = any, E = any>(

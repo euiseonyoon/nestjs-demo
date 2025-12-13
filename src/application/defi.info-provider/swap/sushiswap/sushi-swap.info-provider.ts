@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common"
 import { AbstractDefiProtocolInfoProvider } from "../../provided_port/defi-info-provider.interface"
 import { SUSHI_SUPPORTING_CHAINS } from "./constant.supporting-chain"
 import { Token } from "src/domain/token.class"
-import { HTTP_CLIENT } from "src/module/http-client.module"
+import { HTTP_CLIENT } from "src/module/http-client.tokens"
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface"
 import { ChainInfo } from "src/domain/chain-info.type"
 import { EvmAddress } from "src/domain/evm-address.class"
@@ -146,8 +146,6 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
     
         const url = `https://api.sushi.com/price/v1/${chainId}`
         const response = await this.httpClient.get<PriceResponse>(url)
-        if (!response || response.isError) return null
-        
         return response.data
     }
 

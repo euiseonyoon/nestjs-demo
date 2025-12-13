@@ -3,7 +3,7 @@ import { IBridgeQuoter } from "../provided_port/bridge.quoter";
 import { BridgeQuoteRequest } from "../request.type";
 import { TokenAmount } from "src/domain/common-defi.type";
 import { StargateQuoteDetailResponse, StargateQuoteResponse } from "./stargate.response";
-import { HTTP_CLIENT } from "src/module/http-client.module";
+import { HTTP_CLIENT } from "src/module/http-client.tokens";
 import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/info-provider.module";
 import { AbstractStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
@@ -57,10 +57,10 @@ export class StargateQuoter implements IBridgeQuoter {
         })
     }
 
-    private async fetchQuotes(request: BridgeQuoteRequest): Promise<StargateQuoteResponse | undefined> {
+    private async fetchQuotes(request: BridgeQuoteRequest): Promise<StargateQuoteResponse | null> {
         const srcChainKey = this.stargateInfoProvider.convertChainIdToChainKey(request.srcToken.chain.id)
         const dstChainKey = this.stargateInfoProvider.convertChainIdToChainKey(request.dstToken.chain.id)
-        if (!srcChainKey || !dstChainKey) return undefined
+        if (!srcChainKey || !dstChainKey) return null
 
         const response = await this.httpClient.get<StargateQuoteResponse>(
             "https://stargate.finance/api/v1/quotes", 
@@ -77,7 +77,6 @@ export class StargateQuoter implements IBridgeQuoter {
                 }
             }
         )
-        if (!response || response.isError) return undefined
         return response.data
     }
 }

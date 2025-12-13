@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { ISwapAmountGetter } from '../provided_port/swap.amount-getter';
 import { SwapOutAmountRequest } from '../request.swap-smount';
 import { TokenAmount } from 'src/domain/common-defi.type';
-import { HTTP_CLIENT } from 'src/module/http-client.module';
+import { HTTP_CLIENT } from 'src/module/http-client.tokens';
 import { type IHttpClient } from 'src/application/common/required_port/http-client.interface';
 import { EvmAddress } from 'src/domain/evm-address.class';
 import { OneInchHistoryResponseDto, TokenActionDto } from './1inch.history-api.response';
@@ -42,7 +42,7 @@ export class OneInchAmoutGetter implements ISwapAmountGetter{
         }
     }
 
-    private async fetchFromOneInchHistoryApi(address: EvmAddress, chainId: number): Promise<OneInchHistoryResponseDto | undefined> {
+    private async fetchFromOneInchHistoryApi(address: EvmAddress, chainId: number): Promise<OneInchHistoryResponseDto | null> {
         const currentTimestampMs: number = Date.now();
         const response = await this.httpClient.get<OneInchHistoryResponseDto>(
             `${this.oneInchBaseUrl}/history/v2.0/history/${address}/events`,
@@ -56,7 +56,6 @@ export class OneInchAmoutGetter implements ISwapAmountGetter{
                 }
             },
         );
-        if (!response || response.isError) return undefined
         return response.data
     }
 
