@@ -5,9 +5,11 @@ import { type ITxService } from "../transaction/provided_port/tx.provided-port"
 import { type IHttpClient } from "../common/required_port/http-client.interface"
 import { EvmTxHash } from "src/domain/evm-tx-hash.class"
 import { LayerZeroScanBridgeData, LayerZeroScanBridgeResponse } from "./response.type"
-import { TransactionReceipt } from "viem"
+import { decodeEventLog, TransactionReceipt } from "viem"
 import { Cron } from "@nestjs/schedule"
 import { ILayerZeroService } from "../bridges/stargate/required_port/layer-zero.interface"
+import { LAYERZERO_OFT_ABI } from "./layer-zero.abi"
+import { LAYERZERO_TOPICS } from "./layer-zero.topics"
 
 @Injectable()
 export class LayerZeroService implements ILayerZeroService {
@@ -73,23 +75,23 @@ export class LayerZeroService implements ILayerZeroService {
     }
 
     async getBridgeOutAmountFromReceipt(receipt: TransactionReceipt): Promise<bigint | null> {
-        // 0xefed6d3500546b29533b128a29e3a94d70788727f0507505ac12eaf2e578fd9c
-        // OFTReceived (index_topic_1 bytes32 guid, uint32 srcEid, index_topic_2 address toAddress, uint256 amountReceivedLD)
-        const targetEvent = receipt.logs.find((log)=> {
-            log.topics[0] === "0xefed6d3500546b29533b128a29e3a94d70788727f0507505ac12eaf2e578fd9c"
-        })
-        if (!targetEvent) return null
+        const targetLog = receipt.logs.find(log => log.topics[0] === LAYERZERO_TOPICS.OFT_RECEIVED)
+        if (!targetLog) return null
 
-        // example
-        // 0x
-        // 0000000000000000000000000000000000000000000000000000000000007595. // srcEid
-        // 0000000000000000000000000000000000000000000000001be0dc9cd7c10000  // amountReceivedLD
-        return BigInt("0x" + targetEvent.data.slice(-64));
+        try {
+            const { args } = decodeEventLog({
+                abi: LAYERZERO_OFT_ABI,
+                eventName: 'OFTReceived',
+                data: targetLog.data,
+                topics: targetLog.topics,
+            })
+            return args.amountReceivedLD
+        } catch {
+            return null
+        }
     }
 
     convertEidToChainId(eid: number): number | null {
-        const chainId = this.eidToChainIdMap.get(eid)
-        if (chainId === undefined) return null
-        return chainId
+        return this.eidToChainIdMap.get(eid) ?? null
     }
 }
