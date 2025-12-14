@@ -5,12 +5,14 @@ import { InfoProviderModule } from './info-provider.module';
 import { SushiSwapAmoutGetter } from 'src/application/amount-getter/swap/sushiswap/sushi-swap.amount-getter';
 import { TxModule } from './tx.module';
 import { ONE_INCH_SWAP_AMOUNT_GETTER, SUSHI_SWAP_AMOUNT_GETTER } from './module.token';
+import { InfoFetcherModule } from './info-fetcher.module';
 
 @Module({
     imports: [
         HttpClientModule,
         InfoProviderModule,
         TxModule,
+        InfoFetcherModule,
     ],
     providers: [
         { provide: ONE_INCH_SWAP_AMOUNT_GETTER, useClass: OneInchAmountGetter},

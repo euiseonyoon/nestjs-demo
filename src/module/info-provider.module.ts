@@ -5,11 +5,13 @@ import { StargateInfoProvider } from 'src/application/defi.info-provider/bridge/
 import { SushiSwapInfoProvider } from 'src/application/defi.info-provider/swap/sushiswap/sushi-swap.info-provider';
 import { PublicClientModule } from './public-client.module';
 import { ONE_INCH_SWAP_INFO_PROVIDER, SUSHI_SWAP_INFO_PROVIDER, STARGATE_BRIDGE_INFO_PROVIDER } from './module.token';
+import { InfoFetcherModule } from './info-fetcher.module';
 
 @Module({
     imports: [
         HttpClientModule,
         PublicClientModule,
+        InfoFetcherModule,
     ],
     providers: [
         {

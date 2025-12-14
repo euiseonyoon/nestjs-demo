@@ -27,6 +27,9 @@ export const ONE_INCH_SWAP_INFO_PROVIDER = Symbol('OneInchSwapInfoProvider');
 export const SUSHI_SWAP_INFO_PROVIDER = Symbol('SushiSwapInfoProvider');
 export const STARGATE_BRIDGE_INFO_PROVIDER = Symbol('StargateInfoProvider');
 
+// Info Fetchers
+export const ONE_INCH_INFO_FETCHER = Symbol('OneInchInfoFetcher')
+
 // Layer Zero
 export const LAYER_ZERO_SERVICE = Symbol('LayerZeroService');
 
