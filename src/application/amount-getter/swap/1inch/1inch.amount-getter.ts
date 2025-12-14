@@ -1,10 +1,8 @@
 import { Injectable, Inject } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { ISwapAmountGetter } from '../provided_port/swap.amount-getter';
 import { SwapOutAmountRequest } from '../request.swap-smount';
 import { TokenAmount } from 'src/domain/common-defi.type';
-import { HTTP_CLIENT, ONE_INCH_INFO_FETCHER } from 'src/module/module.token';
-import { type IHttpClient } from 'src/application/common/required_port/http-client.interface';
+import { ONE_INCH_INFO_FETCHER } from 'src/module/module.token';
 import { EvmAddress } from 'src/domain/evm-address.class';
 import { ONE_INCH_SWAP_INFO_PROVIDER } from 'src/module/module.token';
 import { AbstractDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
@@ -15,11 +13,8 @@ import { OneInchHistoryResponseDto, TokenActionDto } from 'src/application/defi.
 @Injectable()
 export class OneInchAmoutGetter implements ISwapAmountGetter{
     constructor(
-        @Inject(HTTP_CLIENT)
-        private readonly httpClient: IHttpClient,
         @Inject(ONE_INCH_SWAP_INFO_PROVIDER)
         private readonly oneInchInfoProvider: AbstractDefiProtocolInfoProvider,
-        private readonly configService: ConfigService,
         @Inject(ONE_INCH_INFO_FETCHER)
         private readonly oneInchInfoFetcher: IOneInchInfoFetcher,
     ) {}
