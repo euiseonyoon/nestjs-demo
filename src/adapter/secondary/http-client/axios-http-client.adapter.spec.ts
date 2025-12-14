@@ -1,12 +1,22 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AxiosHttpClientAdapter } from './axios-http-client.adapter';
+import { AxiosErrorResponseHandler } from 'src/infrastructure/axios.error-handler/axios.erorr-response.handler';
+import { AXIOS_ERROR_RESPONSE_HANDLER } from 'src/module/http-client.tokens';
 
 describe('AxiosHttpClientAdapter', () => {
     let adapter: AxiosHttpClientAdapter;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            providers: [AxiosHttpClientAdapter],
+            
+            providers: [
+                AxiosErrorResponseHandler,
+                {
+                    provide: AXIOS_ERROR_RESPONSE_HANDLER,
+                    useExisting: AxiosErrorResponseHandler
+                },
+                AxiosHttpClientAdapter
+            ],
         }).compile();
 
         adapter = module.get<AxiosHttpClientAdapter>(AxiosHttpClientAdapter);
