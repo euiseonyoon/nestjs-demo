@@ -7,7 +7,7 @@ import { type ITxService } from "src/application/transaction/provided_port/tx.pr
 import { SUSHI_SWAP_INFO_PROVIDER } from "src/module/module.token";
 import { AbstractDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
 import { EvmAddress } from "src/domain/evm-address.class";
-import { Log, TransactionReceipt } from "viem";
+import { Hex, Log, pad, TransactionReceipt } from "viem";
 import { ERC20_TOPICS } from "src/application/common/erc20/erc20.topics";
 
 @Injectable()
@@ -36,11 +36,15 @@ export class SushiSwapAmoutGetter implements ISwapAmountGetter{
     }
 
     private async findTargetLog(receipt: TransactionReceipt, receiverAddress: EvmAddress): Promise<Log | null> {
-        return receipt.logs.find((log) =>{
-            const matchSignature = log.topics[0]?.toLowerCase() === ERC20_TOPICS.TRANSFER
-            const matchTo = log.topics[2]?.toLowerCase() === receiverAddress.getAddress().toLowerCase()
+        const transferSignature = ERC20_TOPICS.TRANSFER.toString().toLowerCase()
+        // 이더리움 로그 토픽에 저장되는 주소는 항상 32바이트로 앞쪽에 0으로 패딩(Padding)되어 있다.
+        const receiverTopic = pad(receiverAddress.getAddress().toLowerCase() as Hex, { size: 32 }).toLowerCase();
+        
+        return receipt.logs.find((log) => {
+            const matchSignature = log.topics[0]?.toLowerCase() === transferSignature
+            const matchTo = log.topics[2]?.toLowerCase() === receiverTopic
 
-            matchSignature && matchTo
+            return matchSignature && matchTo;
         }) ?? null
     }
 }
