@@ -52,7 +52,7 @@ export class OneInchAmoutGetter implements ISwapAmountGetter{
                     limit: 10,
                     chainId: chainId,
                     fromTimestampMs: currentTimestampMs - 1000*60*10, // 10분전 부터
-                    toTimestampMs: currentTimestampMs + - 1000*60*5// 지금까지
+                    toTimestampMs: currentTimestampMs + 1000*60*5// 지금까지
                 }
             },
         );
