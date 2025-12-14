@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common"
+import { Inject, Injectable, OnModuleInit } from "@nestjs/common"
 import { HTTP_CLIENT } from "src/module/module.token"
 import { TX_SERVICE } from "src/module/module.token"
 import { type ITxService } from "../transaction/provided_port/tx.provided-port"
@@ -12,7 +12,7 @@ import { LAYERZERO_OFT_ABI } from "./layer-zero.abi"
 import { LAYERZERO_TOPICS } from "./layer-zero.topics"
 
 @Injectable()
-export class LayerZeroService implements ILayerZeroService {
+export class LayerZeroService implements ILayerZeroService, OnModuleInit {
     // TODO: 하위의 정보들은 나중에 cache registry에 등록하던지 한다.
     private eidToChainIdMap = new Map<number, number>()
 
@@ -21,8 +21,11 @@ export class LayerZeroService implements ILayerZeroService {
         private readonly httpClient: IHttpClient,
         @Inject(TX_SERVICE)
         private readonly txService: ITxService
-    ) {
-        this.refreshLayerZeroMetadata()
+    ) {}
+
+    // 모듈 초기화 시 자동 실행
+    async onModuleInit() {
+        await this.refreshLayerZeroMetadata()
     }
 
     // LayerZero EID → Chain ID 매핑 초기화 (매일 새벽 4시)
@@ -37,7 +40,7 @@ export class LayerZeroService implements ILayerZeroService {
         }
 
         // 각 체인의 메타데이터를 순회하며 EID → Chain ID 매핑 구축
-        for (const [chainKey, chainData] of Object.entries(response.data)) {
+        for (const [, chainData] of Object.entries(response.data)) {
             // EVM 체인만 처리
             if (chainData.chainDetails?.chainType === 'evm') {
                 // V2 deployment 찾기
@@ -47,12 +50,13 @@ export class LayerZeroService implements ILayerZeroService {
 
                 if (v2Deployment?.eid && chainData.chainDetails?.nativeChainId) {
                     this.eidToChainIdMap.set(
-                        v2Deployment.eid,
-                        chainData.chainDetails.nativeChainId
+                        Number(v2Deployment.eid),  // 문자열 → 숫자 변환
+                        Number(chainData.chainDetails.nativeChainId)
                     )
                 }
             }
         }
+
     }
 
     async getTxReceiptUsingDstInfo(dstEid: number, dstTxHash: EvmTxHash): Promise<TransactionReceipt | null> {

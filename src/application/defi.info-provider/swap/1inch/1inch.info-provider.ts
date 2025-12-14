@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ChainId } from 'src/domain/chain-id.enum';
 import { Token } from 'src/domain/token.class';
@@ -11,7 +11,7 @@ import { type IHttpClient } from '../../../common/required_port/http-client.inte
 import { OneInchTokensResponse } from './1inch-api.response';
 
 @Injectable()
-export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider{
+export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implements OnModuleInit{
     readonly oneInchBaseUrl = 'https://api.1inch.com/swap/v6.1'
     private apiKey: string | undefined
     private tokenCache = new Map<string, Token>()
