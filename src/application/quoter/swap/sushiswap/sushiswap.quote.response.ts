@@ -1,5 +1,7 @@
+import { RouteStatus } from "sushi/evm";
+
 export type SushiSwapQuoteSuccessResponse = {
-    status: "Success",
+    status: RouteStatus.Success,
     amountIn: string,
     assumedAmountOut: string,
     gasSpent: number,
@@ -28,7 +30,11 @@ export type SushiSwapQuoteToken = {
 // &visualize=false' \
 //   -H 'accept: application/json'
 export type SushiSwapQuoteNoWayResponse = {
-    status: "NoWay";
+    status: RouteStatus.NoWay;
 };
 
-export type SushiSwapQuoteResponse = SushiSwapQuoteSuccessResponse | SushiSwapQuoteNoWayResponse;
+export type SushiSwapQuotePartialResponse = {
+    status: RouteStatus.Partial;
+};
+
+export type SushiSwapQuoteResponse = SushiSwapQuoteSuccessResponse | SushiSwapQuoteNoWayResponse | SushiSwapQuotePartialResponse;
