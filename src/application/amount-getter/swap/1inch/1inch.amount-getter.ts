@@ -30,7 +30,7 @@ export class OneInchAmoutGetter implements ISwapAmountGetter{
         const response = await this.fetchFromOneInchHistoryApi(request.senderAddress, request.chain.id)
         if (!response) return null
 
-        const swapOutTokenInfo = this.extractSwapOutTokenInfo(response, request.txHash)
+        const swapOutTokenInfo = this.extractSwapOutTokenInfo(response, request.txHash, request.receiverAddress)
         if (!swapOutTokenInfo) return null
 
         const tokenInfo = await this.oneInchInfoProvider.getSupportingToken(request.chain.id, new EvmAddress(swapOutTokenInfo.address))
@@ -59,7 +59,7 @@ export class OneInchAmoutGetter implements ISwapAmountGetter{
         return response.data
     }
 
-    private extractSwapOutTokenInfo(response: OneInchHistoryResponseDto, txHash: EvmTxHash): TokenActionDto | undefined {
+    private extractSwapOutTokenInfo(response: OneInchHistoryResponseDto, txHash: EvmTxHash, receiverAddress: EvmAddress): TokenActionDto | undefined {
         const historyEventDto = response.items.find((dto) => {
             dto.details.txHash.toLowerCase() === txHash.hash.toLowerCase()
         })
@@ -67,7 +67,7 @@ export class OneInchAmoutGetter implements ISwapAmountGetter{
             return undefined
         }
         const swapOutTokenActionDto = historyEventDto.details.tokenActions.find((tokenAction)=> {
-            tokenAction.direction === 'In'
+            tokenAction.toAddress.toLowerCase() === receiverAddress.getAddress().toLowerCase()
         })
         return swapOutTokenActionDto
     }
