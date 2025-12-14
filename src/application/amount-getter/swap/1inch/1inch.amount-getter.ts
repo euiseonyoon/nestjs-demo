@@ -11,7 +11,7 @@ import { type IOneInchInfoFetcher } from 'src/application/defi.info-fetcher/swap
 import { OneInchHistoryResponseDto, TokenActionDto } from 'src/application/defi.info-fetcher/swap/1inch/1inch-swap.info-fetcher.response';
 
 @Injectable()
-export class OneInchAmoutGetter implements ISwapAmountGetter{
+export class OneInchAmountGetter implements ISwapAmountGetter{
     constructor(
         @Inject(ONE_INCH_SWAP_INFO_PROVIDER)
         private readonly oneInchInfoProvider: AbstractDefiProtocolInfoProvider,

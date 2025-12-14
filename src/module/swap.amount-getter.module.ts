@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
-import { HttpClientModule } from './http-client.module';
-import { OneInchAmoutGetter as OneInchAmountGetter } from 'src/application/amount-getter/swap/1inch/1inch.amount-getter';
+import { OneInchAmountGetter } from 'src/application/amount-getter/swap/1inch/1inch.amount-getter';
 import { InfoProviderModule } from './info-provider.module';
 import { SushiSwapAmoutGetter } from 'src/application/amount-getter/swap/sushiswap/sushi-swap.amount-getter';
 import { TxModule } from './tx.module';
@@ -9,7 +8,6 @@ import { InfoFetcherModule } from './info-fetcher.module';
 
 @Module({
     imports: [
-        HttpClientModule,
         InfoProviderModule,
         TxModule,
         InfoFetcherModule,
