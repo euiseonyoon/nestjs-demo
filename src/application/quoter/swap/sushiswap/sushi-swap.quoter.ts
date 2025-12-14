@@ -6,7 +6,7 @@ import { HTTP_CLIENT } from "src/module/module.token";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { SUSHI_SWAP_INFO_PROVIDER } from "src/module/module.token";
 import { AbstractDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
-import { SushiSwapQuoteResponse } from "./sushiswap.quote.response";
+import { SushiSwapQuoteResponse } from "./sushi-swap.quote.response";
 import { RouteStatus } from "sushi/evm";
 
 export class SushiSwapQuoter implements ISwapQuoter{
