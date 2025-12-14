@@ -5,6 +5,7 @@ import { ALL_CHAIN_PUBLIC_CLIENTS, RPC_CLIENT_MANAGER } from 'src/infrastructure
 import { chainPublicClientClasses } from 'src/infrastructure/rpc-node-provider/chain-public-client.decorator';
 import 'src/infrastructure/rpc-node-provider/ethereum.public-clients';
 import 'src/infrastructure/rpc-node-provider/base.public-clients';
+import 'src/infrastructure/rpc-node-provider/bsc.public-clients';
 
 @Module({
     providers: [
