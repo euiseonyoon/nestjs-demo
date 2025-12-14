@@ -1,18 +1,23 @@
 import { Test, TestingModule } from "@nestjs/testing";
 import { TxService } from "./tx.service";
-import { PublicClientModule } from "src/module/public-client.module";
 import { EvmTxHash } from "src/domain/evm-tx-hash.class";
 import { BadRequestException } from "@nestjs/common";
 import { TransactionReceiptNotFoundError } from "viem";
+import { IRpcClientManager } from "./required_port/tx.required-port";
+import { RPC_CLIENT_MANAGER } from "src/infrastructure/infrastructure.token";
 
 describe('TxService (Unit test)', ()=>{
     let txService: TxService;
     const dummyEvmTxHash = new EvmTxHash('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
     
+    const mockIRpcClientManager: IRpcClientManager = {
+        getRpcClient: jest.fn()
+    };
+
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
-            imports: [ PublicClientModule ],
             providers: [ 
+                { provide: RPC_CLIENT_MANAGER, useValue: mockIRpcClientManager },
                 TxService,
             ],
         }).compile();
