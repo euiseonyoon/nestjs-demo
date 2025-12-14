@@ -8,12 +8,9 @@ import { RootPublicClients } from './root-clients.base';
 export class EthereumChainPublicClientsImpl extends RootPublicClients {
     constructor() {
         const httpUrls = [
-            { chain: mainnet, httpUrl: 'https://eth.llamarpc.com' },
-            { chain: mainnet, httpUrl: 'https://ethereum-rpc.publicnode.com' },
+            { chain: mainnet, httpUrl: mainnet.rpcUrls.default.http[0] },
         ];
-        const wssUrls = [
-            { chain: mainnet, wssUrl: 'wss://ethereum-rpc.publicnode.com' },
-        ];
-        super(httpUrls, wssUrls);
+        const wssUrls = [];
+        super(httpUrls, []);
     }
 }
