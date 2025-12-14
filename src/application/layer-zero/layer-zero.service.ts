@@ -70,6 +70,7 @@ export class LayerZeroService implements ILayerZeroService, OnModuleInit {
     }
 
     async fetchBridgeInfo(srcTxHash: EvmTxHash): Promise<LayerZeroScanBridgeData | null> {
+        // docs: https://docs.layerzero.network/v2/tools/api/scan/mainnet
         const url = `https://scan.layerzero-api.com/v1/messages/tx/${srcTxHash.hash}`
         const response = await this.httpClient.get<LayerZeroScanBridgeResponse>(url)
         if(response.isErrorResponse || response.isNetworkError) return null
