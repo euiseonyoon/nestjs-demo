@@ -3,11 +3,11 @@ import { ConfigService } from '@nestjs/config';
 import { ISwapAmountGetter } from '../provided_port/swap.amount-getter';
 import { SwapOutAmountRequest } from '../request.swap-smount';
 import { TokenAmount } from 'src/domain/common-defi.type';
-import { HTTP_CLIENT } from 'src/module/http-client.tokens';
+import { HTTP_CLIENT } from 'src/module/module.token';
 import { type IHttpClient } from 'src/application/common/required_port/http-client.interface';
 import { EvmAddress } from 'src/domain/evm-address.class';
 import { OneInchHistoryResponseDto, TokenActionDto } from './1inch.history-api.response';
-import { ONE_INCH_SWAP_INFO_PROVIDER } from 'src/module/info-provider.module';
+import { ONE_INCH_SWAP_INFO_PROVIDER } from 'src/module/module.token';
 import { AbstractDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
 import { EvmTxHash } from 'src/domain/evm-tx-hash.class';
 

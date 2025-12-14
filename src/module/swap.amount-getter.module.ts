@@ -4,9 +4,7 @@ import { OneInchAmoutGetter as OneInchAmountGetter } from 'src/application/amoun
 import { InfoProviderModule } from './info-provider.module';
 import { SushiSwapAmoutGetter } from 'src/application/amount-getter/swap/sushiswap/sushiswap.amount-getter';
 import { TxModule } from './tx.module';
-
-export const ONE_INCH_SWAP_AMOUNT_GETTER = Symbol('OneInchSwapAmountGetter')
-export const SUSHI_SWAP_AMOUNT_GETTER = Symbol('SushiSwapAmountGetter')
+import { ONE_INCH_SWAP_AMOUNT_GETTER, SUSHI_SWAP_AMOUNT_GETTER } from './module.token';
 
 @Module({
     imports: [

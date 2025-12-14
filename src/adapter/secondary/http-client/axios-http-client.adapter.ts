@@ -5,7 +5,7 @@ import {
     type HttpRequestConfig,
 } from '../../../application/common/required_port/http-client.interface';
 import { HttpResponse } from 'src/domain/http.response';
-import { AXIOS_ERROR_RESPONSE_HANDLER } from 'src/module/http-client.tokens';
+import { AXIOS_ERROR_RESPONSE_HANDLER } from 'src/module/module.token';
 import { type IAxiosErrorResponseHanlder } from './required_port/axios.error-response-handler';
 
 @Injectable()

@@ -1,13 +1,13 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { AbstractBridgeService } from "../provided_port/bridge.interface";
 import { NaiveBridgeHistoryRequest, NavieBridgeQuoteRequest } from "../request.type";
-import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/info-provider.module";
+import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/module.token";
 import {  AbstractStargateInfoProvider } from "./required_port/stargate.info-provider";
-import { STARGATE_QUOTER } from "src/module/bridge.quoter.module";
+import { STARGATE_QUOTER } from "src/module/module.token";
 import { type IBridgeQuoter } from "src/application/quoter/bridge/provided_port/bridge.quoter";
 import { TokenAmount } from "src/domain/common-defi.type";
 import { type IBridgeAmountGetter } from "src/application/amount-getter/bridge/provided_port/bridge.amount-getter";
-import { STARGATE_BRIDGE_AMOUNT_GETTER } from "src/module/bridge.amount-getter.module";
+import { STARGATE_BRIDGE_AMOUNT_GETTER } from "src/module/module.token";
 import { BridgeOutAmountResponse } from "src/application/amount-getter/bridge/request.bridge-amount";
 
 @Injectable()

@@ -2,8 +2,7 @@ import { Module } from '@nestjs/common';
 import { HttpClientModule } from './http-client.module';
 import { TxModule } from './tx.module';
 import { LayerZeroService } from 'src/application/layer-zero/layer-zero.service';
-
-export const LAYER_ZERO_SERVICE = Symbol('LayerZeroService');
+import { LAYER_ZERO_SERVICE } from './module.token';
 
 @Module({
     imports: [

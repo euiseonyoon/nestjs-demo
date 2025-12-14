@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { RpcClientManager } from 'src/infrastructure/manager/rpc-client-manager.impl';
 import { ChainPublicClients } from 'src/infrastructure/rpc-node-provider/chain-public-clients.interface';
-import { ALL_CHAIN_PUBLIC_CLIENTS, RPC_CLIENT_MANAGER } from 'src/infrastructure/manager/rpc-client-manager.token';
+import { ALL_CHAIN_PUBLIC_CLIENTS, RPC_CLIENT_MANAGER } from 'src/infrastructure/infrastructure.token';
 import { chainPublicClientClasses } from 'src/infrastructure/rpc-node-provider/chain-public-client.decorator';
 import 'src/infrastructure/rpc-node-provider/ethereum.public-clients';
 import 'src/infrastructure/rpc-node-provider/base.public-clients';

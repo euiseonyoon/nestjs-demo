@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AxiosHttpClientAdapter } from './axios-http-client.adapter';
 import { AxiosErrorResponseHandler } from 'src/infrastructure/axios.error-handler/axios.erorr-response.handler';
-import { AXIOS_ERROR_RESPONSE_HANDLER } from 'src/module/http-client.tokens';
+import { AXIOS_ERROR_RESPONSE_HANDLER } from 'src/module/module.token';
 
 describe('AxiosHttpClientAdapter', () => {
     let adapter: AxiosHttpClientAdapter;

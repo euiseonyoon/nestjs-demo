@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { HTTP_CLIENT } from "src/module/http-client.tokens";
+import { HTTP_CLIENT } from "src/module/module.token";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { ChainInfo } from "src/domain/chain-info.type";
 import { EvmAddress } from "src/domain/evm-address.class";

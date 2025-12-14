@@ -4,8 +4,7 @@ import { AbstractBridgeService } from 'src/application/bridges/provided_port/bri
 import { BridgeAmountGetterModule } from './bridge.amount-getter.module';
 import { InfoProviderModule } from './info-provider.module';
 import { BridgeQuoteModule } from './bridge.quoter.module';
-
-export const BRIDGE_SERVICES = Symbol('BridgeServices');
+import { BRIDGE_SERVICES } from './module.token';
 
 @Module({
     imports: [

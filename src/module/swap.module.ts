@@ -5,8 +5,7 @@ import { InfoProviderModule } from './info-provider.module';
 import { AbstractSwapService } from 'src/application/swaps/provided_port/swap.interface';
 import { SwapQuoterModule } from './swap.quoter.module';
 import { SwapAmountGetterModule } from './swap.amount-getter.module';
-
-export const SWAP_SERVICES = Symbol('SwapServices');
+import { SWAP_SERVICES } from './module.token';
 
 @Module({
     imports: [HttpClientModule, InfoProviderModule, SwapQuoterModule, SwapAmountGetterModule],

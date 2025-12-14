@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common"
-import { HTTP_CLIENT } from "src/module/http-client.tokens"
-import { TX_SERVICE } from "src/module/tx.module"
+import { HTTP_CLIENT } from "src/module/module.token"
+import { TX_SERVICE } from "src/module/module.token"
 import { type ITxService } from "../transaction/provided_port/tx.provided-port"
 import { type IHttpClient } from "../common/required_port/http-client.interface"
 import { EvmTxHash } from "src/domain/evm-tx-hash.class"

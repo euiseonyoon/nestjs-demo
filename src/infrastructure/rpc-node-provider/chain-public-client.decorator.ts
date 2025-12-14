@@ -1,7 +1,6 @@
 import { SetMetadata, Type } from '@nestjs/common';
 import { ChainPublicClients } from './chain-public-clients.interface';
-
-export const CHAIN_PUBLIC_CLIENT_KEY = Symbol('CHAIN_PUBLIC_CLIENT');
+import { CHAIN_PUBLIC_CLIENT_KEY } from '../infrastructure.token';
 
 // 구현체들을 저장할 배열
 export const chainPublicClientClasses: Type<ChainPublicClients>[] = [];

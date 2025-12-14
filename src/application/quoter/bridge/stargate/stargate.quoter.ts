@@ -3,8 +3,8 @@ import { IBridgeQuoter } from "../provided_port/bridge.quoter";
 import { BridgeQuoteRequest } from "../request.type";
 import { TokenAmount } from "src/domain/common-defi.type";
 import { StargateQuoteDetailResponse, StargateQuoteResponse } from "./stargate.response";
-import { HTTP_CLIENT } from "src/module/http-client.tokens";
-import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/info-provider.module";
+import { HTTP_CLIENT } from "src/module/module.token";
+import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/module.token";
 import { AbstractStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 

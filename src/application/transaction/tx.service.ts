@@ -3,7 +3,7 @@ import { Hash, TransactionReceipt, TransactionReceiptNotFoundError } from 'viem'
 import * as chains from 'viem/chains';
 import { ITxService } from './provided_port/tx.provided-port';
 import { EvmTxHash } from 'src/domain/evm-tx-hash.class';
-import { RPC_CLIENT_MANAGER } from 'src/infrastructure/manager/rpc-client-manager.token';
+import { RPC_CLIENT_MANAGER } from 'src/infrastructure/infrastructure.token';
 import { type IRpcClientManager } from './required_port/tx.required-port';
 
 @Injectable()

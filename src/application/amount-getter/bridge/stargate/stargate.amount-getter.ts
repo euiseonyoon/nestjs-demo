@@ -4,7 +4,7 @@ import { IBridgeAmountGetter } from "../provided_port/bridge.amount-getter";
 import { type ILayerZeroService } from "src/application/bridges/stargate/required_port/layer-zero.interface";
 import { BridgeAmountRequest } from "../response.bridge-amount";
 import { BridgeOutAmountResponse } from "../request.bridge-amount";
-import { LAYER_ZERO_SERVICE } from "src/module/layer-zero.module";
+import { LAYER_ZERO_SERVICE } from "src/module/module.token";
 
 @Injectable()
 export class StargateAmountGetter implements IBridgeAmountGetter {

@@ -1,11 +1,11 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { NaiveSameChainSwapQuoteRequest, NaiveSwapQuoteRequest, NaiveSwapOutAmountRequest } from '../request.type';
 import { AbstractSwapService } from '../provided_port/swap.interface';
-import { ONE_INCH_SWAP_INFO_PROVIDER } from 'src/module/info-provider.module';
-import { ONE_INCH_SWAP_QUOTER } from 'src/module/swap.quoter.module';
+import { ONE_INCH_SWAP_INFO_PROVIDER } from 'src/module/module.token';
+import { ONE_INCH_SWAP_QUOTER } from 'src/module/module.token';
 import { type ISwapQuoter } from 'src/application/quoter/swap/provided_port/swap.quoter';
 import { type SwapQuoteRequest } from 'src/application/quoter/swap/request.type';
-import { ONE_INCH_SWAP_AMOUNT_GETTER } from 'src/module/swap.amount-getter.module';
+import { ONE_INCH_SWAP_AMOUNT_GETTER } from 'src/module/module.token';
 import { type ISwapAmountGetter } from 'src/application/amount-getter/swap/provided_port/swap.amount-getter';
 import { TokenAmount } from 'src/domain/common-defi.type';
 import { AbstractDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';

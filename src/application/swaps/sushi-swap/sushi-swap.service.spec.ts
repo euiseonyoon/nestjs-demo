@@ -1,15 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
 import { SushiSwapService } from './sushi-swap.service';
-import { SwapQuoterModule } from 'src/module/swap.quoter.module';
-import { InfoProviderModule } from 'src/module/info-provider.module';
-import { SwapAmountGetterModule } from 'src/module/swap.amount-getter.module';
 import { NaiveSameChainSwapQuoteRequest, NaiveCrossChainSwapQuoteRequest } from '../request.type';
 import { EvmAddress } from 'src/domain/evm-address.class';
 import { Token, E_ADDRESS } from 'src/domain/token.class';
 import { PublicClientModule } from 'src/module/public-client.module';
 import 'src/infrastructure/rpc-node-provider/ethereum.public-clients';
 import 'src/infrastructure/rpc-node-provider/base.public-clients';
+import { SwapQuoterModule } from 'src/module/swap.quoter.module';
+import { InfoProviderModule } from 'src/module/info-provider.module';
+import { SwapAmountGetterModule } from 'src/module/swap.amount-getter.module';
 
 describe('SushiSwapService (Integration Test)', () => {
     let service: SushiSwapService;

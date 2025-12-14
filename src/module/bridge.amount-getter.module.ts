@@ -3,8 +3,7 @@ import { HttpClientModule } from './http-client.module';
 import { TxModule } from './tx.module';
 import { StargateAmountGetter } from 'src/application/amount-getter/bridge/stargate/stargate.amount-getter';
 import { LayerZeroModule } from './layer-zero.module';
-
-export const STARGATE_BRIDGE_AMOUNT_GETTER = Symbol('StargateAmountGetter')
+import { STARGATE_BRIDGE_AMOUNT_GETTER } from './module.token';
 
 @Module({
     imports: [

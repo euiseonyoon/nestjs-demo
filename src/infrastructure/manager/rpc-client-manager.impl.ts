@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PublicClient } from 'viem';
 import { ChainPublicClients } from '../rpc-node-provider/chain-public-clients.interface';
 import { IRpcClientManager } from 'src/application/transaction/required_port/tx.required-port';
-import { ALL_CHAIN_PUBLIC_CLIENTS } from './rpc-client-manager.token';
+import { ALL_CHAIN_PUBLIC_CLIENTS } from '../infrastructure.token';
 
 @Injectable()
 export class RpcClientManager implements IRpcClientManager {

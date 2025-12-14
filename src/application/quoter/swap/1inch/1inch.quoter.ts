@@ -2,7 +2,7 @@ import { ISwapQuoter } from "../provided_port/swap.quoter";
 import { TokenAmount } from "src/domain/common-defi.type";
 import { CrossSwapQuoteRequest, SimpleSwapQuoteRequest, SwapQuoteRequest } from "../request.type";
 import { Inject } from "@nestjs/common";
-import { HTTP_CLIENT } from "src/module/http-client.tokens";
+import { HTTP_CLIENT } from "src/module/module.token";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { ConfigService } from "@nestjs/config";
 import { ClassicSwapQuoteResponse } from "./1inch.quote.response";

@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TxService } from 'src/application/transaction/tx.service';
 import { PublicClientModule } from './public-client.module';
-
-export const TX_SERVICE = Symbol('TxService');
+import { TX_SERVICE } from './module.token';
 
 @Module({
     imports: [PublicClientModule],

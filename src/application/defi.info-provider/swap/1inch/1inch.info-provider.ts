@@ -4,7 +4,7 @@ import { ChainId } from 'src/domain/chain-id.enum';
 import { Token } from 'src/domain/token.class';
 import { Cron } from '@nestjs/schedule';
 import { EvmAddress } from 'src/domain/evm-address.class';
-import { HTTP_CLIENT } from 'src/module/http-client.tokens';
+import { HTTP_CLIENT } from 'src/module/module.token';
 import { AbstractDefiProtocolInfoProvider } from '../../provided_port/defi-info-provider.interface';
 import { ChainInfo } from 'src/domain/chain-info.type';
 import { type IHttpClient } from '../../../common/required_port/http-client.interface';
