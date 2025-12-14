@@ -9,7 +9,9 @@ import { SwapQuoterModule } from 'src/module/swap.quoter.module';
 import { InfoProviderModule } from 'src/module/info-provider.module';
 import { SwapAmountGetterModule } from 'src/module/swap.amount-getter.module';
 import { SushiSwapService } from 'src/application/swaps/sushi-swap/sushi-swap.service';
-import { NaiveSameChainSwapQuoteRequest } from 'src/application/swaps/request.type';
+import { NaiveSameChainSwapQuoteRequest, NaiveSwapOutAmountRequest } from 'src/application/swaps/request.type';
+import { EvmTxHash } from 'src/domain/evm-tx-hash.class';
+import { mainnet } from 'viem/chains';
 
 describe('SushiSwapService (Integration Test)', () => {
     let service: SushiSwapService;
@@ -74,6 +76,35 @@ describe('SushiSwapService (Integration Test)', () => {
                 // Log for debugging
                 console.log(`✅ Quote result: ${result.amount.toString()} ${result.token.symbol}`);
             }
+        });
+    })
+
+
+    describe('getSwapOutAmount', () => {
+        it('swap out amount 확인', async () => {
+            /** 
+             * https://etherscan.io/tx/0x8db5d7ba60e97c9690e5e02e4e9afd6743d168121b1243318cce0fee06869bb9
+             * From, To: 0x7bC38f9e6A9dD19AA147D400a01308868CEb8890
+             * USDC@Ethereum -> USDT@Etherem 으로 SushiSwap 사용
+            */
+
+            // GIVEN
+            const accountAddr = new EvmAddress('0x7bC38f9e6A9dD19AA147D400a01308868CEb8890')
+            const txHash = new EvmTxHash('0x8db5d7ba60e97c9690e5e02e4e9afd6743d168121b1243318cce0fee06869bb9')
+            const naiveRequest = {
+                chainId: mainnet.id,
+                senderAddress: accountAddr,
+                receiverAddress: accountAddr,
+                txHash: txHash,
+            } as NaiveSwapOutAmountRequest
+
+            // WHEN
+            const result = await service.getSwapOutAmount(naiveRequest)
+
+            // THEN
+            expect(result).not.toBeNull()
+            expect(result?.amount).toBeGreaterThan(0n)
+            expect(result?.token.symbol).toEqual('USDT')
         });
     })
 });
