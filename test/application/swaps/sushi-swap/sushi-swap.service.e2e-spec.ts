@@ -22,7 +22,7 @@ describe('SushiSwapService (Integration Test)', () => {
     const mockSlippage = '0.5';
     const mockMaxPriceImpact = null;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
                 ConfigModule.forRoot({

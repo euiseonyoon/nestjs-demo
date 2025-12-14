@@ -12,7 +12,7 @@ import { LayerZeroService } from "src/application/layer-zero/layer-zero.service"
 describe('LayerZeroService (Integration Test)', () => {
     let layerZeroService: LayerZeroService;
 
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [
                 HttpClientModule,

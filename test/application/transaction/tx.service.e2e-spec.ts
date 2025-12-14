@@ -7,7 +7,7 @@ describe('TxService (Integration test)', ()=>{
     let txService: TxService;
     const dummyEvmTxHash = new EvmTxHash('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
     
-    beforeEach(async () => {
+    beforeAll(async () => {
         const module: TestingModule = await Test.createTestingModule({
             imports: [ PublicClientModule ],
             providers: [ 
