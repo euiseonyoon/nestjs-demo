@@ -1,7 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { ConfigModule } from '@nestjs/config';
-import { SushiSwapService } from './sushi-swap.service';
-import { NaiveSameChainSwapQuoteRequest, NaiveCrossChainSwapQuoteRequest } from '../request.type';
 import { EvmAddress } from 'src/domain/evm-address.class';
 import { Token, E_ADDRESS } from 'src/domain/token.class';
 import { PublicClientModule } from 'src/module/public-client.module';
@@ -10,17 +8,19 @@ import 'src/infrastructure/rpc-node-provider/base.public-clients';
 import { SwapQuoterModule } from 'src/module/swap.quoter.module';
 import { InfoProviderModule } from 'src/module/info-provider.module';
 import { SwapAmountGetterModule } from 'src/module/swap.amount-getter.module';
+import { SushiSwapService } from 'src/application/swaps/sushi-swap/sushi-swap.service';
+import { NaiveSameChainSwapQuoteRequest } from 'src/application/swaps/request.type';
 
 describe('SushiSwapService (Integration Test)', () => {
     let service: SushiSwapService;
 
     // Test data - real token addresses on Ethereum
-    const ethereumChainId = 1;
-    const bscChainId = 56;
+    const mockChainId = 1;
     const ethOnEthereumAddr = new EvmAddress(E_ADDRESS);
-    const usdtOnBscAddr = new EvmAddress('0x55d398326f99059fF775485246999027B3197955');
+    const usdtOnEthereumAddr = new EvmAddress('0xdAC17F958D2ee523a2206206994597C13D831ec7');
     const mockAmount = '0.1';
     const mockSlippage = '0.5';
+    const mockMaxPriceImpact = null;
 
     beforeEach(async () => {
         const module: TestingModule = await Test.createTestingModule({
@@ -47,17 +47,33 @@ describe('SushiSwapService (Integration Test)', () => {
         expect(service).toBeDefined();
     });
 
-    it('Cross-Chain Swap 미지원 테스트', () => {
-        // GIVEN 
-        const crossChainSwapRequest = new NaiveCrossChainSwapQuoteRequest(
-            ethereumChainId,
-            bscChainId,
-            ethOnEthereumAddr,
-            usdtOnBscAddr,
-            mockAmount,
-            mockSlippage,
-        )
+    describe('getQuote', () => {
+        it('Ether@Ethereum -> USDT@Ethereum getQuote() 성공 테스트', async () => {
+            // GIVEN: Real swap request
+            const request = new NaiveSameChainSwapQuoteRequest(
+                mockChainId,
+                ethOnEthereumAddr,
+                usdtOnEthereumAddr,
+                mockAmount,
+                mockSlippage,
+                mockMaxPriceImpact
+            );
 
-        expect(service.getQuote(crossChainSwapRequest)).resolves.toBeNull()
-    });
+            // WHEN: Call real service with actual API
+            const result = await service.getQuote(request);
+
+            // THEN: Validate real API response structure
+            expect(result).not.toBeNull();
+            if (result) {
+                expect(result).toHaveProperty('amount');
+                expect(result).toHaveProperty('token');
+                expect(result.token).toBeInstanceOf(Token);
+                expect(result.token.symbol).toBe('USDT');
+                expect(BigInt(result.amount)).toBeGreaterThan(0n);
+
+                // Log for debugging
+                console.log(`✅ Quote result: ${result.amount.toString()} ${result.token.symbol}`);
+            }
+        });
+    })
 });

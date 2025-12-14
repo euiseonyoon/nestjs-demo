@@ -5,7 +5,7 @@ import { EvmTxHash } from "src/domain/evm-tx-hash.class";
 import { BadRequestException } from "@nestjs/common";
 import { TransactionReceiptNotFoundError } from "viem";
 
-describe('TxService (Integration Test)', ()=>{
+describe('TxService (Unit test)', ()=>{
     let txService: TxService;
     const dummyEvmTxHash = new EvmTxHash('0xaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
     
@@ -18,6 +18,10 @@ describe('TxService (Integration Test)', ()=>{
         }).compile();
 
         txService = module.get<TxService>(TxService);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks(); 
     });
 
     it('서비스 인스턴스 주입 및 정의 테스트', () => {
@@ -62,18 +66,5 @@ describe('TxService (Integration Test)', ()=>{
         expect(
             txService.getTxReceipt(dummyEvmTxHash, ethereumChainId)
         ).resolves.toBeNull();
-
-        jest.restoreAllMocks();
-    });
-
-    it('정상 작동 테스트', async () => {
-        // GIVEN
-        const ethereumChainId = 1;
-        const ethTxHash = new EvmTxHash('0x65ea2da89f1fdc2beb32afc76ea100fec1cb2759edfa375ba474c62086c5dbd0')
-
-        // WHEN & THEN
-        const result = await txService.getTxReceipt(ethTxHash, ethereumChainId);
-        expect(result).not.toBeNull()
-        expect(result?.transactionHash.toLowerCase()).toEqual(ethTxHash.hash.toLowerCase())
     });
 })

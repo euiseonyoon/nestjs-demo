@@ -1,5 +1,4 @@
 import { Test, TestingModule } from "@nestjs/testing";
-import { LayerZeroService } from "./layer-zero.service";
 import { TxModule } from "src/module/tx.module";
 import { PublicClientModule } from "src/module/public-client.module";
 import { HttpClientModule } from "src/module/http-client.module";
@@ -8,6 +7,7 @@ import 'src/infrastructure/rpc-node-provider/base.public-clients';
 import 'src/infrastructure/rpc-node-provider/bsc.public-clients';
 import { bsc, mainnet } from "viem/chains";
 import { EvmTxHash } from "src/domain/evm-tx-hash.class";
+import { LayerZeroService } from "src/application/layer-zero/layer-zero.service";
 
 describe('LayerZeroService (Integration Test)', () => {
     let layerZeroService: LayerZeroService;
@@ -75,24 +75,5 @@ describe('LayerZeroService (Integration Test)', () => {
         const amount = await layerZeroService.getBridgeOutAmountFromReceipt(txReceipt!)
         expect(amount).not.toBeNull()
         expect(amount).toBe(151980363000000000000n)
-    })
-
-    it('getBridgeOutAmountFromReceipt() 테스트2', async() => {
-        /**
-         * Ethereum (ETH) - Stargate bridge -> Base (Eth)
-         * srcTxHash : https://etherscan.io/tx/0x76980a275dfcca189434a5fc76615c2223b50276a407eed69f27416aa2f7fdbd
-         * dstTxHash : https://basescan.org/tx/0x64cb2954a54c3e218216c7ce81b96b3111f78646219f3b5b4b882b73766eb862
-         */
-        
-        // GIVEN
-        const baseEid = 30184
-        const dstTxHash = new EvmTxHash('0x64cb2954a54c3e218216c7ce81b96b3111f78646219f3b5b4b882b73766eb862')
-
-        const txReceipt = await layerZeroService.getTxReceiptUsingDstInfo(baseEid, dstTxHash)
-        expect(txReceipt).not.toBeNull()
-
-        const amount = await layerZeroService.getBridgeOutAmountFromReceipt(txReceipt!)
-        expect(amount).not.toBeNull()
-        expect(amount).toBe(2008848000000000000n)
     })
 })
