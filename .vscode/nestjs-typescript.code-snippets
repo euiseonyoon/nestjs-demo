@@ -1,0 +1,102 @@
+{
+	// Place your shop-nestjs workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and 
+	// description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope 
+	// is left empty or omitted, the snippet gets applied to all languages. The prefix is what is 
+	// used to trigger the snippet and the body will be expanded and inserted. Possible variables are: 
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. 
+	// Placeholders with the same ids are connected.
+	// Example:
+	// "Print to console": {
+	// 	"scope": "javascript,typescript",
+	// 	"prefix": "log",
+	// 	"body": [
+	// 		"console.log('$1');",
+	// 		"$2"
+	// 	],
+	// 	"description": "Log output to console"
+	// }
+
+	"NestJS Unit Test Setup": {
+        "scope": "typescript",
+        "prefix": "utest", // 이 단축어를 입력하면 스니펫이 나옴
+        "body": [
+            "import { Test } from \"@nestjs/testing\";",
+            "",
+            "describe(\"${1:ServiceName} (Unit Test)\", () => {",
+            "    let ${2:serviceInstance}: ${3:ServiceClass};",
+            "",
+            "    beforeEach(async () => {",
+            "        const moduleRef = await Test.createTestingModule({",
+            "            providers: [",
+            "                ${3:ServiceClass}, // 테스트 대상 클래스",
+            "                // 필요한 Mock Provider들을 여기에 추가하세요.",
+            "            ],",
+            "        }).compile();",
+            "",
+            "        ${2:serviceInstance} = moduleRef.get<${3:ServiceClass}>(${3:ServiceClass});",
+            "    });",
+            "",
+            "    it('인스턴스가 정의되어야 함', () => {",
+            "        expect(${2:serviceInstance}).toBeDefined();",
+            "    });",
+            "",
+            "});"
+        ],
+        "description": "NestJS 단위 테스트 (Jest)를 위한 기본 템플릿과 beforeEach 설정"
+    },
+    "Simple Describe-It Block": {
+        "scope": "typescript",
+        "prefix": "ts", // 이 단축어를 입력하면 스니펫이 나옵니다.
+        "body": [
+            "describe(\"${1:Context description}\", () => {",
+            "    it(\"${2:should do something}\", async () => {",
+            "        // GIVEN",
+            "",
+            "        // WHEN",
+            "",
+            "        // THEN",
+            "    });",
+            "});"
+        ],
+        "description": "가장 기본적인 Jest/Mocha 테스트 블록 (describe-it)을 생성합니다."
+    },
+    "Simple It Block": {
+        "scope": "typescript",
+        "prefix": "tc", // 이 단축어를 입력하면 스니펫이 나옵니다.
+        "body": [
+            "it(\"${1:should do something}\", async () => {",
+            "    // GIVEN",
+            "",
+            "    // WHEN",
+            "",
+            "    // THEN",
+            "});"
+        ],
+        "description": "가장 기본적인 테스트 케이스 (it 블록)를 생성합니다."
+    },
+    "Jest Spy on Internal Variable Method": {
+        "scope": "typescript",
+        "prefix": "mockspy",
+        "body": [
+            "const ${1:internalVariable} = ${2:mockClass}['${3:internalVariableName}'];",
+            "jest.spyOn(${1:internalVariable}, '${4:variableMethod}').${5:mockResolvedValue}(${6:null});"
+        ],
+        "description": "클래스 인스턴스의 내부 변수(private/protected)에 접근하여 그 변수의 메서드를 Mocking하는 Jest spyOn 구문입니다."
+    },
+    "Expect null": {
+        "scope": "typescript",
+        "prefix": "expectnull",
+        "body": [
+            "expect(${1:internalVariable}).toBeNull()"
+        ],
+        "description": "expect null"
+    },
+    "Expect not null": {
+        "scope": "typescript",
+        "prefix": "expectnotnull",
+        "body": [
+            "expect(${1:internalVariable}).not.toBeNull()"
+        ],
+        "description": "expect not null"
+    }
+}
