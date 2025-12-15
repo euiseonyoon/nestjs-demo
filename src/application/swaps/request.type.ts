@@ -13,7 +13,7 @@ export class NaiveSameChainSwapQuoteRequest {
         readonly slippagePercentStr: string, // "0.5"는 0.5% -> 0.005
         readonly maxPriceImpact: number | null,
     ) {
-        if(srcTokenAddress.getAddress().toLocaleLowerCase() === dstTokenAddress.getAddress().toLocaleLowerCase()) {
+        if(srcTokenAddress.equals(dstTokenAddress)) {
             throw new Error("SrcToken and DstToken should be different tokens.");
         }
     }
@@ -32,7 +32,7 @@ export class NaiveCrossChainSwapQuoteRequest {
             throw new Error("srcChainId and dstChainId should be different.");
         }
 
-        if(srcTokenAddress.getAddress().toLocaleLowerCase() === dstTokenAddress.getAddress().toLocaleLowerCase()) {
+        if(srcTokenAddress.equals(dstTokenAddress)) {
             throw new Error("SrcToken and DstToken should be different tokens.");
         }
     }

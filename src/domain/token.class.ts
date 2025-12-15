@@ -18,7 +18,7 @@ export class Token {
         public readonly isNativeToken: boolean
     ) {
         if (isNativeToken) {
-            if (address.getAddress().toLowerCase() !== E_ADDRESS_LOWER) {
+            if (!address.equals(E_ADDRESS_LOWER)) {
                 throw Error(`Native token address should be ${E_ADDRESS}`)
             }
         }
@@ -29,6 +29,11 @@ export class Token {
         const weiDecimal: Decimal = amountInDecimal.times(new Decimal(10).toPower(this.decimals));
         const weiString: string = weiDecimal.toFixed(0, Decimal.ROUND_DOWN);
         return BigInt(weiString);
+    }
+
+    public equals(other: Token): boolean {
+        return this.chain.id === other.chain.id && 
+            this.address.equals(other.address);
     }
 
     static fromOneInchTokenData(tokenData: OneInchTokenData, chainInfo: ChainInfo): Token {

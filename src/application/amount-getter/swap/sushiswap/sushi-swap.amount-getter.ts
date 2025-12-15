@@ -38,7 +38,7 @@ export class SushiSwapAmoutGetter implements ISwapAmountGetter{
     private async findTargetLog(receipt: TransactionReceipt, receiverAddress: EvmAddress): Promise<Log | null> {
         const transferSignature = ERC20_TOPICS.TRANSFER.toString().toLowerCase()
         // 이더리움 로그 토픽에 저장되는 주소는 항상 32바이트로 앞쪽에 0으로 패딩(Padding)되어 있다.
-        const receiverTopic = pad(receiverAddress.getAddress().toLowerCase() as Hex, { size: 32 }).toLowerCase();
+        const receiverTopic = pad(receiverAddress.address as Hex, { size: 32 }).toLowerCase();
         
         return receipt.logs.find((log) => {
             const matchSignature = log.topics[0]?.toLowerCase() === transferSignature

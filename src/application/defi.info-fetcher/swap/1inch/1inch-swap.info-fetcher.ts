@@ -80,8 +80,8 @@ export class OneInchInfoFetcher implements IOneInchInfoFetcher, OnModuleInit{
             {
                 headers: { Authorization: `Bearer ${this.apiKey}` },
                 params : {
-                    src: srcToken.address.getAddress(),
-                    dst: dstToken.address.getAddress(),
+                    src: srcToken.address.address,
+                    dst: dstToken.address.address,
                     amount: srcToken.convertToBigIntAmount(amount).toString(),
                     includeTokensInfo: true,
                     includeProtocols: true,
