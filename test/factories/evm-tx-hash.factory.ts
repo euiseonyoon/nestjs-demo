@@ -1,9 +1,10 @@
 import { EvmTxHash } from "src/domain/evm-tx-hash.class";
+import { generateRandomHexString } from "./random.hex.generator";
 
 export function createTestEvmTxHash(
     hash?: string,
 ): EvmTxHash {
     return new EvmTxHash(
-        hash ?? "0xabcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234abcd1234"
+        hash ?? generateRandomHexString(64)
     )
 }
