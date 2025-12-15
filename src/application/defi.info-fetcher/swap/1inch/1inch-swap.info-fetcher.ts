@@ -3,7 +3,7 @@ import { IOneInchInfoFetcher } from "./provided_port/1inch-swap.info-fetcher.int
 import { HTTP_CLIENT } from "src/module/module.token";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { ConfigService } from "@nestjs/config";
-import { ClassicSwapQuoteResponse, OneInchChainAndTokens, OneInchHistoryResponseDto, OneInchTokensResponse } from "./1inch-swap.info-fetcher.response";
+import { ClassicSwapQuoteResponse, OneInchHistoryResponseDto, OneInchTokensResponse } from "./1inch-swap.info-fetcher.response";
 import { Token } from "src/domain/token.class";
 import { EvmAddress } from "src/domain/evm-address.class";
 import { ChainId } from "src/domain/chain-id.enum";

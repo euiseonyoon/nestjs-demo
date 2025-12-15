@@ -37,12 +37,14 @@ export type HistoryEventDto = {
     type: number,
     rating: string,
     timeMs: number,
+    direction: string,
+    eventOrderInTransaction: number,
     details: TransactionDetailsDto,
 }
 
 export type OneInchHistoryResponseDto = {
     items: HistoryEventDto[]
-    cache_control: number
+    cache_counter: number
 }
 
 
@@ -106,9 +108,4 @@ export interface OneInchTokensResponse {
     tokens: {
         [address: string]: OneInchTokenData;
     };
-}
-
-export type OneInchChainAndTokens = {
-    chainInfo: ChainInfo,
-    response: OneInchTokensResponse,
 }

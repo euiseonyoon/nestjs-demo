@@ -1,4 +1,4 @@
-import { OneInchChainAndTokens, OneInchHistoryResponseDto, OneInchTokensResponse } from "../1inch-swap.info-fetcher.response";
+import { OneInchHistoryResponseDto, OneInchTokensResponse } from "../1inch-swap.info-fetcher.response";
 import { Token } from "src/domain/token.class";
 import { EvmAddress } from "src/domain/evm-address.class";
 import { ChainInfo } from "src/domain/chain-info.type";
