@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { AbstractBridgeService } from "../provided_port/bridge.interface";
+import { AbstractBridgeService } from "../provided_port/abstract.bridge.service";
 import { NaiveBridgeHistoryRequest, NavieBridgeQuoteRequest } from "../request.type";
 import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/module.token";
 import {  AbstractStargateInfoProvider } from "./required_port/stargate.info-provider";
