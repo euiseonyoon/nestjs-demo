@@ -31,7 +31,6 @@ export class StargateService extends AbstractBridgeService {
     }
     
     async getQuote(request: NavieBridgeQuoteRequest): Promise<TokenAmount | null> {
-
         const convertedRequest = await this.convertQuoteRequest(request)
         if (!convertedRequest) return null
 
