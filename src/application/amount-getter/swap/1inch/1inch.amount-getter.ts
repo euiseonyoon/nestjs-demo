@@ -12,6 +12,8 @@ import { OneInchHistoryResponseDto, TokenActionDto } from 'src/application/defi.
 
 @Injectable()
 export class OneInchAmountGetter implements ISwapAmountGetter{
+    static readonly TARGET_STATUS = 'completed'
+
     constructor(
         @Inject(ONE_INCH_SWAP_INFO_PROVIDER)
         private readonly oneInchInfoProvider: AbstractDefiProtocolInfoProvider,
@@ -35,16 +37,17 @@ export class OneInchAmountGetter implements ISwapAmountGetter{
         }
     }
 
-    private extractSwapOutTokenInfo(response: OneInchHistoryResponseDto, txHash: EvmTxHash, receiverAddress: EvmAddress): TokenActionDto | undefined {
-        const historyEventDto = response.items.find((dto) => {
+    private extractSwapOutTokenInfo(response: OneInchHistoryResponseDto, txHash: EvmTxHash, receiverAddress: EvmAddress): TokenActionDto | null {
+        const historyEventDto = response.items.find((dto) => 
             dto.details.txHash.toLowerCase() === txHash.hash.toLowerCase()
-        })
-        if (historyEventDto === undefined || historyEventDto.details.status !== 'completed' || !historyEventDto.details.type.startsWith('SwapExact')) {
-            return undefined
+        )
+        if (historyEventDto === undefined || historyEventDto.details.status !== OneInchAmountGetter.TARGET_STATUS) {
+            return null
         }
-        const swapOutTokenActionDto = historyEventDto.details.tokenActions.find((tokenAction)=> {
-            tokenAction.toAddress.toLowerCase() === receiverAddress.getAddress().toLowerCase()
-        })
-        return swapOutTokenActionDto
+        const receiveAddressStr = receiverAddress.getAddress().toLowerCase()
+        const swapOutTokenActionDto = historyEventDto.details.tokenActions.find((tokenAction)=> 
+            tokenAction.toAddress.toLowerCase() === receiveAddressStr
+        )
+        return swapOutTokenActionDto ?? null
     }
 }
