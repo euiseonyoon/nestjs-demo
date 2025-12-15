@@ -66,10 +66,10 @@ export class StargateQuoter implements IBridgeQuoter {
             "https://stargate.finance/api/v1/quotes", 
             {
                 params : {
-                    srcToken: request.srcToken.address.getAddress(),
-                    dstToken: request.dstToken.address.getAddress(),
-                    srcAddress: request.senderAddresss.getAddress(),
-                    dstAddress: request.receiverAddress.getAddress(),
+                    srcToken: request.srcToken.address.address,
+                    dstToken: request.dstToken.address.address,
+                    srcAddress: request.senderAddresss.address,
+                    dstAddress: request.receiverAddress.address,
                     srcChainKey: srcChainKey,
                     dstChainKey: dstChainKey,
                     srcAmount: request.amount.toString(),

@@ -16,4 +16,11 @@ export class EvmTxHash {
     toViemHash(): Hash {
         return this.hash as Hash
     }
+
+    equals(other: string | EvmTxHash): boolean {
+        if (other instanceof EvmTxHash) {
+            return this.hash === other.hash;
+        }
+        return this.hash === other.trim().toLowerCase();
+    }
 }

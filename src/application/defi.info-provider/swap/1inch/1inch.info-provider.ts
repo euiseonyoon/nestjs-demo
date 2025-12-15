@@ -43,7 +43,7 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implem
     }
 
     private makeTokenCacheKey(chainId: number, tokenAddress: EvmAddress): string {
-        return `${chainId}-${tokenAddress.getAddress().toLowerCase}`
+        return `${chainId}-${tokenAddress.address}`
     }
 
     // 매일 새벽 3시에 한번씩 초기화

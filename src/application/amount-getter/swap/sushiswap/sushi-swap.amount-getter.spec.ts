@@ -39,7 +39,7 @@ describe('SushiswapAmountGetter (Unit test)', () => {
     }
 
     function createReceiptWithTargetLog(): TransactionReceipt {
-        const account = pad(swapOutAmountRequest.senderAddress.getAddress().toLowerCase() as Hex, { size: 32 }).toLowerCase();
+        const account = pad(swapOutAmountRequest.senderAddress.address as Hex, { size: 32 }).toLowerCase();
         const goodLog = {
             ...mockedLogs[0],
             topics: [
@@ -145,9 +145,8 @@ describe('SushiswapAmountGetter (Unit test)', () => {
             const result = await sushiSwapAmountGetter.getSwapOutAmount(swapOutAmountRequest);
             
             expect(result).not.toBeNull();
-            expect(result?.amount).toEqual(BigInt(receiptWithTargetLog.logs[0].data));
-            expect(result?.token.chain.id).toEqual(randomToken.chain.id)
-            expect(result?.token.address.getAddress().toLowerCase()).toEqual(randomToken.address.getAddress().toLowerCase())
+            expect(result!.amount).toEqual(BigInt(receiptWithTargetLog.logs[0].data));
+            expect(result!.token.equals(randomToken))
         });
     })
 });

@@ -37,8 +37,8 @@ export class SushiSwapQuoter implements ISwapQuoter{
                     amount: request.srcToken.convertToBigIntAmount(request.amount).toString(),
                     maxSlippage: Number(request.slippagePercentStr) / 100,
                     maxPriceImpact: maxPriceImpactPercent,
-                    tokenIn: request.srcToken.address.getAddress(),
-                    tokenOut: request.dstToken.address.getAddress(),
+                    tokenIn: request.srcToken.address.address,
+                    tokenOut: request.dstToken.address.address,
                 }
             },
         );

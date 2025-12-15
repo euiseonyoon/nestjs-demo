@@ -54,7 +54,7 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
         if(!supportingTokens) return false
 
         const entry = Object.entries(supportingTokens).find(
-            ([key, _value]) => key.toLowerCase() === tokenAddress.getAddress().toLowerCase()
+            ([key, _value]) => tokenAddress.equals(key)
         ) ?? null;
         if(!entry) return false
 
@@ -63,7 +63,7 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
 
     private async getTokenDetailFromContract(chainInfo: ChainInfo, tokenAddress: EvmAddress): Promise<Token | null> {
         // 여기서 native 토큰이면 다르게 해야함 
-        if (Token.isNativeToken(tokenAddress.getAddress())) {
+        if (Token.isNativeToken(tokenAddress.address)) {
             return this.getNativeToken(chainInfo, tokenAddress)
         } else {
             return this.getToken(chainInfo, tokenAddress)
@@ -89,7 +89,7 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
         const client = this.prcClientManager.getRpcClient(chainInfo.id)
         if(!client) return null
 
-        const viemTokenAddress = tokenAddress.getAddress() as Address
+        const viemTokenAddress = tokenAddress.address as Address
         const [decimals, name, symbol] = await Promise.all([
             client.readContract({
                 address: viemTokenAddress,
@@ -115,7 +115,7 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
             decimals,
             name,
             null,
-            Token.isNativeToken(tokenAddress.getAddress())
+            Token.isNativeToken(tokenAddress.address)
         )
     }
 
@@ -150,6 +150,6 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
     }
 
     private makeTokenCacheKey(chainId: number, tokenAddress: EvmAddress): string {
-        return `${chainId}-${tokenAddress.getAddress().toLowerCase}`
+        return `${chainId}-${tokenAddress.address}`
     }
 }

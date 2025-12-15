@@ -26,6 +26,6 @@ describe('TxService (Integration test)', ()=>{
         // WHEN & THEN
         const result = await txService.getTxReceipt(ethTxHash, ethereumChainId);
         expect(result).not.toBeNull()
-        expect(result?.transactionHash.toLowerCase()).toEqual(ethTxHash.hash.toLowerCase())
+        expect(ethTxHash.equals(result!.transactionHash)).toBe(true)
     });
 })

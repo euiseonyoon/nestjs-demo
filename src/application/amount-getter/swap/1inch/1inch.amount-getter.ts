@@ -39,14 +39,13 @@ export class OneInchAmountGetter implements ISwapAmountGetter{
 
     private extractSwapOutTokenInfo(response: OneInchHistoryResponseDto, txHash: EvmTxHash, receiverAddress: EvmAddress): TokenActionDto | null {
         const historyEventDto = response.items.find((dto) => 
-            dto.details.txHash.toLowerCase() === txHash.hash.toLowerCase()
+            txHash.equals(dto.details.txHash)
         )
         if (historyEventDto === undefined || historyEventDto.details.status !== OneInchAmountGetter.TARGET_STATUS) {
             return null
         }
-        const receiveAddressStr = receiverAddress.getAddress().toLowerCase()
-        const swapOutTokenActionDto = historyEventDto.details.tokenActions.find((tokenAction)=> 
-            tokenAction.toAddress.toLowerCase() === receiveAddressStr
+        const swapOutTokenActionDto = historyEventDto.details.tokenActions.find((tokenAction) => 
+            receiverAddress.equals(tokenAction.toAddress)
         )
         return swapOutTokenActionDto ?? null
     }

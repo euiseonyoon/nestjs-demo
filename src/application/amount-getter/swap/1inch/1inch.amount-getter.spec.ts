@@ -169,11 +169,10 @@ describe("OneInchAmountGetter (Unit test)", () => {
             expect(result).not.toBeNull()
 
             expect(result?.token).not.toBeNull()
-            expect(result?.token.chain.id).toEqual(randomToken.chain.id)
-            expect(result?.token.address.getAddress().toLowerCase()).toEqual(randomToken.address.getAddress().toLowerCase())
+            expect(result!.token.equals(randomToken)).toBe(true)
 
-            expect(result?.amount).not.toBeNull()
-            expect(result?.amount).toEqual(BigInt(realResponseExample.items[0].details.tokenActions[1].amount))
+            expect(result!.amount).not.toBeNull()
+            expect(result!.amount).toEqual(BigInt(realResponseExample.items[0].details.tokenActions[1].amount))
         });
     });
 });
