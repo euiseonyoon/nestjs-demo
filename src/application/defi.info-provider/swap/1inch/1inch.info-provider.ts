@@ -1,5 +1,4 @@
 import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { Token } from 'src/domain/token.class';
 import { Cron } from '@nestjs/schedule';
 import { EvmAddress } from 'src/domain/evm-address.class';
@@ -19,7 +18,6 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implem
     constructor(
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
-        private readonly configService: ConfigService,
         @Inject(ONE_INCH_INFO_FETCHER)
         private readonly oneInchInfoFetcher: IOneInchInfoFetcher,
     ) {
@@ -50,8 +48,7 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implem
     @Cron('0 0 3 * * *')
     private async setSupportingTokens(): Promise<void> {
         try {
-            const supportingChains = await this.getSupportingChains();
-            const promises = supportingChains.map((chainInfo) => 
+            const promises = this.supportingChains.map((chainInfo) => 
                 this.fetchSupportingToken(chainInfo)
             );
             this.supportingTokens =  (await Promise.all(promises)).filter((value) => value !== null).flat()
