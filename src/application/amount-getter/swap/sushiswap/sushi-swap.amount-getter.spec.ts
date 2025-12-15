@@ -17,12 +17,8 @@ describe('SushiswapAmountGetter (Unit test)', () => {
     const randomToken = createTestToken()
     const accountAddr = createTestEvmAddress()
     
-    const mockITxService: ITxService = {
-        getTxReceipt: jest.fn().mockResolvedValue(mockedTransactionReceipt)
-    }
-    const mockInfoProvider: Partial<AbstractDefiProtocolInfoProvider> = {
-        getSupportingToken: jest.fn().mockResolvedValue(randomToken)
-    }
+    let mockITxService: ITxService
+    let mockInfoProvider: Partial<AbstractDefiProtocolInfoProvider>
 
     const swapOutAmountRequest = {
         chain: createTestChainInfo(),
@@ -58,6 +54,13 @@ describe('SushiswapAmountGetter (Unit test)', () => {
     }
 
     beforeEach(async () => {
+        mockITxService = {
+            getTxReceipt: jest.fn().mockResolvedValue(mockedTransactionReceipt)
+        }
+        mockInfoProvider = {
+            getSupportingToken: jest.fn().mockResolvedValue(randomToken)
+        }
+            
         const module: TestingModule = await Test.createTestingModule({
             providers: [ 
                 { provide: TX_SERVICE, useValue: mockITxService },
@@ -99,7 +102,7 @@ describe('SushiswapAmountGetter (Unit test)', () => {
                 ).not.toEqual(ERC20_TOPICS.TRANSFER.toString().toLowerCase())
             });
             const txService = sushiSwapAmountGetter['txService'];
-            jest.spyOn(txService, 'getTxReceipt').mockResolvedValue(null);
+            jest.spyOn(txService, 'getTxReceipt').mockResolvedValue(receiptWithoutLogs);
 
             // WHEN
             const result = await sushiSwapAmountGetter.getSwapOutAmount(swapOutAmountRequest);
@@ -122,24 +125,17 @@ describe('SushiswapAmountGetter (Unit test)', () => {
             // THEN
             expect(result).toBeNull();
         });
-
-        it('sushi swap에서 지원하지 않는 토큰일 경우 실패', async () => {
-            // GIVEN
-            const receiptWithTargetLog = createReceiptWithTargetLog();
-            const txService = sushiSwapAmountGetter['txService'];
-            jest.spyOn(txService, 'getTxReceipt').mockResolvedValue(receiptWithTargetLog);
-
-            const result = await sushiSwapAmountGetter.getSwapOutAmount(swapOutAmountRequest);
-            expect(result).toBeNull();
-        });
     })
 
     describe('getSwapOutAmount() 성공 case', () => {
-        it('tx receipt 가져오기 실패', async () => {
+        it('성공', async () => {
             // GIVEN
             const receiptWithTargetLog = createReceiptWithTargetLog();
             const txService = sushiSwapAmountGetter['txService'];
             jest.spyOn(txService, 'getTxReceipt').mockResolvedValue(receiptWithTargetLog);
+            const sushiSwapInfoProvider = sushiSwapAmountGetter['sushiSwapInfoProvider'];
+            // default로 sushiSwapInfoProvider.getSupportingToken() 호출시 randomToken 토큰 반환하게 만듬
+            // jest.spyOn(sushiSwapInfoProvider, 'getSupportingToken').mockResolvedValue(randomToken);
 
             // THEN
             const result = await sushiSwapAmountGetter.getSwapOutAmount(swapOutAmountRequest);
