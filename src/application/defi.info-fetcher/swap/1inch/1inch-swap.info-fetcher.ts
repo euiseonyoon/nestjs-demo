@@ -1,4 +1,4 @@
-import { Inject, Injectable, OnModuleInit } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { IOneInchInfoFetcher } from "./provided_port/1inch-swap.info-fetcher.interface";
 import { HTTP_CLIENT } from "src/module/module.token";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
@@ -10,7 +10,7 @@ import { ChainId } from "src/domain/chain-id.enum";
 import { ChainInfo } from "src/domain/chain-info.type";
 
 @Injectable()
-export class OneInchInfoFetcher implements IOneInchInfoFetcher, OnModuleInit{
+export class OneInchInfoFetcher implements IOneInchInfoFetcher{
     readonly oneInchBaseUrl = 'https://api.1inch.com'
     private apiKey: string | undefined
 
@@ -33,9 +33,7 @@ export class OneInchInfoFetcher implements IOneInchInfoFetcher, OnModuleInit{
         @Inject(HTTP_CLIENT)
         private readonly httpClient: IHttpClient,
         private readonly configService: ConfigService,
-    ) {}
-
-    async onModuleInit(): Promise<void> {
+    ) {
         this.apiKey = this.configService.get<string>('ONE_INCH_API_KEY');
     }
 
