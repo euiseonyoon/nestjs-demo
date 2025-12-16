@@ -4,3 +4,7 @@ export const RPC_CLIENT_MANAGER = Symbol('RpcClientManager');
 
 // Chain Public Client
 export const CHAIN_PUBLIC_CLIENT_KEY = Symbol('CHAIN_PUBLIC_CLIENT');
+
+// Neo4J
+export const NEO4J_DRIVER_PROVIDER = Symbol('Neo4JDriverProvider');
+export const NEO4J_ADAPTER = Symbol('Neo4JAdapter')

@@ -1,0 +1,132 @@
+1️⃣ 노드 타입 (Nodes)
+// 1. Chain - 블록체인 네트워크
+(:Chain {
+  chainId: 1,
+  name: "Ethereum",
+  isTestnet: false
+})
+
+// 2. Token - 토큰 (체인별로 존재)
+(:Token {
+  address: "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48",
+  symbol: "USDC",
+  decimals: 6,
+  name: "USD Coin",
+  chainId: 1,
+  isNative: false,
+  // 복합 키로 사용
+  tokenId: "1:0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"
+})
+
+// 3. Protocol - DeFi 프로토콜
+(:Protocol {
+  name: "SushiSwap",
+  type: "DEX",  // DEX, Bridge, Aggregator
+  version: "v2"
+})
+
+// 4. LiquidityPool - 유동성 풀 (선택적)
+(:Pool {
+  address: "0x...",
+  chainId: 1,
+  protocol: "SushiSwap",
+  fee: 0.003,  // 0.3%
+  tvl: 1000000,  // Total Value Locked
+  lastUpdated: 1234567890
+})
+
+// 5. BridgeRoute - 브릿지 경로 (선택적)
+(:BridgeRoute {
+  protocol: "Stargate",
+  srcChainId: 1,
+  dstChainId: 42161,
+  estimatedTimeSeconds: 300
+})
+
+
+2️⃣ 관계 타입 (Relationships)
+// 1. SWAP - 같은 체인 내에서 토큰 스왑 가능
+(:Token)-[:SWAP {
+  protocol: "SushiSwap",
+  poolAddress: "0x...",
+  fee: 0.003,
+  estimatedSlippage: 0.001,
+  minLiquidity: 100000,
+  // 동적으로 업데이트되는 값들
+  currentRate: 3500.0,  // 1 ETH = 3500 USDC
+  lastUpdated: 1234567890
+}]->(:Token)
+
+// 2. BRIDGE - 다른 체인으로 토큰 전송
+(:Token)-[:BRIDGE {
+  protocol: "Stargate",
+  fee: 0.0006,  // 0.06%
+  estimatedTime: 300,  // seconds
+  minAmount: "1000000",  // 1 USDC in smallest unit
+  maxAmount: "1000000000000",
+  lastUpdated: 1234567890
+}]->(:Token)
+
+// 3. HAS_TOKEN - 체인이 토큰을 보유
+(:Chain)-[:HAS_TOKEN]->(:Token)
+
+// 4. LOCATED_ON - 풀이 체인에 위치
+(:Pool)-[:LOCATED_ON]->(:Chain)
+
+// 5. PROVIDES - 프로토콜이 풀 제공
+(:Protocol)-[:PROVIDES]->(:Pool)
+
+// 6. CONNECTS - 풀이 두 토큰 연결
+(:Pool)-[:CONNECTS {reserve0: bigint, reserve1: bigint}]->(:Token)
+
+5️⃣ 실제 라우팅 쿼리 예시
+
+// 1. 최소 비용 경로 찾기 (1-5홉)
+MATCH path = (src:Token {tokenId: "1:0xEee..."})-[rels*1..5]->(dst:Token {tokenId: "42161:0xA0b..."})
+WHERE ALL(r in rels WHERE type(r) IN ['SWAP', 'BRIDGE'])
+  AND NOT ANY(r in rels WHERE r.fee IS NULL)
+WITH path, 
+     reduce(totalFee = 0.0, r in relationships(path) | totalFee + r.fee) as totalCost,
+     reduce(totalTime = 0, r in relationships(path) | 
+       totalTime + COALESCE(r.estimatedTime, 0)) as totalTime
+RETURN path, totalCost, totalTime
+ORDER BY totalCost ASC
+LIMIT 5
+
+// 2. 같은 체인 내 스왑만 (1홉)
+MATCH (src:Token {chainId: 1})-[swap:SWAP]->(dst:Token {chainId: 1})
+WHERE src.symbol = 'ETH' AND dst.symbol = 'USDC'
+RETURN swap
+ORDER BY swap.fee ASC
+
+// 3. 크로스체인 경로 (Swap -> Bridge -> Swap)
+MATCH path = 
+  (srcToken:Token {tokenId: "1:0xEee..."})-[swap1:SWAP]->
+  (bridgeToken1:Token)-[bridge:BRIDGE]->
+  (bridgeToken2:Token)-[swap2:SWAP]->
+  (dstToken:Token {tokenId: "42161:0xA0b..."})
+WHERE srcToken.chainId = 1 
+  AND dstToken.chainId = 42161
+  AND bridgeToken1.symbol = bridgeToken2.symbol  // 같은 토큰 (다른 체인)
+WITH path,
+     swap1.fee + bridge.fee + swap2.fee as totalFee
+RETURN path, totalFee
+ORDER BY totalFee ASC
+LIMIT 1
+
+// 4. 프로토콜 지정 경로
+MATCH path = (src:Token)-[rels*1..5]->(dst:Token)
+WHERE src.tokenId = "1:0xEee..."
+  AND dst.tokenId = "42161:0xA0b..."
+  AND ALL(r in rels WHERE r.protocol IN ['SushiSwap', 'Stargate', 'Uniswap'])
+RETURN path
+
+// 5. 최소 시간 경로 (브릿지 시간 고려)
+MATCH path = (src:Token)-[rels*1..5]->(dst:Token)
+WHERE src.tokenId = "1:0xEee..." AND dst.tokenId = "42161:0xA0b..."
+WITH path,
+     reduce(time = 0, r in relationships(path) | 
+       time + COALESCE(r.estimatedTime, 10)) as totalTime
+RETURN path, totalTime
+ORDER BY totalTime ASC
+LIMIT 1
