@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "@layerzerolabs/lz-definitions": "^3.0.149",
+    "@neo4j/cypher-builder": "^2.11.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
