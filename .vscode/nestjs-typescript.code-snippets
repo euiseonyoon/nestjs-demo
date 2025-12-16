@@ -98,5 +98,13 @@
             "expect(${1:internalVariable}).not.toBeNull()"
         ],
         "description": "expect not null"
+    },
+    "async": {
+        "scope": "typescript",
+        "prefix": "cc",
+        "body": [
+            "async"
+        ],
+        "description": "async"
     }
 }
