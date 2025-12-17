@@ -43,3 +43,4 @@ export const X_SWAP_TOKEN_REPOSITORY = Symbol('XSwapTokenRepository')
 export const X_SWAP_ROUTE_REPOSITORY = Symbol('XSwapRouteRepsitory');
 export const X_SWAP_ROUTE_FINDER = Symbol('XSwapRouteFinder');
 export const X_SWAP_ROUTE_SERVICE = Symbol('XSwapRouteService')
+export const X_SWAP_ROUTE_RESULT_CONVERTER = Symbol('XSwapRouteResultConverter')
