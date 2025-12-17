@@ -42,11 +42,11 @@ export class Neo4JXSwapTokenRepository implements IXSwapTokenRepository<ManagedT
             [tokenNode.property('logoUri'), new Cypher.Param(token.logoUri)],
         )
         .merge(
-            new Cypher.Pattern(tokenNode)
+            new Cypher.Pattern(chainNode)
             .related(inChainRelation, {
-                type: 'IN_CHAIN',
+                type: 'HOSTS_TOKEN',
             })
-            .to(chainNode)
+            .to(tokenNode)
         ).return([tokenNode.property('tokenId'), 'tokenId']);
     }
 
