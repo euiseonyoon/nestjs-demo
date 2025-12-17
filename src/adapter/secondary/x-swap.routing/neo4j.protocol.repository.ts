@@ -18,14 +18,6 @@ export class Neo4JXSwapProtocolRepository implements IXSwapProtocolRepository<Ma
     }
 
     buildQuery(protocol: ProtocolInfo): Cypher.Return {
-        // `
-        // MERGE (protocol:Protocol {protocolId: $protocolId})
-        // ON CREATE SET 
-        //     protocol.name = $name,
-        //     protocol.type = $type,
-        //     protocol.version = $version,
-        // RETURN protocol.protocolId as protocolId
-        // `
         const protocolId: string = this.makeProtocolId(protocol);
         const protocolNode = new Cypher.Node();
 
@@ -38,7 +30,16 @@ export class Neo4JXSwapProtocolRepository implements IXSwapProtocolRepository<Ma
             [protocolNode.property('name'), new Cypher.Param(protocol.name)],
             [protocolNode.property('type'), new Cypher.Param(protocol.type.valueOf())],
             [protocolNode.property('version'), new Cypher.Param(protocol.version)],
-        ).return([protocolNode.property('protocolId'), 'protocolId']);
+            [protocolNode.property('usedCount'), new Cypher.Param(1)]
+        ).onMatchSet(
+            // 이미 존재할 경우 기존 값에 1을 더함
+            [
+                protocolNode.property('usedCount'), 
+                Cypher.plus(protocolNode.property('usedCount'), new Cypher.Param(1))
+            ]
+        )
+        
+        .return([protocolNode.property('protocolId'), 'protocolId']);
     }
 
     async saveIfNotExists(
