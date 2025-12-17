@@ -35,3 +35,11 @@ export const LAYER_ZERO_SERVICE = Symbol('LayerZeroService');
 
 // Transaction
 export const TX_SERVICE = Symbol('TxService');
+
+// XSwapRoute
+export const X_SWAP_CHAIN_REPOSITORY = Symbol('XSwapChainRepository')
+export const X_SWAP_PROTOCOL_REPOSITORY = Symbol('XSwapProtocolRepository')
+export const X_SWAP_TOKEN_REPOSITORY = Symbol('XSwapTokenRepository')
+export const X_SWAP_ROUTE_REPOSITORY = Symbol('XSwapRouteRepsitory');
+export const X_SWAP_ROUTE_FINDER = Symbol('XSwapRouteFinder');
+export const X_SWAP_ROUTE_SERVICE = Symbol('XSwapRouteService')
