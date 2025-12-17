@@ -5,6 +5,7 @@ import { type INeo4JAdapter } from "../neo4j/provided_port/neo4j.adapter.interfa
 import Cypher from '@neo4j/cypher-builder';
 import { ManagedTransaction } from "neo4j-driver";
 import { IXSwapTokenRepository } from "src/application/x-swap.routing/required_port/x-swap.token.repository";
+import { CHAIN_HOST_TOKEN_REL_NAME } from "src/infrastructure/neo4j/relation.type.constant";
 
 @Injectable()
 export class Neo4JXSwapTokenRepository implements IXSwapTokenRepository<ManagedTransaction, string> {
@@ -44,7 +45,7 @@ export class Neo4JXSwapTokenRepository implements IXSwapTokenRepository<ManagedT
         .merge(
             new Cypher.Pattern(chainNode)
             .related(inChainRelation, {
-                type: 'HOSTS_TOKEN',
+                type: CHAIN_HOST_TOKEN_REL_NAME,
             })
             .to(tokenNode)
         ).return([tokenNode.property('tokenId'), 'tokenId']);

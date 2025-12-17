@@ -11,6 +11,7 @@ import { type IXSwapTokenRepository } from "src/application/x-swap.routing/requi
 import { type IXSwapProtocolRepository } from "src/application/x-swap.routing/required_port/x-swap.protocol.repository";
 import Cypher from "@neo4j/cypher-builder";
 import { type IXSwapChainRepository } from "src/application/x-swap.routing/required_port/x-swap.chain.repository";
+import { PROTOCOL_SUPPORT_CHAIN_REL_NAME } from "src/infrastructure/neo4j/relation.type.constant";
 
 @Injectable()
 export class Neo4JRouteRepository implements IXSwapStepRepository {
@@ -142,7 +143,7 @@ export class Neo4JRouteRepository implements IXSwapStepRepository {
         ).merge(
             new Cypher.Pattern(protocolNode)
                 .related(relation, {
-                    type: "SUPPORTS_CHAIN",
+                    type: PROTOCOL_SUPPORT_CHAIN_REL_NAME,
                     properties: { protocolSupportChainId: new Cypher.Param(relationId) }
                 })
                 .to(chainNode)
