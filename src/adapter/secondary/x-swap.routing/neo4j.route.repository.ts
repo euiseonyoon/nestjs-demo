@@ -47,7 +47,7 @@ export class Neo4JRouteRepository implements IXSwapStepRepository {
         }
     }
 
-    private async saveRelationship(
+    private async saveCrossChainSwapRouteRelationship(
         tx: ManagedTransaction, 
         protocolInfo: ProtocolInfo,
         srcTokenId: string,
@@ -118,6 +118,49 @@ export class Neo4JRouteRepository implements IXSwapStepRepository {
         await tx.run(cypher, params);
     }
 
+    private async protocolChainRelation(
+        tx: ManagedTransaction,
+        protocolNodeProtocolId: string,
+        chainNodeChainId: number
+    ) {
+        const chainNode = new Cypher.Node();
+        const protocolNode = new Cypher.Node();
+        const relation = new Cypher.Relationship()
+
+        const relationId = `${protocolNodeProtocolId}-${chainNodeChainId}`
+
+        const query = new Cypher.Match(
+            new Cypher.Pattern(chainNode, {
+                labels: ['Chain'],
+                properties: { chainId: new Cypher.Param(chainNodeChainId) }
+            })
+        ).match(
+            new Cypher.Pattern(protocolNode, {
+                labels: ['Protocol'],
+                properties: { protocolId: new Cypher.Param(protocolNodeProtocolId) }
+            })
+        ).merge(
+            new Cypher.Pattern(protocolNode)
+                .related(relation, {
+                    type: "SUPPORTS_CHAIN",
+                    properties: { protocolSupportChainId: new Cypher.Param(relationId) }
+                })
+                .to(chainNode)
+        ).build()
+
+        await tx.run(query.cypher, query.params)
+    }
+
+    private async addProtocolSupporitingChainRelationship(
+        tx: ManagedTransaction,
+        protocolNodeProtocolId: string,
+        srcChainNodeChainId: number,
+        srcDstNodeChainId: number,
+    ) {
+        await this.protocolChainRelation(tx, protocolNodeProtocolId, srcChainNodeChainId);
+        await this.protocolChainRelation(tx, protocolNodeProtocolId, srcDstNodeChainId);
+    }
+
     private async saveStep(
         srcToken: Token, 
         dstToken: Token, 
@@ -137,7 +180,9 @@ export class Neo4JRouteRepository implements IXSwapStepRepository {
 
             const protocolId = await this.protocolRepository.saveIfNotExists(protocolInfo, tx)
 
-            await this.saveRelationship(tx, protocolInfo, srcTokenId, dstTokenId, protocolId)
+            await this.saveCrossChainSwapRouteRelationship(tx, protocolInfo, srcTokenId, dstTokenId, protocolId)
+
+            await this.addProtocolSupporitingChainRelationship(tx, protocolId, srcToken.chain.id, dstToken.chain.id)
         } catch (error) {
             console.log("[ERROR]" + error)
             throw error
