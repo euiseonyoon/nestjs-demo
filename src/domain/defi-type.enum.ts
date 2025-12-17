@@ -3,6 +3,15 @@ export enum ProtocolType {
     BRIDGE = "BRIDGE",
 }
 
+export function protocolTypeFromString(typeString: string): ProtocolType | undefined {
+    const validValues = Object.values(ProtocolType);
+
+    if (validValues.includes(typeString as ProtocolType)) {
+        return typeString as ProtocolType;
+    }
+    return undefined;
+}
+
 export type ProtocolInfo = {
     name: string,
     type: ProtocolType,
