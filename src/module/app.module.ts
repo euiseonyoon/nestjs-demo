@@ -4,6 +4,7 @@ import { SwapModule } from './swap.module';
 import { TxModule } from './tx.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BridgeModule } from './bridge.module';
+import { CacheModule } from './cache.module';
 
 @Module({
     imports: [
@@ -16,6 +17,7 @@ import { BridgeModule } from './bridge.module';
             intervals: false, // @Interval 사용 불가능 
             timeouts: false, // @Timeout 사용 불가능
         }),
+        CacheModule,
         TxModule,
         SwapModule,
         BridgeModule,
