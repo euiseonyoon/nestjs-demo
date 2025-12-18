@@ -8,6 +8,8 @@ import { LAYER_ZERO_SERVICE } from "src/module/module.token";
 
 @Injectable()
 export class StargateAmountGetter implements IBridgeAmountGetter {
+    static readonly STATUS_DELIVERED = "DELIVERD";
+
     constructor(
         @Inject(LAYER_ZERO_SERVICE)
         private readonly layerZeroService: ILayerZeroService,
@@ -16,7 +18,7 @@ export class StargateAmountGetter implements IBridgeAmountGetter {
     async getBridgeOutAmount(request: BridgeAmountRequest) : Promise<BridgeOutAmountResponse | null> {
         const data = await this.layerZeroService.fetchBridgeInfo(request.srcTxHash)
         if (!data) return null
-        if(data.status.name != 'DELIVERED') {
+        if(data.status.name != StargateAmountGetter.STATUS_DELIVERED) {
             return { status: data.status.name, bridgeOutAmount: null};
         }
         

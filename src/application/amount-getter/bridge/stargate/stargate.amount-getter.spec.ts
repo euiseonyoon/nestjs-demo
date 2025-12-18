@@ -79,7 +79,7 @@ describe('StargateAmountGetter (Unit test)', () => {
         // GIVEN
         const layerZeroService = stargateAmountGetter['layerZeroService'];
         const deliveredBridgeData: Partial<LayerZeroScanBridgeData> = {
-            status: { name: "DELIVERED", message: "" } as LayerZeroStatus,
+            status: { name: StargateAmountGetter.STATUS_DELIVERED, message: "" } as LayerZeroStatus,
             pathway: { dstEid: 30102 } as any,
             destination: { tx: { txHash: bridgeAmountReq.srcTxHash.hash } } as any
         };
@@ -97,7 +97,7 @@ describe('StargateAmountGetter (Unit test)', () => {
         // GIVEN
         const layerZeroService = stargateAmountGetter['layerZeroService'];
         const deliveredBridgeData: Partial<LayerZeroScanBridgeData> = {
-            status: { name: "DELIVERED", message: "" } as LayerZeroStatus,
+            status: { name: StargateAmountGetter.STATUS_DELIVERED, message: "" } as LayerZeroStatus,
             pathway: { dstEid: 30102 } as any,
             destination: { tx: { txHash: bridgeAmountReq.srcTxHash.hash } } as any
         };
