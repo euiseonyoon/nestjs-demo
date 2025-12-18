@@ -44,3 +44,14 @@ export const X_SWAP_ROUTE_REPOSITORY = Symbol('XSwapRouteRepsitory');
 export const X_SWAP_ROUTE_FINDER = Symbol('XSwapRouteFinder');
 export const X_SWAP_ROUTE_SERVICE = Symbol('XSwapRouteService')
 export const X_SWAP_ROUTE_RESULT_CONVERTER = Symbol('XSwapRouteResultConverter')
+
+// Cache
+export const CACHE_REGISTRY = Symbol('CacheRegistry');
+
+// 1inch info privder token cache
+export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_REPO = Symbol("OneInchInfoProviderTokenCacheRepository");
+export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_INSTANCE = Symbol("OneInchInfoProviderTokenCacheInstance");
+export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR = Symbol("OneInchInfoProviderTokenCacheGenerator");
+export const ONE_INCH_INFO_PROVIDER_CACHE_NAME = Symbol("OneInchInfoProviderCacheName");
+
+
