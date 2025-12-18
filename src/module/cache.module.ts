@@ -2,7 +2,7 @@ import { Global, Module } from '@nestjs/common';
 import { 
     CACHE_REGISTRY, 
     ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_INSTANCE, 
-    ONE_INCH_INFO_PROVIDER_CACHE_NAME,
+    ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME,
 } from './module.token';
 import { CacheRegistry } from 'src/application/cache/registry/cach.registry';
 import { AbstractCacheInstance } from 'src/application/cache/cache.instance/provided_port/cache.instance.interface';
@@ -26,7 +26,7 @@ import { OneInchInfoProviderCacheModule } from './1inch.info-provider.token-cach
                 cacheRegistry: ICacheRegistry, 
                 oneInchInfoProviderTokenCacheInstance: AbstractCacheInstance<string, any>,
             ): ICacheRegistry => {
-                cacheRegistry.addCacheInstance(ONE_INCH_INFO_PROVIDER_CACHE_NAME, oneInchInfoProviderTokenCacheInstance);
+                cacheRegistry.addCacheInstance(ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME, oneInchInfoProviderTokenCacheInstance);
                 return cacheRegistry;
             }
         },

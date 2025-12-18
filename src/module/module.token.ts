@@ -52,6 +52,6 @@ export const CACHE_REGISTRY = Symbol('CacheRegistry');
 export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_REPO = Symbol("OneInchInfoProviderTokenCacheRepository");
 export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_INSTANCE = Symbol("OneInchInfoProviderTokenCacheInstance");
 export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR = Symbol("OneInchInfoProviderTokenCacheGenerator");
-export const ONE_INCH_INFO_PROVIDER_CACHE_NAME = Symbol("OneInchInfoProviderCacheName");
+export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME = Symbol("OneInchInfoProviderTokenCacheName");
 
 
