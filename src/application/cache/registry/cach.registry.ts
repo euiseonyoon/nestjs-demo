@@ -6,6 +6,10 @@ import { AbstractCacheInstance } from "../cache.instance/provided_port/cache.ins
 export class CacheRegistry implements ICacheRegistry {
     private cacheInstanceMap: Map<Symbol, AbstractCacheInstance<any, any>>
 
+    constructor() {
+        this.cacheInstanceMap = new Map();
+    }
+
     getCacheInstance<TKey, TData>(cacheInstanceKey: Symbol): AbstractCacheInstance<TKey, TData> | null {
         return this.cacheInstanceMap.get(cacheInstanceKey) ?? null
     }
