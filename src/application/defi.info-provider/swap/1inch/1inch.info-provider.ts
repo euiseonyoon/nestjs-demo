@@ -34,25 +34,18 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implem
     }
 
     async onModuleInit(): Promise<void> {
+        await this.setSupportingChains()
+        await this.setSupportingTokens()
+        await this.setChainIdTokenMap()
+    }
+
+    // 매일 새벽 2시에 한번씩 초기화
+    @Cron('0 0 2 * * *')
+    private async setSupportingChains(): Promise<void> {
         const supporintChains = await this.oneInchInfoFetcher.fetSupporingChains()
         if (supporintChains) {
             this.supportingChains = supporintChains
         }
-        await this.setSupportingTokens()
-        this.setChainIdTokenMap()
-    }
-    
-    private async setChainIdTokenMap() {
-        this.supportingTokens.map((token) => {
-            const key = this.tokenCacheKeyGenerator.genKey(
-                { chainId: token.chain.id, tokenAddress:  token.address}
-            )
-            this.tokenCache?.save(key, token)
-        })
-    }
-
-    private makeTokenCacheKey(chainId: number, tokenAddress: EvmAddress): string {
-        return `${chainId}-${tokenAddress.address}`
     }
 
     // 매일 새벽 3시에 한번씩 초기화
@@ -66,6 +59,15 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implem
         } catch (error) {
             throw error; 
         }
+    }
+    
+    private async setChainIdTokenMap() {
+        this.supportingTokens.map((token) => {
+            const key = this.tokenCacheKeyGenerator.genKey(
+                { chainId: token.chain.id, tokenAddress:  token.address}
+            )
+            this.tokenCache?.save(key, token)
+        })
     }
 
     private async fetchSupportingToken(chainInfo: ChainInfo): Promise<Token[] | null> {
