@@ -4,7 +4,7 @@ import { SwapModule } from './swap.module';
 import { TxModule } from './tx.module';
 import { ScheduleModule } from '@nestjs/schedule';
 import { BridgeModule } from './bridge.module';
-import { CacheModule } from './cache.module';
+import { CacheModule } from './cache/cache.module';
 
 @Module({
     imports: [

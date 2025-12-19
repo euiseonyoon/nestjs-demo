@@ -2,9 +2,9 @@ import { Global, Module } from '@nestjs/common';
 import { 
     ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_INSTANCE, 
     ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_REPO, 
-} from './module.token';
-import { OneInchInfoProviderTokenCacheRepo } from 'src/application/cache/cache.repository/1inch.info-provider.token.repo';
-import { OneInchInfoProviderTokenCacheInstance } from 'src/application/cache/cache.instance/1inch.info-provider.cache.instance';
+} from '../../module.token';
+import { OneInchInfoProviderTokenCacheRepo } from 'src/application/cache/cache.repository/1inch.info-provider/token.repo';
+import { OneInchInfoProviderTokenCacheInstance } from 'src/application/cache/cache.instance/1inch.info-provider/token.cache.instance';
 
 @Global()
 @Module({
@@ -16,4 +16,4 @@ import { OneInchInfoProviderTokenCacheInstance } from 'src/application/cache/cac
         ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_INSTANCE
     ],
 })
-export class OneInchInfoProviderCacheModule {}
+export class OneInchInfoProviderCacheInstanceModule {}

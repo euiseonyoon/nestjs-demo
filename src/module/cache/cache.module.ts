@@ -3,16 +3,16 @@ import {
     CACHE_REGISTRY, 
     ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_INSTANCE, 
     ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME,
-} from './module.token';
+} from '../module.token';
 import { CacheRegistry } from 'src/application/cache/registry/cach.registry';
 import { AbstractCacheInstance } from 'src/application/cache/cache.instance/provided_port/cache.instance.interface';
 import { ICacheRegistry } from 'src/application/cache/registry/provided_port/cache.registry.interface';
-import { OneInchInfoProviderCacheModule } from './1inch.info-provider.token-cache.module';
+import { OneInchInfoProviderCacheInstanceModule } from './1inch.info-provider/cache.instance.module';
 
 @Global()
 @Module({
     imports : [
-        OneInchInfoProviderCacheModule,
+        OneInchInfoProviderCacheInstanceModule,
     ],
     providers: [
         CacheRegistry,

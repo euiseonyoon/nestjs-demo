@@ -6,7 +6,7 @@ import { SushiSwapInfoProvider } from 'src/application/defi.info-provider/swap/s
 import { PublicClientModule } from './public-client.module';
 import { ONE_INCH_SWAP_INFO_PROVIDER, SUSHI_SWAP_INFO_PROVIDER, STARGATE_BRIDGE_INFO_PROVIDER, ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR } from './module.token';
 import { InfoFetcherModule } from './info-fetcher.module';
-import { OneInchInfoProviderTokenCacheKeyGenerator } from 'src/application/cache/key.generator/1inch.info-provider.token-cache.key.generator';
+import { OneInchInfoProviderTokenCacheKeyGenerator } from 'src/application/cache/key.generator/1inch.info-provider/token.key.generator';
 
 @Module({
     imports: [

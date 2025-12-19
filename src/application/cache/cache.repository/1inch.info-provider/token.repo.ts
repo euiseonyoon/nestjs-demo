@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { ICacheExpirableRepository, ICacheNotExpirableRepository } from "./provided_port/cache.repository.interface";
+import { ICacheExpirableRepository, ICacheNotExpirableRepository } from "../provided_port/cache.repository.interface";
 import { Token } from "src/domain/token.class";
 
 @Injectable()

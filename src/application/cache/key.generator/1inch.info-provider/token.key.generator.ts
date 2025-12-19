@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
-import { ICacheKeyGenerator } from "./provided_port/cache.key.generator";
 import { EvmAddress } from "src/domain/evm-address.class";
+import { ICacheKeyGenerator } from "../provided_port/cache.key.generator";
 
 export type KeyInput = {
     chainId: number,
