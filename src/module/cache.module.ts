@@ -26,7 +26,7 @@ import { OneInchInfoProviderCacheModule } from './1inch.info-provider.token-cach
                 cacheRegistry: ICacheRegistry, 
                 oneInchInfoProviderTokenCacheInstance: AbstractCacheInstance<string, any>,
             ): ICacheRegistry => {
-                cacheRegistry.addCacheInstance(ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_INSTANCE, oneInchInfoProviderTokenCacheInstance);
+                cacheRegistry.addCacheInstance(ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME, oneInchInfoProviderTokenCacheInstance);
                 return cacheRegistry;
             }
         },
