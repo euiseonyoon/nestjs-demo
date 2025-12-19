@@ -1,6 +1,6 @@
 import { Test } from "@nestjs/testing";
 import { StargateService } from "./stargate.service";
-import { AbstractStargateInfoProvider } from "./required_port/stargate.info-provider";
+import { AbstractStargateInfoProvider } from "./required_port/stargate.info-provider.interface";
 import { IBridgeQuoter } from "src/application/quoter/bridge/provided_port/bridge.quoter";
 import { IBridgeAmountGetter } from "src/application/amount-getter/bridge/provided_port/bridge.amount-getter";
 import { NaiveBridgeHistoryRequest, NavieBridgeQuoteRequest } from "../request.type";

@@ -6,7 +6,7 @@ import { EvmAddress } from "src/domain/evm-address.class";
 import { Token } from "src/domain/token.class";
 import { StargateChainDetail, StargateChainResponse, StargateTokenReponse } from "./stargate-api.response";
 import { Cron } from "@nestjs/schedule";
-import { AbstractStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider";
+import { AbstractStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider.interface";
 
 @Injectable()
 export class StargateInfoProvider extends AbstractStargateInfoProvider {

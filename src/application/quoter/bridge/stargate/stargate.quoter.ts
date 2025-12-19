@@ -5,7 +5,7 @@ import { TokenAmount } from "src/domain/common-defi.type";
 import { StargateQuoteDetailResponse, StargateQuoteResponse } from "./stargate.response";
 import { HTTP_CLIENT } from "src/module/module.token";
 import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/module.token";
-import { AbstractStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider";
+import { AbstractStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider.interface";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 
 @Injectable()

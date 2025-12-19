@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { AbstractBridgeService } from "../provided_port/abstract.bridge.service";
 import { NaiveBridgeHistoryRequest, NavieBridgeQuoteRequest } from "../request.type";
 import { STARGATE_BRIDGE_INFO_PROVIDER } from "src/module/module.token";
-import {  AbstractStargateInfoProvider } from "./required_port/stargate.info-provider";
+import { AbstractStargateInfoProvider } from "./required_port/stargate.info-provider.interface";
 import { STARGATE_QUOTER } from "src/module/module.token";
 import { type IBridgeQuoter } from "src/application/quoter/bridge/provided_port/bridge.quoter";
 import { TokenAmount } from "src/domain/common-defi.type";
