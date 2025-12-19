@@ -8,7 +8,7 @@ import { ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_REPO } from "src/module/module.token
 export class OneInchInfoProviderTokenCacheInstance extends AbstractCacheInstance<string, Token> {
     constructor(
         @Inject(ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_REPO)
-        private readonly cacheRepository: ICacheNotExpirableRepository<string, Token>
+        cacheRepository: ICacheNotExpirableRepository<string, Token>
     ) {
         super(cacheRepository)
     }
