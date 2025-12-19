@@ -2,10 +2,9 @@ import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
 import { Token } from 'src/domain/token.class';
 import { Cron } from '@nestjs/schedule';
 import { EvmAddress } from 'src/domain/evm-address.class';
-import { CACHE_REGISTRY, HTTP_CLIENT, ONE_INCH_INFO_FETCHER, ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME, ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR } from 'src/module/module.token';
+import { CACHE_REGISTRY, ONE_INCH_INFO_FETCHER, ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME, ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR } from 'src/module/module.token';
 import { AbstractDefiProtocolInfoProvider } from '../../provided_port/defi-info-provider.interface';
 import { ChainInfo } from 'src/domain/chain-info.type';
-import { type IHttpClient } from '../../../common/required_port/http-client.interface';
 import { type IOneInchInfoFetcher } from 'src/application/defi.info-fetcher/swap/1inch/provided_port/1inch-swap.info-fetcher.interface';
 import { KeyInput } from 'src/application/cache/key.generator/1inch.info-provider.token-cache.key.generator';
 import { type ICacheKeyGenerator } from 'src/application/cache/key.generator/provided_port/cache.key.generator';
@@ -20,8 +19,6 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implem
     private supportingTokens: Token[] = []
 
     constructor(
-        @Inject(HTTP_CLIENT)
-        private readonly httpClient: IHttpClient,
         @Inject(ONE_INCH_INFO_FETCHER)
         private readonly oneInchInfoFetcher: IOneInchInfoFetcher,
         @Inject(ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR)
