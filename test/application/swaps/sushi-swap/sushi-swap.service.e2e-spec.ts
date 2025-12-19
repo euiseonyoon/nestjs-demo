@@ -6,7 +6,7 @@ import { PublicClientModule } from 'src/module/public-client.module';
 import 'src/infrastructure/rpc-node-provider/ethereum.public-clients';
 import 'src/infrastructure/rpc-node-provider/base.public-clients';
 import { SwapQuoterModule } from 'src/module/swap.quoter.module';
-import { InfoProviderModule } from 'src/module/info-provider.module';
+import { InfoProviderModule } from 'src/module/info-provider/info-provider.module';
 import { SwapAmountGetterModule } from 'src/module/swap.amount-getter.module';
 import { SushiSwapService } from 'src/application/swaps/sushi-swap/sushi-swap.service';
 import { NaiveSameChainSwapQuoteRequest, NaiveSwapOutAmountRequest } from 'src/application/swaps/request.type';
