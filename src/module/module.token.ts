@@ -53,5 +53,10 @@ export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_REPO = Symbol("OneInchInfoProvid
 export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_INSTANCE = Symbol("OneInchInfoProviderTokenCacheInstance");
 export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR = Symbol("OneInchInfoProviderTokenCacheGenerator");
 export const ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME = Symbol("OneInchInfoProviderTokenCacheName");
+// 1inch info privder supporting chain cache
+export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_REPO = Symbol("OneInchInfoProviderChainCacheRepository");
+export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_INSTANCE = Symbol("OneInchInfoProviderChainCacheInstance");
+export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_KEY_GENERATOR = Symbol("OneInchInfoProviderChainCacheGenerator");
+export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_NAME = Symbol("OneInchInfoProviderChainCacheName");
 
 
