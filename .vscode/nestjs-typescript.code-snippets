@@ -103,8 +103,8 @@
         "scope": "typescript",
         "prefix": "cc",
         "body": [
-            "async"
+            "async "
         ],
         "description": "async"
-    }
+    },
 }
