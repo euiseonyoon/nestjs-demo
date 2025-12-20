@@ -3,17 +3,17 @@ import { ICacheExpirableRepository, ICacheNotExpirableRepository } from "../prov
 import { ChainInfo } from "src/domain/chain-info.type";
 
 @Injectable()
-export class OneInchInfoProviderChainInfoCacheRepo implements ICacheNotExpirableRepository<number, ChainInfo> {
-    private localMapCacheRepo = new Map<number, ChainInfo>()
+export class OneInchInfoProviderChainInfoCacheRepo implements ICacheNotExpirableRepository<string, ChainInfo> {
+    private localMapCacheRepo = new Map<string, ChainInfo>()
 
-    async save(key: number, data: ChainInfo): Promise<void> {
+    async save(key: string, data: ChainInfo): Promise<void> {
         this.localMapCacheRepo.set(key, data)
     }
-    async delete(key: number): Promise<void> {
+    async delete(key: string): Promise<void> {
         this.localMapCacheRepo.delete(key)
     }
 
-    async get(key: number): Promise<ChainInfo | null> {
+    async get(key: string): Promise<ChainInfo | null> {
         return this.localMapCacheRepo.get(key) ?? null
     }
 

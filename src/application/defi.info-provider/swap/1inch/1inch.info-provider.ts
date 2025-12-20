@@ -2,7 +2,14 @@ import { Injectable, Inject, OnModuleInit } from '@nestjs/common';
 import { Token } from 'src/domain/token.class';
 import { Cron } from '@nestjs/schedule';
 import { EvmAddress } from 'src/domain/evm-address.class';
-import { CACHE_REGISTRY, ONE_INCH_INFO_FETCHER, ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME, ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR } from 'src/module/module.token';
+import { 
+    CACHE_REGISTRY, 
+    ONE_INCH_INFO_FETCHER, 
+    ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME,
+    ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR,
+    ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_NAME,
+    ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_KEY_GENERATOR,
+} from 'src/module/module.token';
 import { AbstractDefiProtocolInfoProvider } from '../../provided_port/defi-info-provider.interface';
 import { ChainInfo } from 'src/domain/chain-info.type';
 import { type IOneInchInfoFetcher } from 'src/application/defi.info-fetcher/swap/1inch/provided_port/1inch-swap.info-fetcher.interface';
@@ -14,6 +21,7 @@ import { KeyInput } from 'src/application/cache/key.generator/1inch.info-provide
 @Injectable()
 export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implements OnModuleInit{
     private tokenCache : AbstractCacheInstance<string, Token> | null
+    private chainCache : AbstractCacheInstance<string, ChainInfo> | null
 
     private supportingChains: ChainInfo[]
     private supportingTokens: Token[] = []
@@ -25,15 +33,19 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implem
         private readonly oneInchInfoFetcher: IOneInchInfoFetcher,
         @Inject(ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR)
         private readonly tokenCacheKeyGenerator: ICacheKeyGenerator<string, KeyInput>,
+        @Inject(ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_KEY_GENERATOR)
+        private readonly chainCacheKeyGenerator: ICacheKeyGenerator<string, number>,
     ) {
         super()
-        this.tokenCache = cacheRegistry.getCacheInstance(ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME)
+        this.tokenCache = cacheRegistry.getCacheInstance<string, Token>(ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_NAME)
+        this.chainCache = cacheRegistry.getCacheInstance<string, ChainInfo>(ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_NAME)
     }
 
     async onModuleInit(): Promise<void> {
         await this.setSupportingChains()
         await this.setSupportingTokens()
-        await this.setChainIdTokenMap()
+        await this.addToTokenCache()
+        await this.addToChainCache()
     }
 
     // 매일 새벽 2시에 한번씩 초기화
@@ -57,8 +69,15 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implem
             throw error; 
         }
     }
+
+    private async addToChainCache() {
+        this.supportingChains.forEach((chainInfo) => {
+            const key = this.chainCacheKeyGenerator.genKey(chainInfo.id)
+            this.chainCache?.save(key, chainInfo)
+        })
+    }
     
-    private async setChainIdTokenMap() {
+    private async addToTokenCache() {
         this.supportingTokens.map((token) => {
             const key = this.tokenCacheKeyGenerator.genKey(
                 { chainId: token.chain.id, tokenAddress:  token.address}
@@ -85,10 +104,18 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implem
     }
 
     async getSupportingChainInfo(chainId: number): Promise<ChainInfo | null> {
-        const result = this.supportingChains.find((chain) =>{
+        return this.getSupportingChainInfoFromCache(chainId) ?? this.getSupporingChainInfoFromArray(chainId)
+    }
+
+    private async getSupportingChainInfoFromCache(chainId: number): Promise<ChainInfo | null> {
+        const key = this.chainCacheKeyGenerator.genKey(chainId)
+        return this.chainCache?.get(key) ?? null
+    }
+
+    private async getSupporingChainInfoFromArray(chainId: number) : Promise<ChainInfo | null> {
+        return this.supportingChains.find((chain) =>{
             chain.id === chainId
-        })
-        return result ?? null
+        }) ?? null
     }
 
     async getSupportingToken(chainId: number, tokenAddress: EvmAddress): Promise<Token | null> {
