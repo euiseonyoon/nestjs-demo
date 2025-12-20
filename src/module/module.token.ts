@@ -58,5 +58,8 @@ export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_REPO = Symbol("OneInchInfoProvid
 export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_INSTANCE = Symbol("OneInchInfoProviderChainCacheInstance");
 export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_KEY_GENERATOR = Symbol("OneInchInfoProviderChainCacheGenerator");
 export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_NAME = Symbol("OneInchInfoProviderChainCacheName");
-
-
+// stable info provider stable coin cache
+export const STABLE_COIN_CACHE_REPO = Symbol("StableCoinCacheRepo");
+export const STABLE_COIN_CACHE_INSTANCE = Symbol("StableCoinCacheInstance");
+export const STABLE_COIN_CACHE_KEY_GENERATOR = Symbol("StableCoinCacheKeyGenerator");
+export const STABLE_COIN_CACHE_NAME = Symbol("StableCoinCacheName");
