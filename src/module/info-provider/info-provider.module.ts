@@ -4,18 +4,19 @@ import { OneInchInfoProvider } from 'src/application/defi.info-provider/swap/1in
 import { StargateInfoProvider } from 'src/application/defi.info-provider/bridge/stargate/stargate.info-provider';
 import { SushiSwapInfoProvider } from 'src/application/defi.info-provider/swap/sushiswap/sushi-swap.info-provider';
 import { PublicClientModule } from '../public-client.module';
-import { ONE_INCH_SWAP_INFO_PROVIDER, SUSHI_SWAP_INFO_PROVIDER, STARGATE_BRIDGE_INFO_PROVIDER, ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR, STABLE_COIN_INFO_PROVIDER } from '../module.token';
+import { ONE_INCH_SWAP_INFO_PROVIDER, SUSHI_SWAP_INFO_PROVIDER, STARGATE_BRIDGE_INFO_PROVIDER, STABLE_COIN_INFO_PROVIDER } from '../module.token';
 import { InfoFetcherModule } from '../info-fetcher.module';
 import { OneInchInfoProviderModule } from './swap/1nch.info-provider.module';
 import { StableCoinInfoProvider } from 'src/application/stable-coin/info-provider/info-provider';
 import { StableCoinInfoProviderModule } from './stable-coin/stable-coin.module';
+import { SushiSwapInfoProviderModule } from './swap/sushi-swap.info-provider.module';
 
 @Module({
     imports: [
-        HttpClientModule,
-        PublicClientModule,
+        HttpClientModule, // TODO: 추후 StargateInfoProvider도 StargateInfoFetcher를 사용하게 되면 삭제한다.
         InfoFetcherModule,
         OneInchInfoProviderModule,
+        SushiSwapInfoProviderModule,
         StableCoinInfoProviderModule,
     ],
     providers: [
