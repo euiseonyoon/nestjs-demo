@@ -1,40 +1,63 @@
-import { Inject, Injectable } from "@nestjs/common"
+import { Inject, Injectable, OnModuleInit } from "@nestjs/common"
 import { AbstractDefiProtocolInfoProvider } from "../../provided_port/defi-info-provider.interface"
-import { SUSHI_SUPPORTING_CHAINS } from "./constant.supporting-chain"
 import { Token } from "src/domain/token.class"
-import { HTTP_CLIENT } from "src/module/module.token"
-import { type IHttpClient } from "src/application/common/required_port/http-client.interface"
+import { 
+    CACHE_REGISTRY, 
+    SUSHI_SWAP_INFO_FETCHER,
+    SUSHI_SWAP_INFO_PROVIDER_CHAIN_CACHE_KEY_GENERATOR,
+    SUSHI_SWAP_INFO_PROVIDER_CHAIN_CACHE_NAME,
+    SUSHI_SWAP_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR,
+    SUSHI_SWAP_INFO_PROVIDER_TOKEN_CACHE_NAME,
+ } from "src/module/module.token"
 import { ChainInfo } from "src/domain/chain-info.type"
 import { EvmAddress } from "src/domain/evm-address.class"
-import { PriceResponse } from "./sushi-swap.response"
-import { RPC_CLIENT_MANAGER } from "src/infrastructure/infrastructure.token"
-import { type IRpcClientManager } from "src/application/transaction/required_port/tx.required-port"
-import { Address, Chain, erc20Abi } from 'viem';
-import * as chains from "viem/chains";
+import type { ISushiSwapInfoFetcher } from "src/application/defi.info-fetcher/swap/sushi-swap/provided_port/sushi-swap.info-fetcher.interface"
+import { Cron } from "@nestjs/schedule"
+import { AbstractCacheInstance } from "src/application/cache/cache.instance/provided_port/cache.instance.interface"
+import type { ICacheRegistry } from "src/application/cache/registry/provided_port/cache.registry.interface"
+import type { ICacheKeyGenerator } from "src/application/cache/key.generator/provided_port/cache.key.generator"
+import { ChainCacheKeyInput } from "src/application/cache/key.generator/chain.cache.input"
 
 @Injectable()
-export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
-    // TODO: sushi swap sdk에서 SWAP_API_SUPPORTED_CHAIN_IDS를 활용할수 있을것 같다.
-    private supportingChains = SUSHI_SUPPORTING_CHAINS
+export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider implements OnModuleInit{
+    private tokenCache : AbstractCacheInstance<string, Token> | null
+    private chainCache : AbstractCacheInstance<string, ChainInfo> | null
+
+    private supportingChains : ChainInfo[]
     private supportingTokens: Record<string, Token> = {}
 
-    private readonly chainMap: Record<number, Chain> = Object.values(chains).reduce(
-        (acc, chain) => {
-            if (typeof chain === "object" && "id" in chain) {
-            acc[chain.id] = chain as Chain;
-            }
-            return acc;
-        },
-        {} as Record<number, Chain>
-    );
-
     constructor(
-        @Inject(HTTP_CLIENT)
-        private readonly httpClient: IHttpClient,
-        @Inject(RPC_CLIENT_MANAGER)
-        private readonly prcClientManager: IRpcClientManager
+        @Inject(CACHE_REGISTRY)
+        cacheRegistry: ICacheRegistry,
+        @Inject(SUSHI_SWAP_INFO_FETCHER)
+        private readonly sushiSwapInfoFetcher: ISushiSwapInfoFetcher,
+        @Inject(SUSHI_SWAP_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR)
+        private readonly tokenCacheKeyGenerator: ICacheKeyGenerator<string, ChainCacheKeyInput>,
+        @Inject(SUSHI_SWAP_INFO_PROVIDER_CHAIN_CACHE_KEY_GENERATOR)
+        private readonly chainCacheKeyGenerator: ICacheKeyGenerator<string, number>,
     ) {
         super()
+        this.tokenCache = cacheRegistry.getCacheInstance<string, Token>(SUSHI_SWAP_INFO_PROVIDER_TOKEN_CACHE_NAME)
+        this.chainCache = cacheRegistry.getCacheInstance<string, ChainInfo>(SUSHI_SWAP_INFO_PROVIDER_CHAIN_CACHE_NAME)
+    }
+
+    async onModuleInit() {
+        await this.setSupportingChains();
+        await this.addToChainCache();
+    }
+
+    @Cron('0 0 2 * * *')
+    private async setSupportingChains(): Promise<void> {
+        const supporintChains = await this.sushiSwapInfoFetcher.getSupportingChains()
+        if (supporintChains) {
+            this.supportingChains = supporintChains
+        }
+    }
+    private async addToChainCache() {
+        this.supportingChains.forEach((chainInfo) => {
+            const key = this.chainCacheKeyGenerator.genKey(chainInfo.id)
+            this.chainCache?.save(key, chainInfo, null)
+        })
     }
 
     async getSupportingChains(): Promise<ChainInfo[]> {
@@ -46,86 +69,50 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
     }
 
     async getSupportingChainInfo(chainId: number): Promise<ChainInfo | null> {
-        return this.supportingChains.find((chain) => chain.id === chainId) ?? null
+        const key = this.chainCacheKeyGenerator.genKey(chainId)
+        const fromCache = await this.chainCache?.get(key) ?? null
+
+        if(fromCache) return fromCache
+
+        return this.supportingChains.find((chainInfo) => chainInfo.id === chainId) ?? null
     }
 
     private async checkTokenSupportedBySushiSwap(chain: ChainInfo, tokenAddress: EvmAddress): Promise<boolean> {
-        const supportingTokens = await this.fetchSupportingTokens(chain.id)
-        if(!supportingTokens) return false
+        const supportingTokenAddresses = await this.sushiSwapInfoFetcher.fetchSupportingTokenAddresses(chain.id)
+        if(!supportingTokenAddresses) return false
 
-        const entry = Object.entries(supportingTokens).find(
-            ([key, _value]) => tokenAddress.equals(key)
+        const entry = Object.entries(supportingTokenAddresses).find(
+            ([address, _price]) => tokenAddress.equals(address)
         ) ?? null;
         if(!entry) return false
 
         return true
     }
 
-    private async getTokenDetailFromContract(chainInfo: ChainInfo, tokenAddress: EvmAddress): Promise<Token | null> {
-        // 여기서 native 토큰이면 다르게 해야함 
-        if (Token.isNativeToken(tokenAddress.address)) {
-            return this.getNativeToken(chainInfo, tokenAddress)
-        } else {
-            return this.getToken(chainInfo, tokenAddress)
-        }
+    private async getTokenFromCache(chainId: number, tokenAddress: EvmAddress): Promise<Token | null> {
+        const key = this.tokenCacheKeyGenerator.genKey({chainId, tokenAddress})
+
+        // from tokenCache
+        const fromCache = await this.tokenCache?.get(key) ?? null
+        if (fromCache) return fromCache
+
+        // from supportingTokens
+        return this.supportingTokens[key] ?? null
     }
 
-    private async getNativeToken(chainInfo: ChainInfo, tokenAddress: EvmAddress): Promise<Token | null> {
-        const chain = this.chainMap[chainInfo.id];
-        if (!chain) return null
+    private async saveTokenToCache(token: Token): Promise<void> {
+        const key = this.tokenCacheKeyGenerator.genKey({
+            chainId: token.chain.id, 
+            tokenAddress: token.address
+        })
 
-        return new Token(
-            chainInfo,
-            tokenAddress,
-            chain.nativeCurrency.symbol,
-            chain.nativeCurrency.decimals,
-            chain.nativeCurrency.name,
-            null,
-            true,
-        )
-    }
-
-    private async getToken(chainInfo: ChainInfo, tokenAddress: EvmAddress): Promise<Token | null> {
-        const client = this.prcClientManager.getRpcClient(chainInfo.id)
-        if(!client) return null
-
-        const viemTokenAddress = tokenAddress.address as Address
-        const [decimals, name, symbol] = await Promise.all([
-            client.readContract({
-                address: viemTokenAddress,
-                abi: erc20Abi,
-                functionName: 'decimals'
-            }),
-            client.readContract({
-                address: viemTokenAddress,
-                abi: erc20Abi,
-                functionName: 'name'
-            }),
-            client.readContract({
-                address: viemTokenAddress,
-                abi: erc20Abi,
-                functionName: 'symbol'
-            })
-        ]);
-
-        return new Token(
-            chainInfo,
-            tokenAddress,
-            symbol,
-            decimals,
-            name,
-            null,
-            Token.isNativeToken(tokenAddress.address)
-        )
-    }
-
-    private async saveToken(key: string, token: Token) {
+        await this.tokenCache?.save(key, token, null)
         this.supportingTokens[key] = token
     }
 
     async getSupportingToken(chainId: number, tokenAddress: EvmAddress): Promise<Token | null> {
-        const key = this.makeTokenCacheKey(chainId, tokenAddress)
-        const tokenFromCache = this.supportingTokens[key] ?? null
+        // search cache
+        const tokenFromCache = await this.getTokenFromCache(chainId, tokenAddress)
         if (tokenFromCache) return tokenFromCache
 
         const targetChain = await this.getSupportingChainInfo(chainId)
@@ -134,22 +121,12 @@ export class SushiSwapInfoProvider extends AbstractDefiProtocolInfoProvider{
         const supported = await this.checkTokenSupportedBySushiSwap(targetChain, tokenAddress)
         if(!supported) return null
 
-        const token = await this.getTokenDetailFromContract(targetChain, tokenAddress)
+        const token = await this.sushiSwapInfoFetcher.getToken(targetChain, tokenAddress)
         if(!token) return null
 
-        this.saveToken(key, token)
+        // save to cache
+        await this.saveTokenToCache(token)
+
         return token
-    }
-
-    private async fetchSupportingTokens(chainId: number): Promise<PriceResponse | null> {
-        // TODO: 결과내용이 정상이면 cache하자
-    
-        const url = `https://api.sushi.com/price/v1/${chainId}`
-        const response = await this.httpClient.get<PriceResponse>(url)
-        return response.data
-    }
-
-    private makeTokenCacheKey(chainId: number, tokenAddress: EvmAddress): string {
-        return `${chainId}-${tokenAddress.address}`
     }
 }
