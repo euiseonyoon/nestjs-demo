@@ -2,7 +2,7 @@ import { Test, TestingModule } from "@nestjs/testing";
 import { SushiSwapAmoutGetter } from "./sushi-swap.amount-getter";
 import { SUSHI_SWAP_INFO_PROVIDER, TX_SERVICE } from "src/module/module.token";
 import { ITxService } from "src/application/transaction/provided_port/tx.provided-port";
-import { AbstractDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
+import { AbstractDefiProtocolInfoProvider } from "src/application/info-provider/provided_port/defi-info-provider.interface";
 import { createTestChainInfo } from "test/factories/chain-info.factory";
 import { mockedLogs, mockedTransactionReceipt } from "test/factories/transaction.factory";
 import { createTestToken } from "test/factories/token.factory";

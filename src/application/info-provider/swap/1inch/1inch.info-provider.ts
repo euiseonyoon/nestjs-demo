@@ -12,7 +12,7 @@ import {
 } from 'src/module/module.token';
 import { AbstractDefiProtocolInfoProvider } from '../../provided_port/defi-info-provider.interface';
 import { ChainInfo } from 'src/domain/chain-info.type';
-import { type IOneInchInfoFetcher } from 'src/application/defi.info-fetcher/swap/1inch/provided_port/1inch-swap.info-fetcher.interface';
+import { type IOneInchInfoFetcher } from 'src/application/info-fetcher/swap/1inch/provided_port/1inch-swap.info-fetcher.interface';
 import { type ICacheKeyGenerator } from 'src/application/cache/key.generator/provided_port/cache.key.generator';
 import { type ICacheRegistry } from 'src/application/cache/registry/provided_port/cache.registry.interface';
 import { AbstractCacheInstance } from 'src/application/cache/cache.instance/provided_port/cache.instance.interface';

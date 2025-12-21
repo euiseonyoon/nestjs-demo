@@ -5,7 +5,7 @@ import { EvmAddress } from 'src/domain/evm-address.class';
 import { E_ADDRESS } from 'src/domain/token.class';
 import { SUSHI_SWAP_AMOUNT_GETTER, SUSHI_SWAP_INFO_PROVIDER, SUSHI_SWAP_QUOTER } from 'src/module/module.token';
 import { ISwapQuoter } from 'src/application/quoter/swap/provided_port/swap.quoter';
-import { AbstractDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
+import { AbstractDefiProtocolInfoProvider } from 'src/application/info-provider/provided_port/defi-info-provider.interface';
 import { ISwapAmountGetter } from 'src/application/amount-getter/swap/provided_port/swap.amount-getter';
 import { EvmTxHash } from 'src/domain/evm-tx-hash.class';
 

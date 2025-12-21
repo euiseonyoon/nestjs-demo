@@ -1,7 +1,7 @@
 import { TokenAmount } from "src/domain/common-defi.type";
 import { NaiveBridgeHistoryRequest, NavieBridgeQuoteRequest } from "../request.type";
 import { BridgeOutAmountResponse } from "src/application/amount-getter/bridge/request.bridge-amount";
-import { AbstractDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
+import { AbstractDefiProtocolInfoProvider } from "src/application/info-provider/provided_port/defi-info-provider.interface";
 import { BridgeAmountRequest } from "src/application/amount-getter/bridge/response.bridge-amount";
 import { BridgeQuoteRequest } from "src/application/quoter/bridge/request.type";
 

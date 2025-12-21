@@ -11,7 +11,7 @@ import {
  } from "src/module/module.token"
 import { ChainInfo } from "src/domain/chain-info.type"
 import { EvmAddress } from "src/domain/evm-address.class"
-import type { ISushiSwapInfoFetcher } from "src/application/defi.info-fetcher/swap/sushi-swap/provided_port/sushi-swap.info-fetcher.interface"
+import type { ISushiSwapInfoFetcher } from "src/application/info-fetcher/swap/sushi-swap/provided_port/sushi-swap.info-fetcher.interface"
 import { Cron } from "@nestjs/schedule"
 import { AbstractCacheInstance } from "src/application/cache/cache.instance/provided_port/cache.instance.interface"
 import type { ICacheRegistry } from "src/application/cache/registry/provided_port/cache.registry.interface"

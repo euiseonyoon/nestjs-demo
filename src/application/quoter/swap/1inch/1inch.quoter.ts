@@ -5,7 +5,7 @@ import { Inject } from "@nestjs/common";
 import { HTTP_CLIENT, ONE_INCH_INFO_FETCHER } from "src/module/module.token";
 import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { ConfigService } from "@nestjs/config";
-import { type IOneInchInfoFetcher } from "src/application/defi.info-fetcher/swap/1inch/provided_port/1inch-swap.info-fetcher.interface";
+import { type IOneInchInfoFetcher } from "src/application/info-fetcher/swap/1inch/provided_port/1inch-swap.info-fetcher.interface";
 
 export class OneInchQuoter implements ISwapQuoter{
     constructor(

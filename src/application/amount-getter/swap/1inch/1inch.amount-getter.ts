@@ -5,10 +5,10 @@ import { TokenAmount } from 'src/domain/common-defi.type';
 import { ONE_INCH_INFO_FETCHER } from 'src/module/module.token';
 import { EvmAddress } from 'src/domain/evm-address.class';
 import { ONE_INCH_SWAP_INFO_PROVIDER } from 'src/module/module.token';
-import { AbstractDefiProtocolInfoProvider } from 'src/application/defi.info-provider/provided_port/defi-info-provider.interface';
+import { AbstractDefiProtocolInfoProvider } from 'src/application/info-provider/provided_port/defi-info-provider.interface';
 import { EvmTxHash } from 'src/domain/evm-tx-hash.class';
-import { type IOneInchInfoFetcher } from 'src/application/defi.info-fetcher/swap/1inch/provided_port/1inch-swap.info-fetcher.interface';
-import { OneInchHistoryResponseDto, TokenActionDto } from 'src/application/defi.info-fetcher/swap/1inch/1inch-swap.info-fetcher.response';
+import { type IOneInchInfoFetcher } from 'src/application/info-fetcher/swap/1inch/provided_port/1inch-swap.info-fetcher.interface';
+import { OneInchHistoryResponseDto, TokenActionDto } from 'src/application/info-fetcher/swap/1inch/1inch-swap.info-fetcher.response';
 
 @Injectable()
 export class OneInchAmountGetter implements ISwapAmountGetter{

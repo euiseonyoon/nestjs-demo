@@ -1,7 +1,7 @@
 import { Test } from "@nestjs/testing";
 import { OneInchService } from "./1inch-swap.service";
 import { ISwapQuoter } from "src/application/quoter/swap/provided_port/swap.quoter";
-import { AbstractDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
+import { AbstractDefiProtocolInfoProvider } from "src/application/info-provider/provided_port/defi-info-provider.interface";
 import { ISwapAmountGetter } from "src/application/amount-getter/swap/provided_port/swap.amount-getter";
 import { ONE_INCH_SWAP_AMOUNT_GETTER, ONE_INCH_SWAP_INFO_PROVIDER, ONE_INCH_SWAP_QUOTER } from "src/module/module.token";
 import { NaiveCrossChainSwapQuoteRequest, NaiveSameChainSwapQuoteRequest, NaiveSwapOutAmountRequest } from "../request.type";

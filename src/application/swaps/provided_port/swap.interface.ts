@@ -1,7 +1,7 @@
 import { TokenAmount } from "src/domain/common-defi.type";
 import { NaiveSameChainSwapQuoteRequest, NaiveSwapOutAmountRequest, NaiveSwapQuoteRequest } from "../request.type";
 import { SimpleSwapQuoteRequest } from "src/application/quoter/swap/request.type";
-import { AbstractDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
+import { AbstractDefiProtocolInfoProvider } from "src/application/info-provider/provided_port/defi-info-provider.interface";
 import { SwapOutAmountRequest } from "src/application/amount-getter/swap/request.swap-smount";
 
 export abstract class AbstractSwapService {

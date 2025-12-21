@@ -5,7 +5,7 @@ import { TokenAmount } from "src/domain/common-defi.type";
 import { TX_SERVICE } from "src/module/module.token";
 import { type ITxService } from "src/application/transaction/provided_port/tx.provided-port";
 import { SUSHI_SWAP_INFO_PROVIDER } from "src/module/module.token";
-import { AbstractDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
+import { AbstractDefiProtocolInfoProvider } from "src/application/info-provider/provided_port/defi-info-provider.interface";
 import { EvmAddress } from "src/domain/evm-address.class";
 import { Hex, Log, pad, TransactionReceipt } from "viem";
 import { ERC20_TOPICS } from "src/application/common/erc20/erc20.topics";

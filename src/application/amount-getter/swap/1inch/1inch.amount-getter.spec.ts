@@ -1,13 +1,13 @@
 import { Test } from "@nestjs/testing";
 import { OneInchAmountGetter } from "./1inch.amount-getter";
-import { AbstractDefiProtocolInfoProvider } from "src/application/defi.info-provider/provided_port/defi-info-provider.interface";
-import { IOneInchInfoFetcher } from "src/application/defi.info-fetcher/swap/1inch/provided_port/1inch-swap.info-fetcher.interface";
+import { AbstractDefiProtocolInfoProvider } from "src/application/info-provider/provided_port/defi-info-provider.interface";
+import { IOneInchInfoFetcher } from "src/application/info-fetcher/swap/1inch/provided_port/1inch-swap.info-fetcher.interface";
 import { ONE_INCH_INFO_FETCHER, ONE_INCH_SWAP_INFO_PROVIDER } from "src/module/module.token";
 import { createTestChainInfo } from "test/factories/chain-info.factory";
 import { createTestEvmAddress } from "test/factories/evm-address.factory";
 import { createTestEvmTxHash } from "test/factories/evm-tx-hash.factory";
 import { ExampleMapper } from "test/examples/example.mapper";
-import { OneInchHistoryResponseDto } from "src/application/defi.info-fetcher/swap/1inch/1inch-swap.info-fetcher.response";
+import { OneInchHistoryResponseDto } from "src/application/info-fetcher/swap/1inch/1inch-swap.info-fetcher.response";
 import { createTestToken } from "test/factories/token.factory";
 
 describe("OneInchAmountGetter (Unit test)", () => {

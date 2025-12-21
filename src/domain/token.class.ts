@@ -2,7 +2,7 @@
 import Decimal from "decimal.js";
 import { ChainInfo } from "./chain-info.type"
 import { EvmAddress } from "./evm-address.class"
-import { OneInchTokenData } from "src/application/defi.info-provider/swap/1inch/1inch-api.response";
+import { OneInchTokenData } from "src/application/info-provider/swap/1inch/1inch-api.response";
 
 export const E_ADDRESS = '0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE'
 export const E_ADDRESS_LOWER = E_ADDRESS.toLowerCase()
