@@ -11,7 +11,7 @@ import _ from 'lodash';
 import { Cron } from "@nestjs/schedule";
 
 @Injectable()
-export class StableCoinInfoProvider implements IStableCoinInfoProvider {
+export class StableCoinInfoProvider implements IStableCoinInfoProvider, OnModuleInit {
     private stableCoinCache: AbstractCacheInstance<string, Set<Token>>
 
     constructor(
@@ -27,6 +27,10 @@ export class StableCoinInfoProvider implements IStableCoinInfoProvider {
             throw Error("Stable Token Cache is missing");
         }
         this.stableCoinCache = cacheInstance
+    }
+    
+    onModuleInit() {
+        this.refreshStableCoin()
     }
 
     async getStableCoins(chainInfo: ChainInfo): Promise<Token[] | null> {
@@ -49,10 +53,10 @@ export class StableCoinInfoProvider implements IStableCoinInfoProvider {
 
         const grouped = _.groupBy(result, token => token.chain);
 
-        Object.entries(grouped).forEach(([chainKey, tokens]) => {
+        Object.entries(grouped).forEach(async ([chainKey, tokens]) => {
             const chain = tokens[0].chain; // 같은 그룹이므로 첫 번째 토큰의 chain
             const key = this.keyGenerator.genKey(chain);
-            this.stableCoinCache?.save(key, new Set(tokens));
+            await this.stableCoinCache?.save(key, new Set(tokens));
         });
     }
 
