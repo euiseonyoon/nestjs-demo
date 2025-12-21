@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Token } from "src/domain/token.class";
 import { NEO4J_ADAPTER,  } from "src/infrastructure/infrastructure.token";
 import { type INeo4JAdapter } from "../neo4j/provided_port/neo4j.adapter.interface";
-import { ProtocolInfo } from "src/domain/defi-type.enum";
+import { ProtocolInfo, validateProtocolInfo } from "src/domain/defi-type.enum";
 import { Route } from "src/domain/x-swap.type";
 import { ManagedTransaction } from "neo4j-driver";
 import { X_SWAP_CHAIN_REPOSITORY, X_SWAP_PROTOCOL_REPOSITORY, X_SWAP_TOKEN_REPOSITORY } from "src/module/module.token";
@@ -49,12 +49,15 @@ export class Neo4JRouteRepository implements IXSwapStepRepository {
     }
 
     private async saveCrossChainSwapRouteRelationship(
-        tx: ManagedTransaction, 
+        tx: ManagedTransaction,
         protocolInfo: ProtocolInfo,
         srcTokenId: string,
         dstTokenId: string,
         protocolId: string,
     ) {
+        // 런타임 검증: protocolType과 protocolName 일관성 확인
+        validateProtocolInfo(protocolInfo);
+
         // 1. 새로운 Cypher.Node 객체 생성 (쿼리 빌더용)
         const srcNode = new Cypher.Node();
         const dstNode = new Cypher.Node();
@@ -78,41 +81,30 @@ export class Neo4JRouteRepository implements IXSwapStepRepository {
         .merge(
             new Cypher.Pattern(srcNode)
                 .related(srcToDstRel, {
-                    type: protocolInfo.type,
+                    type: protocolInfo.protocolType,
                     properties: { protocolId: new Cypher.Param(protocolId) }
                 })
                 .to(dstNode)
         )
         .onCreateSet(
-            [srcToDstRel.property('protocol'), new Cypher.Param(protocolInfo.name)],
+            [srcToDstRel.property('protocolType'), new Cypher.Param(protocolInfo.protocolType)],
+            [srcToDstRel.property('protocolName'), new Cypher.Param(protocolInfo.protocolName)],
             [srcToDstRel.property('version'), new Cypher.Param(protocolInfo.version)],
         )
         // dstNode -> srcNode  swap/bridge relation 생성 (Swap, Bridge는 일반적으로 양방향 가능하기 때문에.)
         .merge(
             new Cypher.Pattern(dstNode)
                 .related(dstToSrcRel, {
-                    type: protocolInfo.type,
+                    type: protocolInfo.protocolType,
                     properties: { protocolId: new Cypher.Param(protocolId) }
                 })
                 .to(srcNode)
         )
         .onCreateSet(
-            [dstToSrcRel.property('protocol'), new Cypher.Param(protocolInfo.name)],
+            [dstToSrcRel.property('protocolType'), new Cypher.Param(protocolInfo.protocolType)],
+            [dstToSrcRel.property('protocolName'), new Cypher.Param(protocolInfo.protocolName)],
             [dstToSrcRel.property('version'), new Cypher.Param(protocolInfo.version)],
         );
-        /**
-         * 
-            MATCH (this0:Token { tokenId: $param0 })
-            MATCH (this1:Token { tokenId: $param1 })
-            MERGE (this0)-[this2:SWAP { protocolId: $param2 }]->(this1)
-            ON CREATE SET
-                this2.protocol = $param3,
-                this2.version = $param4
-            MERGE (this1)-[this3:SWAP { protocolId: $param5 }]->(this0)
-            ON CREATE SET
-                this3.protocol = $param6,
-                this3.version = $param7
-         */
 
         const { cypher, params } = query.build()
 

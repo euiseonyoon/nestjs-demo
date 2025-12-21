@@ -17,8 +17,9 @@ export interface TokenNodeProperties {
 }
 
 export interface RelationshipProperties {
-    protocol: string;
     protocolId: string;
+    protocolType: string;
+    protocolName: string;
     version: string;
 }
 

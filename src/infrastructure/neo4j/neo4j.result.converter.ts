@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { Path, Relationship, QueryResult, RecordShape, Node } from "neo4j-driver";
 import { INeo4JResultConverter } from "src/adapter/secondary/x-swap.routing/required_port/neo4j.result.converter.interface";
 import { ChainInfo } from "src/domain/chain-info.type";
-import { ProtocolInfo, ProtocolType, protocolTypeFromString } from "src/domain/defi-type.enum";
+import { bridgeProtocolFromString, getProtocolType, ProtocolInfo, ProtocolType, swapProtocolFromString } from "src/domain/defi-type.enum";
 import { EvmAddress } from "src/domain/evm-address.class";
 import { ChainNodeProperties, RelationshipProperties, TokenNodeProperties } from "src/domain/neo4jj.type";
 import { Token } from "src/domain/token.class";
@@ -104,18 +104,23 @@ export class Neo4JResultConverter implements INeo4JResultConverter {
     private convertToProtocolInfo(relationship: Relationship): ProtocolInfo {
         const relProps = relationship.properties as RelationshipProperties;
         this.validateRelationshipProperties(relProps);
-        return {
-            name: relProps.protocol,
-            type: this.getProtocolType(relationship.type),
-            version: relProps.version,
-        } as ProtocolInfo;
+        const protocolType = getProtocolType(relProps.protocolType)
+
+        if(protocolType === ProtocolType.SWAP) {
+            return {
+                protocolType: ProtocolType.SWAP,
+                protocolName: swapProtocolFromString(relProps.protocolName),
+                version: relProps.version
+            }
+        } else {
+            return {
+                protocolType: ProtocolType.BRIDGE,
+                protocolName: bridgeProtocolFromString(relProps.protocolName),
+                version: relProps.version
+            }
+        }
     }
 
-    private getProtocolType(relType: string): ProtocolType {
-        const protocolType = protocolTypeFromString(relType)
-        if (!protocolType) throw Error(`Bad ProtocolType string given. given={${relType}}`)
-        return protocolType
-    }
 
     private validateChainProperties(props: any): asserts props is ChainNodeProperties {
         if (
@@ -144,7 +149,8 @@ export class Neo4JResultConverter implements INeo4JResultConverter {
 
     private validateRelationshipProperties(props: any): asserts props is RelationshipProperties {
         if (
-            typeof props.protocol !== 'string' ||
+            typeof props.protocolName !== 'string' ||
+            typeof props.protocolType !== 'string' ||
             typeof props.protocolId !== 'string' ||
             typeof props.version !== 'string'
         ) {

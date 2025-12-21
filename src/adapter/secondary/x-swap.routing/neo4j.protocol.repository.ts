@@ -14,7 +14,7 @@ export class Neo4JXSwapProtocolRepository implements IXSwapProtocolRepository<Ma
     ) {}
 
     makeProtocolId(protocolInfo: ProtocolInfo): string {
-        return `${protocolInfo.name}_${protocolInfo.type}_${protocolInfo.version}`;
+        return `${protocolInfo.protocolName}_${protocolInfo.protocolType}_${protocolInfo.version}`;
     }
 
     buildQuery(protocol: ProtocolInfo): Cypher.Return {
@@ -27,8 +27,8 @@ export class Neo4JXSwapProtocolRepository implements IXSwapProtocolRepository<Ma
                 properties: { protocolId: new Cypher.Param(protocolId) }
             })
         ).onCreateSet(
-            [protocolNode.property('name'), new Cypher.Param(protocol.name)],
-            [protocolNode.property('type'), new Cypher.Param(protocol.type.valueOf())],
+            [protocolNode.property('name'), new Cypher.Param(protocol.protocolName)],
+            [protocolNode.property('type'), new Cypher.Param(protocol.protocolType.valueOf())],
             [protocolNode.property('version'), new Cypher.Param(protocol.version)],
             [protocolNode.property('usedCount'), new Cypher.Param(1)]
         ).onMatchSet(
