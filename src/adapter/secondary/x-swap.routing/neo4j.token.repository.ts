@@ -4,7 +4,7 @@ import { NEO4J_ADAPTER } from "src/infrastructure/infrastructure.token";
 import { type INeo4JAdapter } from "../neo4j/provided_port/neo4j.adapter.interface";
 import Cypher from '@neo4j/cypher-builder';
 import { ManagedTransaction } from "neo4j-driver";
-import { IXSwapTokenRepository } from "src/application/x-swap.routing/required_port/x-swap.token.repository";
+import { IXSwapTokenRepository } from "src/application/x-swap.routing/repository/required_port/x-swap.token.repository";
 import { CHAIN_HOST_TOKEN_REL_NAME } from "src/infrastructure/neo4j/relation.type.constant";
 
 @Injectable()

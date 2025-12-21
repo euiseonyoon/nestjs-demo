@@ -6,13 +6,13 @@ import { ProtocolType } from "src/domain/defi-type.enum";
 import { Route } from "src/domain/x-swap.type";
 import { ManagedTransaction } from "neo4j-driver";
 import { X_SWAP_ROUTE_RESULT_CONVERTER, X_SWAP_TOKEN_REPOSITORY } from "src/module/module.token";
-import { IXSwapRouteFinder } from "src/application/x-swap.routing/required_port/x-swap.route.finder";
-import { type IXSwapTokenRepository } from "src/application/x-swap.routing/required_port/x-swap.token.repository";
+import { IXSwapRouteRepositoryFinder } from "src/application/x-swap.routing/repository/required_port/x-swap.route.finder";
+import { type IXSwapTokenRepository } from "src/application/x-swap.routing/repository/required_port/x-swap.token.repository";
 import { type INeo4JResultConverter } from "./required_port/neo4j.result.converter.interface";
 import { CHAIN_HOST_TOKEN_REL_NAME } from "src/infrastructure/neo4j/relation.type.constant";
 
 @Injectable()
-export class Neo4JRouteFinder implements IXSwapRouteFinder {
+export class Neo4JRouteRepositoryFinder implements IXSwapRouteRepositoryFinder {
     constructor(
         @Inject(NEO4J_ADAPTER)
         private readonly adapter: INeo4JAdapter,

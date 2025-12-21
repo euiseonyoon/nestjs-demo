@@ -6,11 +6,11 @@ import { ProtocolInfo } from "src/domain/defi-type.enum";
 import { Route } from "src/domain/x-swap.type";
 import { ManagedTransaction } from "neo4j-driver";
 import { X_SWAP_CHAIN_REPOSITORY, X_SWAP_PROTOCOL_REPOSITORY, X_SWAP_TOKEN_REPOSITORY } from "src/module/module.token";
-import { IXSwapStepRepository } from "src/application/x-swap.routing/required_port/x-swap.route.repository";
-import { type IXSwapTokenRepository } from "src/application/x-swap.routing/required_port/x-swap.token.repository";
-import { type IXSwapProtocolRepository } from "src/application/x-swap.routing/required_port/x-swap.protocol.repository";
+import { IXSwapStepRepository } from "src/application/x-swap.routing/repository/required_port/x-swap.route.repository";
+import { type IXSwapTokenRepository } from "src/application/x-swap.routing/repository/required_port/x-swap.token.repository";
+import { type IXSwapProtocolRepository } from "src/application/x-swap.routing/repository/required_port/x-swap.protocol.repository";
 import Cypher from "@neo4j/cypher-builder";
-import { type IXSwapChainRepository } from "src/application/x-swap.routing/required_port/x-swap.chain.repository";
+import { type IXSwapChainRepository } from "src/application/x-swap.routing/repository/required_port/x-swap.chain.repository";
 import { PROTOCOL_SUPPORT_CHAIN_REL_NAME } from "src/infrastructure/neo4j/relation.type.constant";
 
 @Injectable()

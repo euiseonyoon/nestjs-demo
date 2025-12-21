@@ -4,7 +4,7 @@ import { type INeo4JAdapter } from "../neo4j/provided_port/neo4j.adapter.interfa
 import { ProtocolInfo } from "src/domain/defi-type.enum";
 import Cypher from '@neo4j/cypher-builder';
 import { ManagedTransaction } from "neo4j-driver";
-import { IXSwapProtocolRepository } from "src/application/x-swap.routing/required_port/x-swap.protocol.repository";
+import { IXSwapProtocolRepository } from "src/application/x-swap.routing/repository/required_port/x-swap.protocol.repository";
 
 @Injectable()
 export class Neo4JXSwapProtocolRepository implements IXSwapProtocolRepository<ManagedTransaction, string> {

@@ -1,18 +1,18 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { IXSwapRouteService } from "./provided_port/x-swap.route-service.interface";
+import { IXSwapRouteRepositoryService } from "./repository/provided_port/x-swap.route-service.interface";
 import { Token } from "src/domain/token.class";
 import { Route } from "src/domain/x-swap.type";
 import { X_SWAP_ROUTE_REPOSITORY, X_SWAP_ROUTE_FINDER } from "src/module/module.token";
-import { type IXSwapStepRepository } from "./required_port/x-swap.route.repository";
-import { type IXSwapRouteFinder } from "./required_port/x-swap.route.finder";
+import { type IXSwapStepRepository } from "./repository/required_port/x-swap.route.repository";
+import { type IXSwapRouteRepositoryFinder } from "./repository/required_port/x-swap.route.finder";
 
 @Injectable()
-export class Neo4JXSwapRouteService implements IXSwapRouteService {
+export class Neo4JXSwapRouteRepositoryService implements IXSwapRouteRepositoryService {
     constructor(
         @Inject(X_SWAP_ROUTE_REPOSITORY)
         private readonly stepRepository: IXSwapStepRepository,
         @Inject(X_SWAP_ROUTE_FINDER)
-        private readonly routesFinder: IXSwapRouteFinder
+        private readonly routesFinder: IXSwapRouteRepositoryFinder
     ) {}
 
     async saveCrossChainSwapRoute(route: Route): Promise<void> {

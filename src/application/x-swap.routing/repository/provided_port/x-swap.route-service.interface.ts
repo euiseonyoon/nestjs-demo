@@ -1,7 +1,7 @@
 import { Token } from "src/domain/token.class"
 import { Route } from "src/domain/x-swap.type"
 
-export interface IXSwapRouteService {
+export interface IXSwapRouteRepositoryService {
     saveCrossChainSwapRoute(
         route: Route
     ): Promise<void>
