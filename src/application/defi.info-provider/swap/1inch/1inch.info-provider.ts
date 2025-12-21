@@ -16,7 +16,7 @@ import { type IOneInchInfoFetcher } from 'src/application/defi.info-fetcher/swap
 import { type ICacheKeyGenerator } from 'src/application/cache/key.generator/provided_port/cache.key.generator';
 import { type ICacheRegistry } from 'src/application/cache/registry/provided_port/cache.registry.interface';
 import { AbstractCacheInstance } from 'src/application/cache/cache.instance/provided_port/cache.instance.interface';
-import { KeyInput } from 'src/application/cache/key.generator/1inch.info-provider/token.key.generator';
+import { ChainCacheKeyInput } from 'src/application/cache/key.generator/chain.cache.input';
 
 @Injectable()
 export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implements OnModuleInit{
@@ -32,7 +32,7 @@ export class OneInchInfoProvider extends AbstractDefiProtocolInfoProvider implem
         @Inject(ONE_INCH_INFO_FETCHER)
         private readonly oneInchInfoFetcher: IOneInchInfoFetcher,
         @Inject(ONE_INCH_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR)
-        private readonly tokenCacheKeyGenerator: ICacheKeyGenerator<string, KeyInput>,
+        private readonly tokenCacheKeyGenerator: ICacheKeyGenerator<string, ChainCacheKeyInput>,
         @Inject(ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_KEY_GENERATOR)
         private readonly chainCacheKeyGenerator: ICacheKeyGenerator<string, number>,
     ) {
