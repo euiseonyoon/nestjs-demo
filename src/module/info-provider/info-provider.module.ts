@@ -7,7 +7,7 @@ import { PublicClientModule } from '../public-client.module';
 import { ONE_INCH_SWAP_INFO_PROVIDER, SUSHI_SWAP_INFO_PROVIDER, STARGATE_BRIDGE_INFO_PROVIDER, STABLE_COIN_INFO_PROVIDER } from '../module.token';
 import { InfoFetcherModule } from '../info-fetcher.module';
 import { OneInchInfoProviderModule } from './swap/1nch.info-provider.module';
-import { StableCoinInfoProvider } from 'src/application/stable-coin/info-provider/info-provider';
+import { StableCoinInfoProvider } from 'src/application/info-provider/stable-coin/info-provider';
 import { StableCoinInfoProviderModule } from './stable-coin/stable-coin.module';
 import { SushiSwapInfoProviderModule } from './swap/sushi-swap.info-provider.module';
 

@@ -1,5 +1,4 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { IStableCoinInfoFetcher } from "../info-provider/required_port/info-fetcher.interface";
 import { Token } from "src/domain/token.class";
 import { HTTP_CLIENT } from "src/module/module.token";
 import { RetryConfig, type IHttpClient } from "src/application/common/required_port/http-client.interface";
@@ -7,6 +6,7 @@ import { CoinGeckoCoinDetailResponse } from "./coin-gecko.stable-coin.response";
 import { STABLECOIN_IDS } from "./coin-gecko.constant";
 import { CoinGeckoHelper } from "./coin-gecko.helper";
 import { chunkArray } from "src/utils/array/array.utils";
+import { IStableCoinInfoFetcher } from "src/application/info-provider/stable-coin/required_port/info-fetcher.interface";
 
 @Injectable()
 export class StableCoinInfoFetcher implements IStableCoinInfoFetcher {
