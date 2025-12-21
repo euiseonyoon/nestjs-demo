@@ -12,6 +12,7 @@ import { Cron } from "@nestjs/schedule";
 
 @Injectable()
 export class StableCoinInfoProvider implements IStableCoinInfoProvider, OnModuleInit {
+    // TODO: Set를 사용하지 말자. Typescript의 Set는 reference에 의해서만 멱등성을 검사한다.
     private stableCoinCache: AbstractCacheInstance<string, Set<Token>>
 
     constructor(
