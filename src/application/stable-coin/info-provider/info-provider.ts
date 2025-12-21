@@ -54,7 +54,7 @@ export class StableCoinInfoProvider implements IStableCoinInfoProvider, OnModule
         const grouped = _.groupBy(result, token => token.chain);
 
         Object.entries(grouped).forEach(async ([chainKey, tokens]) => {
-            const chain = tokens[0].chain; // 같은 그룹이므로 첫 번째 토큰의 chain
+            const chain = tokens[0]!.chain; // 같은 그룹이므로 첫 번째 토큰의 chain
             const key = this.keyGenerator.genKey(chain);
             await this.stableCoinCache?.save(key, new Set(tokens));
         });

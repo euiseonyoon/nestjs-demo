@@ -26,7 +26,9 @@ export class Neo4JResultConverter implements INeo4JResultConverter {
                 }
 
                 const route = this.convertToRouteWithChains(path, chains)
-                routes.push(route);
+                if (route) {
+                    routes.push(route);
+                }
             } catch(error) {
                 console.log(`Error while converting to Routes. e={${error}}`)
                 continue;
@@ -36,14 +38,19 @@ export class Neo4JResultConverter implements INeo4JResultConverter {
         return routes
     }
 
-    private convertToRouteWithChains(neo4jPath: Path, chains: Node[]): Route {
+    private convertToRouteWithChains(neo4jPath: Path, chains: Node[]): Route | null {
         const steps: RouteStep[] = [];
 
-        for (let i = 0; i < neo4jPath.segments.length; i++) {
-            const srcChainInfo = this.convertToChainInfo(chains[i]);
-            const dstChainInfo = this.convertToChainInfo(chains[i + 1]);
+        // checking:    chain(node) - relation(segment) - chain(node) - ... 체크 
+        if (chains.length - neo4jPath.segments.length !== 1) {
+            return null
+        }
 
-            const segment = neo4jPath.segments[i];
+        for (let i = 0; i < neo4jPath.segments.length; i++) {
+            const srcChainInfo = this.convertToChainInfo(chains[i]!);
+            const dstChainInfo = this.convertToChainInfo(chains[i + 1]!);
+
+            const segment = neo4jPath.segments[i]!;
 
             const srtToken = this.convertToToken(segment.start, srcChainInfo)
             const dstToken = this.convertToToken(segment.end, dstChainInfo)

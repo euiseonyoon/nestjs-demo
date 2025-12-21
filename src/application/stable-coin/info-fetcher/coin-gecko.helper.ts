@@ -5,9 +5,11 @@ import { EvmAddress } from "src/domain/evm-address.class";
 import { ChainInfo } from "src/domain/chain-info.type";
 
 export class CoinGeckoHelper {
-    static getChainInfo(platform: string): ChainInfo {
+    static getChainInfo(platform: string): ChainInfo | null{
+        const id = PLATFORM_TO_CHAIN_ID[platform]
+        if (!id) return null
         return {
-            id: PLATFORM_TO_CHAIN_ID[platform],
+            id: id,
             name: platform,
             testnet: false
         }
@@ -18,7 +20,8 @@ export class CoinGeckoHelper {
             const contractAddressStr = details.contract_address
             if (EvmAddress.validateAddress(contractAddressStr)) {
                 const chainInfo = CoinGeckoHelper.getChainInfo(platform)
-                return new Token(
+                if (chainInfo) {
+                    return new Token(
                     chainInfo,
                     new EvmAddress(contractAddressStr),
                     response.symbol.toUpperCase(),
@@ -27,6 +30,7 @@ export class CoinGeckoHelper {
                     null,
                     false,
                 )
+                }
             }
         }).filter((value) => value !== undefined);
     }

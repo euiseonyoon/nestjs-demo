@@ -76,7 +76,7 @@ export class LayerZeroService implements ILayerZeroService, OnModuleInit {
         if(response.isErrorResponse || response.isNetworkError) return null
 
         if (response.data.data.length < 1) return null
-        return response.data.data[0]
+        return response.data.data[0] ?? null
     }
 
     async getBridgeOutAmountFromReceipt(receipt: TransactionReceipt): Promise<bigint | null> {

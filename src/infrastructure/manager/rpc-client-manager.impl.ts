@@ -26,7 +26,7 @@ export class RpcClientManager implements IRpcClientManager {
             }
 
             // 모든 클라이언트가 동일한 체인에 속하는지 확인 (선택 사항이나 권장)
-            const chainId = clients[0].chain.id;
+            const chainId = clients[0]!.chain.id;
             if (this.chainMap.has(chainId)) {
                 throw new Error(
                     `Duplicate client group found for Chain ID: ${chainId}`,
@@ -43,7 +43,7 @@ export class RpcClientManager implements IRpcClientManager {
             return null;
         }
 
-        const publicCient = info.clients[info.cursor];
+        const publicCient = info.clients[info.cursor]!;
         info.cursor = (info.cursor + 1) % info.clients.length;
         return publicCient;
     }
