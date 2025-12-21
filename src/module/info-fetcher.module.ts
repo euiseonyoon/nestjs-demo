@@ -4,8 +4,8 @@ import { OneInchInfoFetcher } from 'src/application/info-fetcher/swap/1inch/1inc
 import { ERC20_INFO_FETCHER, ONE_INCH_INFO_FETCHER, STABLE_COIN_INFO_FETCHER, SUSHI_SWAP_INFO_FETCHER } from './module.token';
 import { StableCoinInfoFetcher } from 'src/application/stable-coin/info-fetcher/info-fetcher';
 import { SushiSwapInfoFetcher } from 'src/application/info-fetcher/swap/sushi-swap/sushi-swap.info-fetcher';
-import { Erc20InfoFetcher } from 'src/application/common/erc20/erc20.info-fetcher';
 import { PublicClientModule } from './public-client.module';
+import { Erc20InfoFetcher } from 'src/application/info-fetcher/erc20/erc20.info-fetcher';
 
 @Module({
     imports: [

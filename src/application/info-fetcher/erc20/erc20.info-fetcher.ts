@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { ChainInfo } from "src/domain/chain-info.type";
-import { IErc20InfoFetcher, TokenDetail } from "./erc20.info-fetcher.interface";
+import { IErc20InfoFetcher, TokenDetail } from "./provided_port/erc20.info-fetcher.interface";
 import { RPC_CLIENT_MANAGER } from "src/infrastructure/infrastructure.token";
 import type { IRpcClientManager } from "src/application/transaction/required_port/tx.required-port";
 import { Token } from "src/domain/token.class";

@@ -5,9 +5,9 @@ import { SUSHI_SUPPORTING_CHAINS } from "./constant.supporting-chain";
 import { ERC20_INFO_FETCHER, HTTP_CLIENT } from "src/module/module.token";
 import type { IHttpClient } from "src/application/common/required_port/http-client.interface";
 import { PriceResponse } from "./sushi-swap.response";
-import type { IErc20InfoFetcher } from "src/application/common/erc20/erc20.info-fetcher.interface";
 import { EvmAddress } from "src/domain/evm-address.class";
 import { Token } from "src/domain/token.class";
+import type { IErc20InfoFetcher } from "../../erc20/provided_port/erc20.info-fetcher.interface";
 
 @Injectable()
 export class SushiSwapInfoFetcher implements ISushiSwapInfoFetcher {
