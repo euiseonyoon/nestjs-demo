@@ -30,7 +30,9 @@ export const STABLE_COIN_INFO_PROVIDER = Symbol('StableCoinInfoProvider');
 
 // Info Fetchers
 export const ONE_INCH_INFO_FETCHER = Symbol('OneInchInfoFetcher')
+export const SUSHI_SWAP_INFO_FETCHER = Symbol('SushiSwapInfoFetcher')
 export const STABLE_COIN_INFO_FETCHER = Symbol('StableCoinInfoFetcher')
+export const ERC20_INFO_FETCHER = Symbol('Erc20InfoFetcher')
 
 // Layer Zero
 export const LAYER_ZERO_SERVICE = Symbol('LayerZeroService');
@@ -60,6 +62,18 @@ export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_REPO = Symbol("OneInchInfoProvid
 export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_INSTANCE = Symbol("OneInchInfoProviderChainCacheInstance");
 export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_KEY_GENERATOR = Symbol("OneInchInfoProviderChainCacheGenerator");
 export const ONE_INCH_INFO_PROVIDER_CHAIN_CACHE_NAME = Symbol("OneInchInfoProviderChainCacheName");
+
+// sushi swap info privder supporting token cache
+export const SUSHI_SWAP_INFO_PROVIDER_TOKEN_CACHE_REPO = Symbol("SuShiInfoProviderTokenCacheRepository");
+export const SUSHI_SWAP_INFO_PROVIDER_TOKEN_CACHE_INSTANCE = Symbol("SuShiInfoProviderTokenCacheInstance");
+export const SUSHI_SWAP_INFO_PROVIDER_TOKEN_CACHE_KEY_GENERATOR = Symbol("SuShiInfoProviderTokenCacheGenerator");
+export const SUSHI_SWAP_INFO_PROVIDER_TOKEN_CACHE_NAME = Symbol("SuShiInfoProviderTokenCacheName");
+// sushi swap info privder supporting chain cache
+export const SUSHI_SWAP_INFO_PROVIDER_CHAIN_CACHE_REPO = Symbol("SushiSwapInfoProviderChainCacheRepository");
+export const SUSHI_SWAP_INFO_PROVIDER_CHAIN_CACHE_INSTANCE = Symbol("SushiSwapInfoProviderChainCacheInstance");
+export const SUSHI_SWAP_INFO_PROVIDER_CHAIN_CACHE_KEY_GENERATOR = Symbol("SushiSwapInfoProviderChainCacheGenerator");
+export const SUSHI_SWAP_INFO_PROVIDER_CHAIN_CACHE_NAME = Symbol("SushiSwapInfoProviderChainCacheName");
+
 // stable info provider stable coin cache
 export const STABLE_COIN_CACHE_REPO = Symbol("StableCoinCacheRepo");
 export const STABLE_COIN_CACHE_INSTANCE = Symbol("StableCoinCacheInstance");
