@@ -20,6 +20,19 @@ export type QuoteRouteStep = {
     quote: QuoteResult,
 }
 
+export const makeQuoteRouteStep = (
+    srcToken: Token,
+    dstToken: Token,
+    protocol : SwapProtocol | BridgeProtocol,
+    quote: TokenAmount,
+): QuoteRouteStep => {
+    return {
+        srcToken: srcToken,
+        dstToken: dstToken,
+        quote: makeQuoteResult(protocol, quote)
+    }
+}
+
 export type QuoteRoute = {
     steps: QuoteRouteStep[]
 }
@@ -33,3 +46,19 @@ export type QuoteResult =
         protocol: BridgeProtocol,
         quote: TokenAmount
     }
+
+export const makeQuoteResult = (protocol : SwapProtocol | BridgeProtocol, quote: TokenAmount): QuoteResult => {
+    const swapProtocols = Object.values(SwapProtocol);
+
+    if (swapProtocols.includes(protocol as SwapProtocol)) {
+        return {
+            protocol: protocol as SwapProtocol,
+            quote: quote
+        }
+    } else {
+        return {
+            protocol: protocol as BridgeProtocol,
+            quote: quote
+        }
+    }
+}
