@@ -24,11 +24,19 @@ export class Token {
         }
     }
 
+    // 1 USDT -> 100000 Wei USDT
     convertToBigIntAmount(amount: string): bigint {
         const amountInDecimal: Decimal = new Decimal(amount);
         const weiDecimal: Decimal = amountInDecimal.times(new Decimal(10).toPower(this.decimals));
         const weiString: string = weiDecimal.toFixed(0, Decimal.ROUND_DOWN);
         return BigInt(weiString);
+    }
+
+    // 100000 Wei USDT -> 1 USDT
+    convertToStringFromWei(amountWei: bigint): string {
+        const amountInDecimal = new Decimal(amountWei.toString())
+        const humanReadableAmount: Decimal = amountInDecimal.dividedBy(new Decimal(10).toPower(this.decimals));
+        return humanReadableAmount.toString();
     }
 
     public equals(other: Token): boolean {
