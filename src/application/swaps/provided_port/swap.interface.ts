@@ -3,11 +3,14 @@ import { NaiveSameChainSwapQuoteRequest, NaiveSwapOutAmountRequest, NaiveSwapQuo
 import { SimpleSwapQuoteRequest } from "src/application/quoter/swap/request.type";
 import { AbstractDefiProtocolInfoProvider } from "src/application/info-provider/provided_port/defi-info-provider.interface";
 import { SwapOutAmountRequest } from "src/application/amount-getter/swap/request.swap-smount";
+import { SwapProtocol } from "src/domain/defi-type.enum";
 
 export abstract class AbstractSwapService {
     constructor(
-        protected readonly infoProvider: AbstractDefiProtocolInfoProvider,
+        readonly infoProvider: AbstractDefiProtocolInfoProvider,
     ) {}
+    abstract readonly protocol: SwapProtocol
+
     abstract getQuote(quoteRequest: NaiveSwapQuoteRequest): Promise<TokenAmount | null>
 
     abstract getSwapOutAmount(request: NaiveSwapOutAmountRequest): Promise<TokenAmount | null>

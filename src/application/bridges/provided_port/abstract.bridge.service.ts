@@ -4,11 +4,14 @@ import { BridgeOutAmountResponse } from "src/application/amount-getter/bridge/re
 import { AbstractDefiProtocolInfoProvider } from "src/application/info-provider/provided_port/defi-info-provider.interface";
 import { BridgeAmountRequest } from "src/application/amount-getter/bridge/response.bridge-amount";
 import { BridgeQuoteRequest } from "src/application/quoter/bridge/request.type";
+import { BridgeProtocol } from "src/domain/defi-type.enum";
 
 export abstract class AbstractBridgeService {
     constructor(
         protected readonly infoProvider: AbstractDefiProtocolInfoProvider
     ) {}
+
+    abstract readonly protocol: BridgeProtocol
 
     abstract getQuote(request: NavieBridgeQuoteRequest): Promise<TokenAmount | null>
 

@@ -9,9 +9,12 @@ import { TokenAmount } from "src/domain/common-defi.type";
 import { type IBridgeAmountGetter } from "src/application/amount-getter/bridge/provided_port/bridge.amount-getter";
 import { STARGATE_BRIDGE_AMOUNT_GETTER } from "src/module/module.token";
 import { BridgeOutAmountResponse } from "src/application/amount-getter/bridge/request.bridge-amount";
+import { BridgeProtocol } from "src/domain/defi-type.enum";
 
 @Injectable()
 export class StargateService extends AbstractBridgeService {
+    readonly protocol: BridgeProtocol = BridgeProtocol.STARGATE;
+    
     constructor(
         @Inject(STARGATE_BRIDGE_INFO_PROVIDER)
         private readonly stargateInfoProvider: AbstractStargateInfoProvider,

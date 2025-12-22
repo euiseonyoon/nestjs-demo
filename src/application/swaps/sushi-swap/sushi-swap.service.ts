@@ -9,9 +9,12 @@ import { SUSHI_SWAP_AMOUNT_GETTER } from 'src/module/module.token';
 import { type ISwapAmountGetter } from 'src/application/amount-getter/swap/provided_port/swap.amount-getter';
 import { TokenAmount } from 'src/domain/common-defi.type';
 import { AbstractDefiProtocolInfoProvider } from 'src/application/info-provider/provided_port/defi-info-provider.interface';
+import { SwapProtocol } from 'src/domain/defi-type.enum';
 
 @Injectable()
 export class SushiSwapService extends AbstractSwapService{
+    readonly protocol: SwapProtocol = SwapProtocol.SUSHI_SWAP
+    
     constructor(
         @Inject(SUSHI_SWAP_QUOTER)
         private readonly sushiSwapQuoter: ISwapQuoter,
