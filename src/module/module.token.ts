@@ -49,6 +49,8 @@ export const X_SWAP_ROUTE_FINDER = Symbol('XSwapRouteFinder');
 export const X_SWAP_ROUTE_REPOSITORY_SERVICE = Symbol('XSwapRouteRepositoryService')
 export const X_SWAP_ROUTE_RESULT_CONVERTER = Symbol('XSwapRouteResultConverter')
 
+export const X_SWAP_ROUTE_SWAP_HELPER = Symbol('XSwapRouteSwapHelper')
+
 // Cache
 export const CACHE_REGISTRY = Symbol('CacheRegistry');
 
