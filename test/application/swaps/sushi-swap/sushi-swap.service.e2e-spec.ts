@@ -71,10 +71,10 @@ describe('SushiSwapService (Integration Test)', () => {
                 expect(result).toHaveProperty('token');
                 expect(result.token).toBeInstanceOf(Token);
                 expect(result.token.symbol).toBe('USDT');
-                expect(BigInt(result.amount)).toBeGreaterThan(0n);
+                expect(BigInt(result.amountWei)).toBeGreaterThan(0n);
 
                 // Log for debugging
-                console.log(`✅ Quote result: ${result.amount.toString()} ${result.token.symbol}`);
+                console.log(`✅ Quote result: ${result.amountWei.toString()} ${result.token.symbol}`);
             }
         });
     })
@@ -103,7 +103,7 @@ describe('SushiSwapService (Integration Test)', () => {
 
             // THEN
             expect(result).not.toBeNull()
-            expect(result?.amount).toBeGreaterThan(0n)
+            expect(result?.amountWei).toBeGreaterThan(0n)
             expect(result?.token.symbol).toEqual('USDT')
         });
     })

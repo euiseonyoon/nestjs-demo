@@ -31,7 +31,7 @@ export class StargateAmountGetter implements IBridgeAmountGetter {
         return {
             status: data.status.name,
             bridgeOutAmount: {
-                amount: bridgeOutAmount,
+                amountWei: bridgeOutAmount,
                 token: request.dstToken
             }
         }

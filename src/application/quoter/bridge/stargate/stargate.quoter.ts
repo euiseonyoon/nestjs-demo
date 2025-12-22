@@ -30,7 +30,7 @@ export class StargateQuoter implements IBridgeQuoter {
 
         const optimalQuote = this.selectOptimalQuote(validQuotes)
         return {
-            amount: BigInt(optimalQuote.dstAmount),
+            amountWei: BigInt(optimalQuote.dstAmount),
             token: request.dstToken
         }
     }

@@ -31,6 +31,6 @@ export class OneInchQuoter implements ISwapQuoter{
             request.dstToken,
             request.amount,
         )
-        return quote ? { amount: BigInt(quote), token: request.dstToken } : null;
+        return quote ? { amountWei: BigInt(quote), token: request.dstToken } : null;
     }
 }

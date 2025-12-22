@@ -47,7 +47,7 @@ export class SushiSwapQuoter implements ISwapQuoter{
 
         if (response.data.status !== RouteStatus.Success) return null
         return {
-            amount: BigInt(response.data.assumedAmountOut),
+            amountWei: BigInt(response.data.assumedAmountOut),
             token: request.dstToken
         }
     }

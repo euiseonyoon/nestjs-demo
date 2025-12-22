@@ -30,7 +30,7 @@ export class SushiSwapAmoutGetter implements ISwapAmountGetter{
         if (!swapOutToken) return null
         
         return {
-            amount: BigInt(log.data),
+            amountWei: BigInt(log.data),
             token: swapOutToken,
         }
     }

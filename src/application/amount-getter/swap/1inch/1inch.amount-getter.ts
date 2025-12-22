@@ -32,7 +32,7 @@ export class OneInchAmountGetter implements ISwapAmountGetter{
         if (!tokenInfo) return null
 
         return {
-            amount: BigInt(swapOutTokenInfo.amount),
+            amountWei: BigInt(swapOutTokenInfo.amount),
             token: tokenInfo
         }
     }
