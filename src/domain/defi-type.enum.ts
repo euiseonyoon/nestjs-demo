@@ -51,11 +51,11 @@ export type ProtocolInfo =
         version: string;
       };
 
-export const isSwapProtocol = (info: ProtocolInfo): info is ProtocolInfo & { type: ProtocolType.SWAP } => {
-    return info.protocolType === ProtocolType.SWAP;
-};
+export const isSwapProtocol = (info: ProtocolInfo): info is Extract<ProtocolInfo, { protocolType: ProtocolType.SWAP }> => {                                            
+    return info.protocolType === ProtocolType.SWAP;                                                                                                                    
+};                                                                                                                                                                     
 
-export const isBridgeProtocol = (info: ProtocolInfo): info is ProtocolInfo & { type: ProtocolType.BRIDGE } => {
+export const isBridgeProtocol = (info: ProtocolInfo): info is Extract<ProtocolInfo, { protocolType: ProtocolType.BRIDGE }> => {
     return info.protocolType === ProtocolType.BRIDGE;
 };
 
@@ -111,3 +111,15 @@ export const possibleProtocolInfo = {
     sushiSwapSimpleProtocolInfo,
     stargateBridgeProtocolInfo
 } as const
+
+export function findProtocolInfo(
+    protocolType: ProtocolType, 
+    protocolName: SwapProtocol | BridgeProtocol,
+): ProtocolInfo {
+    const found = Object.values(possibleProtocolInfo).find(
+        info => info.protocolType === protocolType && info.protocolName === protocolName
+    );
+    if (!found) throw Error(`Failed to find avaialable ProtocolInfo. ${protocolType}-${protocolName}`)
+    return found
+}
+
