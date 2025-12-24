@@ -1,0 +1,396 @@
+# TypeScript 코드 개선 사항
+
+분석 날짜: 2025-12-21
+프로젝트: shop-nestjs
+
+## 🔴 High Priority - 즉시 수정 필요
+
+### 1. `any` 타입 남용 제거
+
+#### src/application/common/required_port/http-client.interface.ts:48-49
+```typescript
+// ❌ 현재
+params?: Record<string, any>;
+data?: any;
+
+// ✅ 개선안
+params?: Record<string, string | number | boolean>;
+data?: unknown;  // 또는 제네릭 타입 사용
+```
+
+#### src/application/layer-zero/layer-zero.service.ts:35,48
+```typescript
+// ❌ 현재
+const response = await this.httpClient.get<Record<string, any>>(url)
+const v2Deployment = chainData.deployments?.find((d: any) => d.version === 2)
+
+// ✅ 개선안
+// 적절한 타입 정의 추가
+type LayerZeroDeployment = {
+    version: number;
+    eid?: number;
+};
+
+type LayerZeroChainDetails = {
+    chainType: string;
+    nativeChainId?: number;
+};
+
+type LayerZeroMetadata = {
+    deployments?: LayerZeroDeployment[];
+    chainDetails?: LayerZeroChainDetails;
+};
+
+const response = await this.httpClient.get<Record<string, LayerZeroMetadata>>(url)
+const v2Deployment = chainData.deployments?.find((d) => d.version === 2)
+```
+
+#### src/infrastructure/neo4j/neo4j.result.converter.ts:125,135,150
+```typescript
+// ❌ 현재
+private validateChainProperties(props: any): asserts props is ChainNodeProperties
+private validateTokenProperties(props: any): asserts props is TokenNodeProperties
+private validateRelationshipProperties(props: any): asserts props is RelationshipProperties
+
+// ✅ 개선안
+private validateChainProperties(props: unknown): asserts props is ChainNodeProperties
+private validateTokenProperties(props: unknown): asserts props is TokenNodeProperties
+private validateRelationshipProperties(props: unknown): asserts props is RelationshipProperties
+```
+
+#### src/adapter/secondary/http-client/axios-http-client.adapter.ts:74,124,135,148,161,172
+```typescript
+// ❌ 현재
+async request<T = any, E = any>(...)
+async get<T = any, E = any>(...)
+async post<T = any, E = any>(...)
+async put<T = any, E = any>(...)
+async delete<T = any, E = any>(...)
+async patch<T = any, E = any>(...)
+
+// ✅ 개선안 - 기본 타입을 unknown으로
+async request<T = unknown, E = unknown>(...)
+async get<T = unknown, E = unknown>(...)
+async post<T = unknown, E = unknown>(...)
+async put<T = unknown, E = unknown>(...)
+async delete<T = unknown, E = unknown>(...)
+async patch<T = unknown, E = unknown>(...)
+```
+
+### 2. 타입 오타 수정
+
+#### src/application/quoter/bridge/stargate/stargate.response.ts:30
+```typescript
+// ❌ 현재
+erorr: any,
+
+// ✅ 개선안
+error: string | null,  // 또는 적절한 에러 타입 정의
+```
+
+## 🟡 Medium Priority - 점진적 개선 권장
+
+### 3. 과도한 타입 단언 (`as`) 제거
+
+#### src/domain/defi-type.enum.ts:8-14 (getProtocolType)
+```typescript
+// ❌ 현재
+export const getProtocolType = (relType: string): ProtocolType => {
+    const validValues = Object.values(ProtocolType);
+    if (validValues.includes(relType as ProtocolType)) {
+        return relType as ProtocolType;
+    }
+    throw new Error(`Bad ProtocolType string given. given={${relType}}`);
+};
+
+// ✅ 개선안 - 타입 가드 사용
+function isProtocolType(value: string): value is ProtocolType {
+    return Object.values(ProtocolType).includes(value as ProtocolType);
+}
+
+export const getProtocolType = (relType: string): ProtocolType => {
+    if (isProtocolType(relType)) {
+        return relType;  // 타입 단언 불필요
+    }
+    throw new Error(`Bad ProtocolType string given. given={${relType}}`);
+};
+```
+
+#### src/domain/defi-type.enum.ts:22-28 (swapProtocolFromString)
+```typescript
+// ❌ 현재
+export const swapProtocolFromString = (swapProtocol: string): SwapProtocol => {
+    const validValues = Object.values(SwapProtocol);
+    if (validValues.includes(swapProtocol as SwapProtocol)) {
+        return swapProtocol as SwapProtocol;
+    }
+    throw new Error(`Bad SwapProtocol string given. given={${swapProtocol}}`);
+}
+
+// ✅ 개선안
+function isSwapProtocol(value: string): value is SwapProtocol {
+    return Object.values(SwapProtocol).includes(value as SwapProtocol);
+}
+
+export const swapProtocolFromString = (swapProtocol: string): SwapProtocol => {
+    if (isSwapProtocol(swapProtocol)) {
+        return swapProtocol;
+    }
+    throw new Error(`Bad SwapProtocol string given. given={${swapProtocol}}`);
+}
+```
+
+#### src/domain/defi-type.enum.ts:35-41 (bridgeProtocolFromString)
+```typescript
+// ❌ 현재
+export const bridgeProtocolFromString = (bridgeProtocol: string): BridgeProtocol => {
+    const validValues = Object.values(BridgeProtocol);
+    if (validValues.includes(bridgeProtocol as BridgeProtocol)) {
+        return bridgeProtocol as BridgeProtocol;
+    }
+    throw new Error(`Bad BridgeProtocol string given. given={${bridgeProtocol}}`);
+}
+
+// ✅ 개선안
+function isBridgeProtocol(value: string): value is BridgeProtocol {
+    return Object.values(BridgeProtocol).includes(value as BridgeProtocol);
+}
+
+export const bridgeProtocolFromString = (bridgeProtocol: string): BridgeProtocol => {
+    if (isBridgeProtocol(bridgeProtocol)) {
+        return bridgeProtocol;
+    }
+    throw new Error(`Bad BridgeProtocol string given. given={${bridgeProtocol}}`);
+}
+```
+
+#### src/domain/defi-type.enum.ts:93-109 (ProtocolInfo 상수들)
+```typescript
+// ❌ 현재 - 불필요한 타입 단언
+const oneInchClassicSwapProtocolInfo = {
+    protocolName: SwapProtocol.ONE_INCH,
+    protocolType: ProtocolType.SWAP,
+    version: "V1",
+} as ProtocolInfo
+
+const sushiSwapSimpleProtocolInfo = {
+    protocolName: SwapProtocol.SUSHI_SWAP,
+    protocolType: ProtocolType.SWAP,
+    version: "V1",
+} as ProtocolInfo
+
+const stargateBridgeProtocolInfo = {
+    protocolName: BridgeProtocol.STARGATE,
+    protocolType: ProtocolType.BRIDGE,
+    version: "V2",
+} as ProtocolInfo
+
+// ✅ 개선안 - 타입 단언 없이 정확한 타입 사용
+const oneInchClassicSwapProtocolInfo: ProtocolInfo = {
+    protocolName: SwapProtocol.ONE_INCH,
+    protocolType: ProtocolType.SWAP,
+    version: "V1",
+}
+
+const sushiSwapSimpleProtocolInfo: ProtocolInfo = {
+    protocolName: SwapProtocol.SUSHI_SWAP,
+    protocolType: ProtocolType.SWAP,
+    version: "V1",
+}
+
+const stargateBridgeProtocolInfo: ProtocolInfo = {
+    protocolName: BridgeProtocol.STARGATE,
+    protocolType: ProtocolType.BRIDGE,
+    version: "V2",
+}
+```
+
+#### src/infrastructure/neo4j/neo4j.result.converter.ts:20-21
+```typescript
+// ❌ 현재
+const path = record.get(pathVairalbeName) as Path;
+const chains = record.get('chains') as Node[];
+
+// ✅ 개선안 - 런타임 검증 추가
+const pathValue = record.get(pathVairalbeName);
+if (!this.isPath(pathValue)) {
+    throw new Error('Invalid path structure');
+}
+const path = pathValue;
+
+const chainsValue = record.get('chains');
+if (!Array.isArray(chainsValue) || !chainsValue.every(this.isNode)) {
+    throw new Error('Invalid chains structure');
+}
+const chains = chainsValue;
+
+// 헬퍼 메서드 추가
+private isPath(value: unknown): value is Path {
+    return value !== null &&
+           typeof value === 'object' &&
+           'segments' in value &&
+           Array.isArray((value as any).segments);
+}
+
+private isNode(value: unknown): value is Node {
+    return value !== null &&
+           typeof value === 'object' &&
+           'properties' in value;
+}
+```
+
+#### src/infrastructure/neo4j/neo4j.result.converter.ts:70,84,105
+```typescript
+// ❌ 현재
+const chainProps = chainNode.properties as ChainNodeProperties;
+const tokenProps = tokenNode.properties as TokenNodeProperties;
+const relProps = relationship.properties as RelationshipProperties;
+
+// ✅ 개선안 - validate 후 타입 단언 제거
+const chainProps = chainNode.properties;
+this.validateChainProperties(chainProps);
+// 이후 chainProps는 ChainNodeProperties 타입으로 추론됨
+
+const tokenProps = tokenNode.properties;
+this.validateTokenProperties(tokenProps);
+
+const relProps = relationship.properties;
+this.validateRelationshipProperties(relProps);
+```
+
+#### src/domain/defi-type.enum.ts:74,83
+```typescript
+// ❌ 현재
+if (!validSwapProtocols.includes(info.protocolName as SwapProtocol)) {
+if (!validBridgeProtocols.includes(info.protocolName as BridgeProtocol)) {
+
+// ✅ 개선안 - discriminated union 활용
+export const validateProtocolInfo = (info: ProtocolInfo): void => {
+    if (info.protocolType === ProtocolType.SWAP) {
+        const validSwapProtocols = Object.values(SwapProtocol);
+        // info.protocolName은 이미 SwapProtocol 타입으로 좁혀짐
+        if (!validSwapProtocols.includes(info.protocolName)) {
+            throw new Error(
+                `ProtocolInfo validation failed: protocolType is SWAP but protocolName "${info.protocolName}" is not a valid SwapProtocol. ` +
+                `Valid values: ${validSwapProtocols.join(', ')}`
+            );
+        }
+    } else if (info.protocolType === ProtocolType.BRIDGE) {
+        const validBridgeProtocols = Object.values(BridgeProtocol);
+        // info.protocolName은 이미 BridgeProtocol 타입으로 좁혀짐
+        if (!validBridgeProtocols.includes(info.protocolName)) {
+            throw new Error(
+                `ProtocolInfo validation failed: protocolType is BRIDGE but protocolName "${info.protocolName}" is not a valid BridgeProtocol. ` +
+                `Valid values: ${validBridgeProtocols.join(', ')}`
+            );
+        }
+    }
+};
+```
+
+### 4. 타입 가드 개선
+
+#### src/domain/defi-type.enum.ts:56-62
+```typescript
+// ⚠️ 현재 - 반환 타입이 정확하지 않음
+export const isSwapProtocol = (info: ProtocolInfo): info is ProtocolInfo & { type: ProtocolType.SWAP } => {
+    return info.protocolType === ProtocolType.SWAP;
+};
+
+export const isBridgeProtocol = (info: ProtocolInfo): info is ProtocolInfo & { type: ProtocolType.BRIDGE } => {
+    return info.protocolType === ProtocolType.BRIDGE;
+};
+
+// ✅ 개선안 - Extract 유틸리티 타입 사용
+export const isSwapProtocol = (
+    info: ProtocolInfo
+): info is Extract<ProtocolInfo, { protocolType: ProtocolType.SWAP }> => {
+    return info.protocolType === ProtocolType.SWAP;
+};
+
+export const isBridgeProtocol = (
+    info: ProtocolInfo
+): info is Extract<ProtocolInfo, { protocolType: ProtocolType.BRIDGE }> => {
+    return info.protocolType === ProtocolType.BRIDGE;
+};
+```
+
+## 🟢 Low Priority - 선택적 개선
+
+### 5. 타입 단언 대신 타입 헬퍼 활용
+
+#### src/utils/time/duration.ms.ts:4-13
+```typescript
+// ❌ 현재
+export const DurationMs = {
+  seconds: (n: number) => n * 1000 as DurationMs,
+  minutes: (n: number) => n * 60 * 1000 as DurationMs,
+  // ...
+  ONE_MINUTE: 60 * 1000 as DurationMs,
+  ONE_HOUR: 60 * 60 * 1000 as DurationMs,
+} as const;
+
+// ✅ 개선안 - 타입 헬퍼 함수
+const createDurationMs = (ms: number): DurationMs => ms as DurationMs;
+
+export const DurationMs = {
+  seconds: (n: number) => createDurationMs(n * 1000),
+  minutes: (n: number) => createDurationMs(n * 60 * 1000),
+  hours: (n: number) => createDurationMs(n * 60 * 60 * 1000),
+  days: (n: number) => createDurationMs(n * 24 * 60 * 60 * 1000),
+
+  ONE_MINUTE: createDurationMs(60 * 1000),
+  FIVE_MINUTES: createDurationMs(5 * 60 * 1000),
+  ONE_HOUR: createDurationMs(60 * 60 * 1000),
+  ONE_DAY: createDurationMs(24 * 60 * 60 * 1000),
+} as const;
+```
+
+#### src/domain/evm-address.class.ts:17
+```typescript
+// ❌ 현재
+return this.hash as Hash
+
+// ✅ 개선안 - 타입 정의를 명확히
+// Hash 타입과 내부 hash 필드의 타입이 동일하다면 단언 불필요
+// 아니면 생성자에서 타입 검증 추가
+```
+
+## 📊 개선 우선순위 요약
+
+### 1단계 (즉시): High Priority 항목
+- HTTP 클라이언트 인터페이스 `any` → `unknown` 변경
+- `stargate.response.ts`의 `erorr` 오타 수정
+- Validation 함수들 `any` → `unknown` 변경
+- LayerZero 서비스 타입 정의 추가
+
+### 2단계 (1-2주 내): Medium Priority 항목
+- Enum 변환 함수들에 타입 가드 적용
+- ProtocolInfo 상수 타입 단언 제거
+- Neo4j 결과 변환기 타입 단언 최소화
+- validateProtocolInfo discriminated union 활용
+
+### 3단계 (점진적): Low Priority 항목
+- DurationMs 헬퍼 함수화
+- 기타 타입 단언 정리
+
+## 📈 예상 효과
+
+1. **타입 안전성 향상**: `any` 제거로 컴파일 타임 에러 감지 증가
+2. **코드 가독성 개선**: 타입 단언 감소로 의도가 명확해짐
+3. **유지보수성 향상**: 타입 가드로 런타임 검증 강화
+4. **리팩토링 안전성**: 타입 시스템이 변경사항 추적
+
+## 🔧 적용 방법
+
+각 파일별로 점진적으로 적용하되, 변경 후 반드시:
+1. 타입 체크: `npm run build` 또는 `tsc --noEmit`
+2. 테스트 실행: `npm test`
+3. 린트 체크: `npm run lint`
+
+## 참고 사항
+
+- tsconfig.json의 strict 설정은 잘 되어 있음 (noImplicitAny, strictNullChecks 등)
+- `@ts-ignore`, `@ts-nocheck` 사용 없음 (좋음)
+- 전반적으로 타입 시스템을 활용하려는 의지가 보임
+- 주로 외부 라이브러리 타입과의 상호작용에서 타입 단언이 많이 사용됨

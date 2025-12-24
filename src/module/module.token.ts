@@ -33,6 +33,7 @@ export const ONE_INCH_INFO_FETCHER = Symbol('OneInchInfoFetcher')
 export const SUSHI_SWAP_INFO_FETCHER = Symbol('SushiSwapInfoFetcher')
 export const STABLE_COIN_INFO_FETCHER = Symbol('StableCoinInfoFetcher')
 export const ERC20_INFO_FETCHER = Symbol('Erc20InfoFetcher')
+export const STARGATE_INFO_FETCHER = Symbol('StargateInfoFetcher')
 
 // Layer Zero
 export const LAYER_ZERO_SERVICE = Symbol('LayerZeroService');

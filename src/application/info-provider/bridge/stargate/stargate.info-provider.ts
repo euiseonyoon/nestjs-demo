@@ -1,12 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { HTTP_CLIENT } from "src/module/module.token";
-import { type IHttpClient } from "src/application/common/required_port/http-client.interface";
+import { STARGATE_INFO_FETCHER } from "src/module/module.token";
 import { ChainInfo } from "src/domain/chain-info.type";
 import { EvmAddress } from "src/domain/evm-address.class";
 import { Token } from "src/domain/token.class";
-import { StargateChainDetail, StargateChainResponse, StargateTokenReponse } from "./stargate-api.response";
+import { StargateChainDetail } from "./stargate-api.response";
 import { Cron } from "@nestjs/schedule";
 import { AbstractStargateInfoProvider } from "src/application/bridges/stargate/required_port/stargate.info-provider.interface";
+import type { IStargateInfoFetcher } from "src/application/info-fetcher/bridge/stargate/provided_port/stargate.info-fetcher.interface";
 
 @Injectable()
 export class StargateInfoProvider extends AbstractStargateInfoProvider {
@@ -22,8 +22,8 @@ export class StargateInfoProvider extends AbstractStargateInfoProvider {
     private tokenCache = new Map<string, Token>()
     
     constructor(
-        @Inject(HTTP_CLIENT)
-        private readonly httpClient: IHttpClient,
+        @Inject(STARGATE_INFO_FETCHER)
+        private readonly infoFetcher: IStargateInfoFetcher,
     ) {
         super()
         this.refreshInfos()
@@ -36,21 +36,14 @@ export class StargateInfoProvider extends AbstractStargateInfoProvider {
     // 매일 새벽 3시에 한번씩 초기화
     @Cron('0 0 3 * * *')
     async refreshInfos() {
-        const chainList = await this.getChains()
+        const chainList = await this.infoFetcher.fetchSupportingChains()
         chainList?.chains.forEach((chainDetail)=> {
             if (chainDetail.chainType === 'evm') {
                 this.setChainKeyMaps(chainDetail)
                 this.setSupportingChain(chainDetail)
             }
-        })
+        });
         this.setSupportingTokens()
-    }
-
-    private async getChains(): Promise<StargateChainResponse | null> {
-        const response = await this.httpClient.get<StargateChainResponse>(
-            "https://stargate.finance/api/v1/chains", 
-        )
-        return response.data
     }
 
     private setChainKeyMaps(chainDetail: StargateChainDetail) {
@@ -73,7 +66,7 @@ export class StargateInfoProvider extends AbstractStargateInfoProvider {
     }
 
     private async setSupportingTokens(): Promise<void> {
-        const response = await this.fetchSupportingTokens();
+        const response = await this.infoFetcher.fetchSupportingTokens();
         if (!response) return;
 
         const tokens = await Promise.all(
@@ -98,21 +91,13 @@ export class StargateInfoProvider extends AbstractStargateInfoProvider {
                 })
         );
 
-    tokens.forEach(item => {
-        if (item) {
-            this.supportingTokens.push(item.token);
-            this.tokenCache.set(item.chainKey, item.token);
-        }
-    });
-  }
-
-    private async fetchSupportingTokens(): Promise<StargateTokenReponse | null> {
-        const response = await this.httpClient.get<StargateTokenReponse>(
-            "https://stargate.finance/api/v1/tokens", 
-        )
-        return response.data
+        tokens.forEach(item => {
+            if (item) {
+                this.supportingTokens.push(item.token);
+                this.tokenCache.set(item.chainKey, item.token);
+            }
+        });
     }
-
     
     async getSupportingChains(): Promise<ChainInfo[]> {
         return this.supportingChains;
