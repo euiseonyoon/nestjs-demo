@@ -1,9 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { IXSwapRouteService } from "./provided_port/x-swap.route.service.interface";
+import { IXSwapRouteService } from "./swap/provided_port/x-swap.route.service.interface";
 import { Token } from "src/domain/token.class";
 import { QuoteRoute } from "src/domain/x-swap.type";
 import { X_SWAP_ROUTE_SWAP_HELPER } from "src/module/module.token";
-import type { IXSwapRouteSwapHelper } from "./required_port/x-swap.route.swap.helper.interface";
+import type { IXSwapRouteSwapHelper } from "./swap/required_port/x-swap.route.swap.helper.interface";
 
 @Injectable()
 export class XSwapRouteService implements IXSwapRouteService {
