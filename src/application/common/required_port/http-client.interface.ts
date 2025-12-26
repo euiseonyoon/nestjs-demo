@@ -1,4 +1,5 @@
 import { HttpResponse } from "src/domain/http.response";
+import { z } from 'zod';
 
 export const DEFAULT_MAX_ATTEMPTS = 3;
 export const MAX_ALLOWED_ATTEMPTS = 10;
@@ -45,40 +46,44 @@ export interface HttpRequestConfig {
     url: string;
     method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
     headers?: Record<string, string>;
-    params?: Record<string, any>;
-    data?: any;
+    params?: Record<string, unknown>;
+    data?: unknown;
     timeout?: number;
-    retryConfig?: RetryConfig
+    retryConfig?: RetryConfig;
+    validation?: {
+        responseSchema?: z.ZodTypeAny; // z.ZodType<any> 대신 Zod 공식 타입 사용
+        errorSchema?: z.ZodTypeAny;
+    };
 }
 
 export interface IHttpClient {
-    request<T = any, E = any>(config: HttpRequestConfig): Promise<HttpResponse<T, E>>;
+    request<T = unknown, E = unknown>(config: HttpRequestConfig): Promise<HttpResponse<T, E>>;
 
-    get<T = any, E = any>(
+    get<T = unknown, E = unknown>(
         url: string,
         config?: Omit<HttpRequestConfig, 'url' | 'method'>,
     ): Promise<HttpResponse<T, E>>;
 
-    post<T = any, E = any>(
+    post<T = unknown, E = unknown>(
         url: string,
-        data?: any,
+        data?: unknown,
         config?: Omit<HttpRequestConfig, 'url' | 'method' | 'data'>,
     ): Promise<HttpResponse<T, E>>;
 
-    put<T = any, E = any>(
+    put<T = unknown, E = unknown>(
         url: string,
-        data?: any,
+        data?: unknown,
         config?: Omit<HttpRequestConfig, 'url' | 'method' | 'data'>,
     ): Promise<HttpResponse<T, E>>;
 
-    delete<T = any, E = any>(
+    delete<T = unknown, E = unknown>(
         url: string,
         config?: Omit<HttpRequestConfig, 'url' | 'method'>,
     ): Promise<HttpResponse<T, E>>;
 
-    patch<T = any, E = any>(
+    patch<T = unknown, E = unknown>(
         url: string,
-        data?: any,
+        data?: unknown,
         config?: Omit<HttpRequestConfig, 'url' | 'method' | 'data'>,
     ): Promise<HttpResponse<T, E>>;
 }
