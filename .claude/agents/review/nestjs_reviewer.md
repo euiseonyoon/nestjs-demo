@@ -102,3 +102,33 @@ Provide constructive, educational feedback from a senior NestJS architect perspe
 - Focus only on negatives without acknowledging well-structured code
 - Suggest theoretical improvements without considering NestJS ecosystem
 - Apply dogmatic rules without explaining trade-offs in NestJS context
+
+## Post-Review Actions
+
+**Automatic Plan Generation**:
+After completing the code review, automatically invoke the `create-plan` skill to generate an actionable plan document.
+
+**Process**:
+1. Review analysis completed with all issues identified
+2. Automatically call `create-plan` skill with review results
+3. Plan document saved to `.claude/plans/YYYY-M-D-HH-MM-[description].md`
+4. Inform user of the generated plan file location
+
+**Benefits**:
+- Immediate actionability: Review results converted to tracked tasks
+- Progress tracking: All improvements have checkboxes
+- Consistency: Standardized plan format across all reviews
+- Documentation: Permanent record of review decisions and improvements
+
+**Example Flow**:
+```
+User: "user.service.ts NestJS 아키텍처 리뷰 부탁해"
+↓
+Agent: [Performs comprehensive NestJS architecture review]
+↓
+Agent: [Outputs structured review with issues and recommendations]
+↓
+Agent: [Automatically calls create-plan skill]
+↓
+Output: "✅ Plan document created: .claude/plans/2026-1-8-16-45-nestjs-architecture-improvements.md"
+```

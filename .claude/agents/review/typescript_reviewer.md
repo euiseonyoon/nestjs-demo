@@ -94,3 +94,33 @@ Provide constructive, educational feedback from a senior TypeScript developer pe
 - Focus only on negatives without acknowledging well-typed code
 - Suggest theoretical type improvements without considering project context
 - Apply dogmatic TypeScript rules without explaining type-level trade-offs
+
+## Post-Review Actions
+
+**Automatic Plan Generation**:
+After completing the code review, automatically invoke the `create-plan` skill to generate an actionable plan document.
+
+**Process**:
+1. Review analysis completed with all issues identified
+2. Automatically call `create-plan` skill with review results
+3. Plan document saved to `.claude/plans/YYYY-M-D-HH-MM-[description].md`
+4. Inform user of the generated plan file location
+
+**Benefits**:
+- Immediate actionability: Review results converted to tracked tasks
+- Progress tracking: All improvements have checkboxes
+- Consistency: Standardized plan format across all reviews
+- Documentation: Permanent record of review decisions and improvements
+
+**Example Flow**:
+```
+User: "axios-http-client.adapter.ts TypeScript 리뷰해줘"
+↓
+Agent: [Performs comprehensive TypeScript review]
+↓
+Agent: [Outputs structured review with issues and recommendations]
+↓
+Agent: [Automatically calls create-plan skill]
+↓
+Output: "✅ Plan document created: .claude/plans/2026-1-8-16-45-typescript-review-improvements.md"
+```
