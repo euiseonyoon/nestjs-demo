@@ -394,3 +394,168 @@ return this.hash as Hash
 - `@ts-ignore`, `@ts-nocheck` 사용 없음 (좋음)
 - 전반적으로 타입 시스템을 활용하려는 의지가 보임
 - 주로 외부 라이브러리 타입과의 상호작용에서 타입 단언이 많이 사용됨
+
+========================================================================
+
+// Line 74-85
+  async request<T = unknown, E = unknown>(...): Promise<HttpResponse<T, E>> {
+      const response = await this.axiosInstance.request<T>(axiosConfig);
+
+      return {
+          data: response.data,  // ⚠️ response.data는 실제로 뭐든 될 수 있음
+          // ...
+      };
+  }
+
+  문제: TypeScript 제네릭은 컴파일 타임에만 존재
+
+  // 사용 예시
+  interface User { id: number; name: string; }
+
+  const result = await httpClient.get<User>('/api/user/1');
+  // ✅ TypeScript는 result.data가 User 타입이라고 "믿음"
+
+  // 하지만 실제 API가 이렇게 반환하면?
+  // { error: "User not found", code: 404 }
+
+  console.log(result.data.name); // 💥 런타임 에러! (undefined.name)
+
+  TypeScript는 런타임에 타입 체크를 하지 않습니다 (Type Erasure)
+
+  ---
+  해결 방안 3가지
+
+  1️⃣ 현재 방식 유지 (타입 체크 안 함)
+
+  언제 괜찮은가?
+  - ✅ 내부 API (같은 팀/조직)
+  - ✅ API 스펙이 안정적
+  - ✅ 빠른 개발 우선
+  - ✅ Backend와 계약된 타입 보장
+
+  단점:
+  - ❌ API 스펙 변경 시 런타임 에러
+  - ❌ 외부 API 사용 시 위험
+
+  ---
+  2️⃣ Runtime Validation 추가 (권장)
+
+  Option A: Zod를 사용한 런타임 검증
+
+  import { z } from 'zod';
+
+  // request 메소드에 validation 추가
+  async request<T = unknown, E = unknown>(
+      config: HttpRequestConfig,
+      options?: {
+          responseSchema?: z.ZodType<T>;  // 선택적 검증
+          errorSchema?: z.ZodType<E>;
+      }
+  ): Promise<HttpResponse<T, E>> {
+      const response = await this.axiosInstance.request<T>(axiosConfig);
+
+      // 런타임 검증 (옵션)
+      if (options?.responseSchema) {
+          const validated = options.responseSchema.parse(response.data);
+          return {
+              data: validated,  // ✅ 검증된 데이터
+              // ...
+          };
+      }
+
+      return {
+          data: response.data,  // 검증 없음 (기존 동작)
+          // ...
+      };
+  }
+
+  // 사용 예시
+  const UserSchema = z.object({
+      id: z.number(),
+      name: z.string(),
+  });
+
+  const result = await httpClient.get<z.infer<typeof UserSchema>>('/api/user/1', {
+      responseSchema: UserSchema,  // ✅ 런타임 검증!
+  });
+
+  Option B: class-validator + class-transformer
+
+  import { plainToInstance } from 'class-transformer';
+  import { validate } from 'class-validator';
+
+  async request<T = unknown, E = unknown>(
+      config: HttpRequestConfig,
+      options?: {
+          responseDto?: new () => T;  // DTO 클래스
+      }
+  ): Promise<HttpResponse<T, E>> {
+      const response = await this.axiosInstance.request(axiosConfig);
+
+      if (options?.responseDto) {
+          const instance = plainToInstance(options.responseDto, response.data);
+          const errors = await validate(instance);
+
+          if (errors.length > 0) {
+              throw new Error(`Validation failed: ${JSON.stringify(errors)}`);
+          }
+
+          return {
+              data: instance as T,  // ✅ 검증된 DTO
+              // ...
+          };
+      }
+
+      return { data: response.data, ... };
+  }
+
+  ---
+  3️⃣ DTO Layer에서 검증 (가장 실용적)
+
+  HTTP Client는 그대로 두고, Service/UseCase 레이어에서 검증:
+
+  // user.service.ts
+  export class UserService {
+      constructor(private readonly httpClient: IHttpClient) {}
+
+      async getUser(id: number): Promise<User> {
+          const response = await this.httpClient.get<unknown>('/api/user/' + id);
+
+          // ✅ 여기서 검증
+          const validated = UserSchema.parse(response.data);
+          return validated;
+      }
+  }
+
+  장점:
+  - ✅ HTTP Client는 단순하게 유지
+  - ✅ 도메인 로직과 검증 분리
+  - ✅ 각 UseCase마다 필요한 검증만 수행
+
+  ---
+  결론 및 권장사항
+
+  현재 프로젝트 상황에 따라 선택:
+
+  | 상황                  | 권장 방안                        |
+  |-----------------------|----------------------------------|
+  | 내부 API, 안정적 스펙 | 현재 방식 유지 (타입 체크 안 함) |
+  | 외부 API, 스펙 변동   | DTO Layer 검증 (방안 3)          |
+  | Critical 서비스       | Runtime Validation 추가 (방안 2) |
+
+  제 추천:
+
+  // 1. HTTP Client는 현재처럼 유지 (심플하게)
+  // 2. Service/UseCase 레이어에서 Zod로 검증
+
+  // user.service.ts
+  const UserSchema = z.object({
+      id: z.number(),
+      name: z.string(),
+      email: z.string().email(),
+  });
+
+  async getUser(id: number): Promise<User> {
+      const response = await this.httpClient.get<unknown>(`/users/${id}`);
+      return UserSchema.parse(response.data);  // ✅ 안전!
+  }
